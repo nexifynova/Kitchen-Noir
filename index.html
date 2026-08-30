@@ -1807,7 +1807,7 @@
 
         function closeCheckout() { document.getElementById('checkoutModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
 
-               async function placeOrder(event) {
+                     async function placeOrder(event) {
             event.preventDefault();
             const name = document.getElementById('custName').value.trim();
             const email = document.getElementById('custEmail').value.trim();
@@ -1835,13 +1835,14 @@
                 customer_email: email,
                 customer_phone: phone,
                 address: address,
+                payment_method: paymentMethod,
                 total: cart.reduce((sum, item) => { const product = products.find(p => p.id === item.id); return sum + (product.price * item.qty); }, 0),
                 date: new Date().toISOString(),
                 status: 'pending',
                 items: cart.map(item => { const product = products.find(p => p.id === item.id); return { name: product.name, qty: item.qty, price: product.price }; })
             };
 
-            // Supabase mein insert karein (Bina service key ke, public policy se)
+            // Supabase mein insert karein
             const { data, error } = await supabaseClient
                 .from('orders')
                 .insert([order]);
@@ -1869,7 +1870,6 @@
             if (getCurrentUser()) renderProfile();
             updateAddToCartButtons();
         }
-
         // ===============================================================
         // CONTACT FORM
         // ===============================================================
