@@ -984,10 +984,10 @@
         // 0. SUPABASE CONFIGURATION
         // ===============================================================
         const SUPABASE_CONFIG = {
-            url: 'https://ziyzhhtqoppdmhxdjkgb.supabase.co',
-            anonKey: 'sb_publishable_P2nbCb3WfkWfU0l-LR8GOA_y7Ek8veR',
-            serviceKey: ''
-        };
+    url: 'https://ziyzhhtqoppdmhxdjkgb.supabase.co',
+    anonKey: 'sb_publishable_P2nbCb3WfkWfU0l-LR8GOA_y7Ek8veR',
+    serviceKey: 'sb_secret_AmsPCgZxvVxYWBckFMc4mPS2w3wJcKc'
+};
 
         const supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
         const supabaseAdmin = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.serviceKey);
