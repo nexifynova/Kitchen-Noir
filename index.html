@@ -21,6 +21,9 @@
         @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes zoomIn { from { transform: scale(.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes slideRight { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideDownFast { from { opacity: 0; transform: translateY(-20px) scale(.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
         .top-bar { background: var(--primary); color: var(--white); padding: 8px 5%; display: flex; justify-content: space-between; align-items: center; font-size: 13px; border-bottom: 2px solid var(--gold); flex-wrap: wrap; gap: 8px; }
         .top-bar .left { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
         .top-bar .left span { display: flex; align-items: center; gap: 6px; color: var(--gold-light); }
@@ -31,6 +34,7 @@
         .sale-banner { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: var(--primary); padding: 14px 5%; text-align: center; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; letter-spacing: .5px; }
         .sale-banner a { color: var(--primary); background: var(--white); padding: 6px 24px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 14px; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; }
         .sale-banner a:hover { transform: scale(1.05); }
+
         header { background: var(--white); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 999; box-shadow: 0 2px 20px rgba(0,0,0,.06); border-bottom: 1px solid rgba(0,0,0,.04); flex-wrap: wrap; gap: 10px; }
         .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; cursor: pointer; }
         .logo .logo-icon { width: auto; height: 60px; display: flex; align-items: center; justify-content: center; background: transparent; border-radius: 8px; overflow: hidden; }
@@ -38,6 +42,8 @@
         .logo-text .brand { font-size: 24px; font-weight: 800; font-family: 'Playfair Display', serif; color: var(--primary); line-height: 1.2; }
         .logo-text .brand span { color: var(--gold); }
         .logo-text .tagline { font-size: 10px; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; display: block; }
+
+        /* ===== NAVIGATION ===== */
         .nav-menu { display: flex; align-items: center; gap: 24px; list-style: none; flex-wrap: wrap; }
         .nav-menu > li { position: relative; padding-bottom: 8px; }
         .nav-menu > li::after { content: ''; position: absolute; top: 100%; left: 0; width: 100%; height: 20px; background: transparent; }
@@ -45,11 +51,186 @@
         .nav-menu > li > a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--gold); transition: var(--transition); }
         .nav-menu > li > a:hover::after, .nav-menu > li > a.active::after { width: 100%; }
         .nav-menu > li > a:hover { color: var(--gold); }
-        .dropdown { display: none; position: absolute; top: 100%; left: 0; background: var(--white); min-width: 220px; border-radius: var(--radius); box-shadow: var(--shadow-hover); padding: 12px 0; border-top: 3px solid var(--gold); z-index: 1000; padding-top: 15px; margin-top: -8px; }
-        .nav-menu > li:hover .dropdown { display: block; animation: fadeDown .2s ease; }
-        .dropdown li a { display: block; padding: 10px 20px; color: var(--primary); text-decoration: none; font-size: 14px; transition: var(--transition); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; width: 100%; text-align: left; border-bottom: 1px solid #f5f5f5; }
-        .dropdown li:last-child a { border-bottom: none; }
-        .dropdown li a:hover { background: var(--gold-light); color: var(--primary); padding-left: 30px; }
+
+        /* ============================================
+           MEGA MENU 3-LEVEL DROPDOWN (FAST SLIDE)
+           ============================================ */
+        .mega-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+            min-width: 780px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(212,175,55,0.1);
+            border-top: 4px solid var(--gold);
+            padding: 25px;
+            z-index: 1000;
+        }
+
+        .nav-menu > li:hover .mega-dropdown {
+            display: flex;
+            animation: slideDownFast 0.25s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .mega-category {
+            flex: 1;
+            position: relative;
+            padding: 0 20px;
+            border-right: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        .mega-category:last-child {
+            border-right: none;
+        }
+
+        .mega-category:hover {
+            background: rgba(212,175,55,0.03);
+            border-radius: 12px;
+        }
+
+        .mega-category > h4 {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-bottom: 2px solid var(--gold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .mega-category > h4 i {
+            color: var(--gold);
+            font-size: 18px;
+        }
+
+        .mega-category > h4:hover {
+            color: var(--gold);
+            padding-left: 5px;
+        }
+
+        .mega-category ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mega-category ul li {
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        .mega-category ul li a {
+            display: block;
+            padding: 8px 12px;
+            color: #666;
+            text-decoration: none;
+            font-size: 13.5px;
+            transition: all 0.25s ease;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .mega-category ul li a:hover {
+            background: linear-gradient(90deg, rgba(212,175,55,0.1) 0%, transparent 100%);
+            color: var(--primary);
+            padding-left: 18px;
+            font-weight: 600;
+        }
+
+        .mega-category ul li a:hover::before {
+            content: '→';
+            position: absolute;
+            left: 2px;
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        /* LEVEL 3 PANEL - FAST RIGHT SLIDE */
+        .level-3-panel {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: -10px;
+            background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%);
+            min-width: 260px;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(212,175,55,0.15);
+            padding: 15px;
+            z-index: 999;
+            border-left: 4px solid var(--gold);
+        }
+
+        .mega-category ul li:hover .level-3-panel {
+            display: block;
+            animation: slideRight 0.25s ease;
+        }
+
+        .level-3-panel h5 {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .level-3-panel ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .level-3-panel ul li {
+            margin-bottom: 4px;
+        }
+
+        .level-3-panel ul li a {
+            display: block;
+            padding: 7px 10px;
+            color: #666;
+            text-decoration: none;
+            font-size: 12.5px;
+            transition: all 0.2s ease;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .level-3-panel ul li a:hover {
+            background: var(--gold-light);
+            color: var(--primary);
+            padding-left: 15px;
+            font-weight: 600;
+        }
+
+        /* Arrow indicator for items with sub-items */
+        .mega-category ul li.has-sub > a::after {
+            content: '›';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold);
+            font-size: 18px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .mega-category ul li.has-sub:hover > a::after {
+            opacity: 1;
+        }
+
+        /* ===== END MEGA MENU ===== */
+
         .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .header-right .search-wrap { position: relative; display: flex; align-items: center; }
         .header-right .search-wrap input { padding: 8px 16px 8px 36px; border-radius: 50px; border: 1px solid #ddd; font-size: 13px; width: 180px; transition: var(--transition); font-family: 'Inter', sans-serif; background: var(--light); }
@@ -303,8 +484,8 @@
         .footer-bottom { padding-top: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 13px; color: rgba(255,255,255,.4); }
         .footer-bottom a { color: var(--gold); text-decoration: none; }
         .toast { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 14px 24px; border-radius: 50px; font-size: 14px; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,.3); z-index: 10000; display: flex; align-items: center; gap: 8px; animation: slideUp .3s ease; transition: opacity .3s; }
-        @media (max-width:992px) { .about-content, .contact-wrapper { grid-template-columns: 1fr; } .footer-grid { grid-template-columns: 1fr 1fr; } .hero-content h1 { font-size: 40px; } .header-right .search-wrap input { width: 120px; } .header-right .search-wrap input:focus { width: 150px; } .admin-product-form .form-row { grid-template-columns: 1fr; } .checkout-form .card-details .row { grid-template-columns: 1fr; } }
-        @media (max-width:768px) { .menu-toggle { display: block; } .nav-menu { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--white); padding: 20px; box-shadow: var(--shadow-hover); gap: 14px; border-top: 3px solid var(--gold); z-index: 100; } .nav-menu.open { display: flex; } .nav-menu>li { width: 100%; padding-bottom: 0; } .nav-menu>li::after { display: none; } .dropdown { position: static; display: none; box-shadow: none; padding: 4px 0 4px 16px; border-top: none; margin-top: 0; } .nav-menu>li:hover .dropdown { display: none; } .nav-menu>li .dropdown.open { display: block; } .footer-grid { grid-template-columns: 1fr; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); } .filter-bar { flex-direction: column; align-items: stretch; } .filter-bar .filters-left { flex-direction: column; align-items: stretch; } .filter-bar .price-range { flex-wrap: wrap; } .header-right .search-wrap input { width: 100px; } .header-right .search-wrap input:focus { width: 130px; } .hero-content h1 { font-size: 32px; } .top-bar .left span { font-size: 11px; } .profile-section .order-history .order-item { flex-direction: column; align-items: flex-start; } .admin-tabs { flex-wrap: wrap; } .admin-tabs button { padding: 6px 12px; font-size: 12px; } .modal-content.xlarge { padding: 16px; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } .product-card .info .action-row { flex-direction: column; } .product-card .info .action-row .btn-add-cart { min-width: unset; } }
+        @media (max-width:992px) { .about-content, .contact-wrapper { grid-template-columns: 1fr; } .footer-grid { grid-template-columns: 1fr 1fr; } .hero-content h1 { font-size: 40px; } .header-right .search-wrap input { width: 120px; } .header-right .search-wrap input:focus { width: 150px; } .admin-product-form .form-row { grid-template-columns: 1fr; } .checkout-form .card-details .row { grid-template-columns: 1fr; } .mega-dropdown { min-width: 100%; position: static; flex-direction: column; } .level-3-panel { position: static; min-width: 100%; } }
+        @media (max-width:768px) { .menu-toggle { display: block; } .nav-menu { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--white); padding: 20px; box-shadow: var(--shadow-hover); gap: 14px; border-top: 3px solid var(--gold); z-index: 100; } .nav-menu.open { display: flex; } .nav-menu>li { width: 100%; padding-bottom: 0; } .nav-menu>li::after { display: none; } .footer-grid { grid-template-columns: 1fr; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); } .filter-bar { flex-direction: column; align-items: stretch; } .filter-bar .filters-left { flex-direction: column; align-items: stretch; } .filter-bar .price-range { flex-wrap: wrap; } .header-right .search-wrap input { width: 100px; } .header-right .search-wrap input:focus { width: 130px; } .hero-content h1 { font-size: 32px; } .top-bar .left span { font-size: 11px; } .profile-section .order-history .order-item { flex-direction: column; align-items: flex-start; } .admin-tabs { flex-wrap: wrap; } .admin-tabs button { padding: 6px 12px; font-size: 12px; } .modal-content.xlarge { padding: 16px; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } .product-card .info .action-row { flex-direction: column; } .product-card .info .action-row .btn-add-cart { min-width: unset; } }
         @media (max-width:480px) { .header-right .search-wrap input { width: 80px; font-size: 11px; padding: 6px 10px 6px 28px; } .header-right .search-wrap input:focus { width: 100px; } .btn-appointment { padding: 6px 14px; font-size: 11px; } .cart-icon-wrap { padding: 6px 8px; font-size: 18px; } .user-icon-wrap { padding: 6px 8px; font-size: 16px; } .hero-content { padding: 40px 5%; } .hero-content h1 { font-size: 28px; } .modal-content { padding: 16px; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); } }
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
         .admin-header h2 { font-size: 28px; font-family: 'Playfair Display', serif; }
@@ -382,14 +563,292 @@
         <ul class="nav-menu" id="navMenu">
             <li><a class="active" onclick="navigate('home')">Home</a></li>
             <li><a onclick="navigate('about')">About</a></li>
+
+            <!-- PRODUCTS WITH 3-LEVEL MEGA MENU -->
             <li>
                 <a onclick="navigate('products')">Products <i class="fas fa-chevron-down"></i></a>
-                <ul class="dropdown">
-                    <li><a onclick="navigateToCategory('Kitchen')"><i class="fas fa-utensils"></i> Kitchens</a></li>
-                    <li><a onclick="navigateToCategory('Bedrooms')"><i class="fas fa-bed"></i> Bedrooms</a></li>
-                    <li><a onclick="navigateToCategory('Home Office')"><i class="fas fa-laptop"></i> Home Offices</a></li>
-                </ul>
+                <div class="mega-dropdown">
+
+                    <!-- KITCHEN -->
+                    <div class="mega-category">
+                        <h4 onclick="navigateToCategory('Kitchen')"><i class="fas fa-utensils"></i> Kitchen</h4>
+                        <ul>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Kitchen', 'Plates')">🍽️ Plates</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Plates', 'Ceramic')">Ceramic → White, Blue</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Plates', 'Glass')">Glass → Clear, Tinted</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Plates', 'Melamine')">Melamine → Solid</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Plates', 'Porcelain')">Porcelain → Classic</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Kitchen', 'Spoons')">🥄 Spoons</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Spoons', 'Steel')">Steel → Stainless</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Spoons', 'Wood')">Wood → Oak, Teak</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Spoons', 'Plastic')">Plastic → Colored</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Kitchen', 'Mugs')">☕ Mugs</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Mugs', 'Ceramic')">Ceramic → White, Black</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Mugs', 'Glass')">Glass → Clear</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Mugs', 'Melamine')">Melamine → Printed</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Kitchen', 'Knives')">🔪 Knives</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Knives', 'Steel')">Steel → Stainless</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Knives', 'Ceramic')">Ceramic → White</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Kitchen', 'Cutting Boards')">🪵 Cutting Boards</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Cutting Boards', 'Wood')">Wood → Oak, Bamboo</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Cutting Boards', 'Plastic')">Plastic → Colored</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Kitchen', 'Pots & Pans')">🍳 Pots & Pans</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Pots & Pans', 'Steel')">Steel → Stainless</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Pots & Pans', 'Iron')">Iron → Cast Iron</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Pots & Pans', 'Copper')">Copper → Classic</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Kitchen', 'Appliances')">⚡ Appliances</a>
+                                <div class="level-3-panel">
+                                    <h5>Type</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Appliances', 'Hobs')">Hobs → Gas, Electric</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Appliances', 'Ovens')">Ovens → Built-in</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Appliances', 'Dishwashers')">Dishwashers → Built-in</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Kitchen', 'Storage')">📦 Storage</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Storage', 'Plastic')">Plastic → Colored</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Storage', 'Glass')">Glass → Jars</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Storage', 'Steel')">Steel → Containers</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- BEDROOMS -->
+                    <div class="mega-category">
+                        <h4 onclick="navigateToCategory('Bedrooms')"><i class="fas fa-bed"></i> Bedrooms</h4>
+                        <ul>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Bedrooms', 'Beds')">🛏️ Beds</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Beds', 'Wood')">Wood → Oak, Walnut</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Beds', 'Metal')">Metal → Iron, Steel</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Beds', 'Upholstered')">Upholstered → Velvet</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Bedrooms', 'Wardrobes')">🚪 Wardrobes</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Wardrobes', 'Wood')">Wood → Oak, Maple</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Wardrobes', 'Metal')">Metal → Steel</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Wardrobes', 'Glass')">Glass → Mirrored</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Bedrooms', 'Nightstands')">🕯️ Nightstands</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Nightstands', 'Wood')">Wood → Oak, Teak</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Nightstands', 'Metal')">Metal → Steel</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Bedrooms', 'Dressers')">🪞 Dressers</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Dressers', 'Wood')">Wood → Oak, Walnut</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Dressers', 'Metal')">Metal → Iron</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Bedrooms', 'Mattresses')">🛌 Mattresses</a>
+                                <div class="level-3-panel">
+                                    <h5>Type</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Mattresses', 'Memory Foam')">Memory Foam → Firm, Soft</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Mattresses', 'Latex')">Latex → Natural</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Mattresses', 'Spring')">Spring → Pocket</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Bedrooms', 'Headboards')">🪑 Headboards</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Headboards', 'Wood')">Wood → Oak, Pine</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Headboards', 'Upholstered')">Upholstered → Velvet</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Bedrooms', 'Bedding')">🧺 Bedding</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Bedding', 'Cotton')">Cotton → Egyptian</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Bedding', 'Silk')">Silk → Mulberry</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Bedding', 'Microfiber')">Microfiber → Soft</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Bedrooms', 'Pillows')">💤 Pillows</a>
+                                <div class="level-3-panel">
+                                    <h5>Type</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Pillows', 'Memory Foam')">Memory Foam → Contour</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Pillows', 'Down')">Down → Duck</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Pillows', 'Synthetic')">Synthetic → Polyester</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Bedrooms', 'Mirrors')">🪞 Mirrors</a>
+                                <div class="level-3-panel">
+                                    <h5>Frame</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Mirrors', 'Wood')">Wood → Oak</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Mirrors', 'Metal')">Metal → Brass</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Bedrooms', 'Lamps')">💡 Lamps</a>
+                                <div class="level-3-panel">
+                                    <h5>Base</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Lamps', 'Ceramic')">Ceramic → White</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Lamps', 'Metal')">Metal → Brass</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Lamps', 'Wood')">Wood → Walnut</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- HOME OFFICE -->
+                    <div class="mega-category">
+                        <h4 onclick="navigateToCategory('Home Office')"><i class="fas fa-laptop"></i> Home Office</h4>
+                        <ul>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Home Office', 'Desks')">🖥️ Desks</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Desks', 'Wood')">Wood → Oak, Walnut</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Desks', 'Metal')">Metal → Steel</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Desks', 'Glass')">Glass → Tempered</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Home Office', 'Chairs')">💺 Chairs</a>
+                                <div class="level-3-panel">
+                                    <h5>Type</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Chairs', 'Ergonomic')">Ergonomic → Mesh</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Chairs', 'Executive')">Executive → Leather</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Chairs', 'Gaming')">Gaming → RGB</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Home Office', 'Bookshelves')">📚 Bookshelves</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Bookshelves', 'Wood')">Wood → Oak, Teak</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Bookshelves', 'Metal')">Metal → Steel</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Home Office', 'Filing')">🗄️ Filing Cabinets</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Filing', 'Metal')">Metal → Steel</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Filing', 'Wood')">Wood → Oak</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Home Office', 'Accessories')">🖱️ Accessories</a>
+                                <div class="level-3-panel">
+                                    <h5>Type</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Accessories', 'Laptop Stands')">Laptop Stands → Metal</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Accessories', 'Organizers')">Organizers → Acrylic</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Accessories', 'Cable')">Cable → Clips</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="has-sub">
+                                <a onclick="navigateToSubCategory('Home Office', 'Storage')">📦 Storage</a>
+                                <div class="level-3-panel">
+                                    <h5>Material</h5>
+                                    <ul>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Storage', 'Plastic')">Plastic → Colored</a></li>
+                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Storage', 'Wood')">Wood → Oak</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
             </li>
+
             <li><a onclick="navigate('gallery')">Gallery</a></li>
             <li><a onclick="navigate('career')">Career</a></li>
             <li><a onclick="navigate('contact')">Contact</a></li>
@@ -1258,22 +1717,32 @@
             return local;
         }
 
+        // FIXED: Category dropdown with defaults
         function loadCategoryDropdown() {
             const select = document.getElementById('prodCategory');
             if (!select) return;
             select.innerHTML = '';
+
+            const defaultCats = [
+                { id: 1, name: 'Kitchen' },
+                { id: 2, name: 'Bedrooms' },
+                { id: 3, name: 'Home' },
+                { id: 4, name: 'Home Office' }
+            ];
+
+            const cats = (cachedCategories && cachedCategories.length > 0) ? cachedCategories : defaultCats;
+
             const defaultOpt = document.createElement('option');
             defaultOpt.value = '';
             defaultOpt.textContent = '-- Select Category --';
             select.appendChild(defaultOpt);
-            if (cachedCategories && cachedCategories.length > 0) {
-                cachedCategories.forEach(cat => {
-                    const opt = document.createElement('option');
-                    opt.value = cat.id;
-                    opt.textContent = cat.name;
-                    select.appendChild(opt);
-                });
-            }
+
+            cats.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat.id;
+                opt.textContent = cat.name;
+                select.appendChild(opt);
+            });
         }
 
         // ===== USERS =====
@@ -1425,6 +1894,11 @@
         function previewImage(event) {
             const file = event.target.files[0];
             if (!file) return;
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB');
+                event.target.value = '';
+                return;
+            }
             const reader = new FileReader();
             reader.onload = function(e) {
                 const preview = document.getElementById('imagePreview');
@@ -1437,6 +1911,10 @@
 
         async function uploadImage(file) {
             if (!file) return null;
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB');
+                return null;
+            }
             const fileExt = file.name.split('.').pop();
             const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 10)}.${fileExt}`;
             const filePath = `products/${fileName}`;
@@ -1570,12 +2048,14 @@
             filterProducts();
         }
 
+        let searchTimeout;
         function doSearch() {
             const searchTerm = sanitizeInput(document.getElementById('searchInput').value.trim());
             if (searchTerm === '') return;
             navigate('products');
             filterProducts();
-            setTimeout(async () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(async () => {
                 const noProducts = document.getElementById('noProducts');
                 if (noProducts.style.display !== 'none') {
                     noProducts.innerHTML = `
@@ -1593,18 +2073,53 @@
                         date: new Date().toISOString()
                     }]);
                 }
-            }, 100);
+            }, 500);
+        }
+
+        // NEW: Navigation for Mega Menu
+        function navigateToCategory(category) {
+            navigate('products');
+            document.getElementById('categoryFilter').value = category;
+            filterProducts();
+            document.getElementById('page-products').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function navigateToSubCategory(category, subcategory) {
+            navigate('products');
+            document.getElementById('categoryFilter').value = category;
+            document.getElementById('searchInput').value = subcategory;
+            filterProducts();
+            document.getElementById('page-products').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function navigateToSubSubCategory(category, subcategory, material) {
+            navigate('products');
+            document.getElementById('categoryFilter').value = category;
+            document.getElementById('searchInput').value = subcategory + ' ' + material;
+            filterProducts();
+            document.getElementById('page-products').scrollIntoView({ behavior: 'smooth' });
         }
 
         // ================================================================
         // 6. CART FUNCTIONS
         // ================================================================
+        // FIXED: Cart with product snapshot
         function addToCart(productId) {
-            if (event) event.stopPropagation();
             let cart = JSON.parse(localStorage.getItem('sk_cart')) || [];
             const existing = cart.find(item => item.id === productId);
             if (existing) existing.qty++;
-            else cart.push({ id: productId, qty: 1 });
+            else {
+                const product = cachedProducts.find(p => p.id === productId);
+                if (product) {
+                    cart.push({
+                        id: productId,
+                        qty: 1,
+                        name: product.name,
+                        price: product.price,
+                        image: product.image
+                    });
+                }
+            }
             localStorage.setItem('sk_cart', JSON.stringify(cart));
             updateCartCount();
             showToast('Added to cart!');
@@ -1928,8 +2443,9 @@
 
             const products = await getProducts();
 
+            // FIXED: Unique Order ID with random suffix
             const order = {
-                id: 'ORD-' + Date.now().toString(36).toUpperCase(),
+                id: 'ORD-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase(),
                 customer_name: name,
                 customer_email: email,
                 customer_phone: phone,
@@ -2222,9 +2738,16 @@
             });
             const labels = Object.keys(dateMap).slice(-7);
             const data = labels.map(d => dateMap[d].total);
+
+            // FIXED: Empty state handling
+            if (labels.length === 0) {
+                labels.push('No Data');
+                data.push(0);
+            }
+
             adminChartInstance = new Chart(ctx, {
                 type: 'bar',
-                data: { labels: labels.length ? labels : ['No Data'], datasets: [{ label: 'Daily Revenue (£)', data: labels.length ? data : [0], backgroundColor: 'rgba(212,175,55,0.6)', borderColor: 'var(--gold)', borderWidth: 2, borderRadius: 6 }] },
+                data: { labels: labels, datasets: [{ label: 'Daily Revenue (£)', data: data, backgroundColor: 'rgba(212,175,55,0.6)', borderColor: 'var(--gold)', borderWidth: 2, borderRadius: 6 }] },
                 options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: true, labels: { color: 'var(--primary)' } } }, scales: { y: { beginAtZero: true, ticks: { callback: v => '£' + v } } } }
             });
         }
@@ -2312,7 +2835,7 @@
         }
 
         // ================================================================
-        // 14. ADMIN: PRODUCTS (WITH CATEGORY DROPDOWN)
+        // 14. ADMIN: PRODUCTS
         // ================================================================
         async function loadAdminProducts() {
             const products = await getProducts();
@@ -2395,93 +2918,90 @@
             });
         }
 
-        // ===== SAVE PRODUCT (FIXED) =====
-     async function saveProduct() {
-    const id = document.getElementById('editProductId').value;
-    const name = document.getElementById('prodName').value.trim();
-    const categoryId = document.getElementById('prodCategory').value;
-    const categoryName = document.getElementById('prodCategory').selectedOptions[0]?.text || '';
-    const price = parseFloat(document.getElementById('prodPrice').value);
-    const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
-    const description = document.getElementById('prodDesc').value.trim();
+        // FIXED: saveProduct with String comparison
+        async function saveProduct() {
+            const id = document.getElementById('editProductId').value;
+            const name = document.getElementById('prodName').value.trim();
+            const categoryId = document.getElementById('prodCategory').value;
+            const categoryName = document.getElementById('prodCategory').selectedOptions[0]?.text || '';
+            const price = parseFloat(document.getElementById('prodPrice').value);
+            const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
+            const description = document.getElementById('prodDesc').value.trim();
 
-    const fileInput = document.getElementById('prodImageFile');
-    const existingImage = document.getElementById('prodImage').value;
-    let imageUrl = existingImage;
+            const fileInput = document.getElementById('prodImageFile');
+            const existingImage = document.getElementById('prodImage').value;
+            let imageUrl = existingImage;
 
-    if (fileInput.files && fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const uploadedUrl = await uploadImage(file);
-        if (uploadedUrl) {
-            imageUrl = uploadedUrl;
-        } else {
-            alert('Image upload failed. Please try again.');
-            return;
-        }
-    }
-
-    if (!name) { alert('Please enter Product Name.'); return; }
-    if (!price || isNaN(price)) { alert('Please enter a valid Price.'); return; }
-    if (!imageUrl) { alert('Please select an Image.'); return; }
-    if (!categoryId || categoryId === '' || categoryId === '-- Select Category --') {
-        alert('Please select a Category.');
-        return;
-    }
-
-    console.log('Saving product:', { name, categoryName, categoryId, price, oldPrice, imageUrl, description });
-
-    try {
-        let products = await getProducts();
-
-        if (id) {
-            const index = products.findIndex(p => p.id === parseInt(id));
-            if (index > -1) {
-                products[index] = {
-                    ...products[index],
-                    name,
-                    category: categoryName,
-                    category_id: parseInt(categoryId),
-                    price,
-                    old_price: oldPrice,
-                    image: imageUrl,
-                    description
-                };
+            if (fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const uploadedUrl = await uploadImage(file);
+                if (uploadedUrl) {
+                    imageUrl = uploadedUrl;
+                } else {
+                    alert('Image upload failed. Please try again.');
+                    return;
+                }
             }
-            showToast('Product updated!');
-        } else {
-            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-            const newProduct = {
-                id: newId,
-                name,
-                category: categoryName,
-                category_id: parseInt(categoryId),
-                price,
-                old_price: oldPrice,
-                image: imageUrl,
-                description
-            };
-            products.push(newProduct);
-            console.log('New product:', newProduct);
-            showToast('Product added!');
-        }
 
-        const result = await saveProducts(products);
-        console.log('Save result:', result);
+            if (!name) { alert('Please enter Product Name.'); return; }
+            if (!price || isNaN(price)) { alert('Please enter a valid Price.'); return; }
+            if (!imageUrl) { alert('Please select an Image.'); return; }
+            if (!categoryId || categoryId === '' || categoryId === '-- Select Category --') {
+                alert('Please select a Category.');
+                return;
+            }
 
-        if (result) {
-            toggleProductForm();
-            loadAdminProducts();
-            renderProducts();
-            filterProducts();
-            showToast('✅ Product saved successfully!');
-        } else {
-            alert('❌ Product save failed. Please check console for errors.');
+            try {
+                let products = await getProducts();
+
+                if (id) {
+                    // FIXED: String comparison
+                    const index = products.findIndex(p => String(p.id) === String(id));
+                    if (index > -1) {
+                        products[index] = {
+                            ...products[index],
+                            name,
+                            category: categoryName,
+                            category_id: parseInt(categoryId),
+                            price,
+                            old_price: oldPrice,
+                            image: imageUrl,
+                            description
+                        };
+                    }
+                    showToast('Product updated!');
+                } else {
+                    const newId = products.length > 0 ? Math.max(...products.map(p => parseInt(p.id))) + 1 : 1;
+                    const newProduct = {
+                        id: newId,
+                        name,
+                        category: categoryName,
+                        category_id: parseInt(categoryId),
+                        price,
+                        old_price: oldPrice,
+                        image: imageUrl,
+                        description
+                    };
+                    products.push(newProduct);
+                    showToast('Product added!');
+                }
+
+                const result = await saveProducts(products);
+
+                if (result) {
+                    toggleProductForm();
+                    loadAdminProducts();
+                    renderProducts();
+                    filterProducts();
+                    showToast('✅ Product saved successfully!');
+                } else {
+                    alert('❌ Product save failed. Please check console for errors.');
+                }
+            } catch (error) {
+                console.error('Error saving product:', error);
+                alert('❌ Error: ' + error.message);
+            }
         }
-    } catch (error) {
-        console.error('Error saving product:', error);
-        alert('❌ Error: ' + error.message);
-    }
-}
 
         // ================================================================
         // 15. ADMIN: CUSTOMERS
@@ -2524,8 +3044,9 @@
             renderCustomersData(allUsersData);
         }
 
-        function renderCustomersData(users) {
-            const orders = getOrders();
+        // FIXED: renderCustomersData async
+        async function renderCustomersData(users) {
+            const orders = await getOrders();
             const tbody = document.getElementById('adminCustomersTable');
             if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray);">No registered customers.</td></tr>'; return; }
             let html = '';
@@ -2673,10 +3194,8 @@
         }
 
         // ================================================================
-        // 18. DELETE FUNCTIONS (FIXED - Direct Supabase Delete)
+        // 18. DELETE FUNCTIONS
         // ================================================================
-
-        // ===== DELETE: PRODUCTS =====
         async function confirmDeleteProduct(productId) {
             const pass1 = prompt('Enter admin password to delete this product:');
             if (!pass1) return;
@@ -2727,7 +3246,6 @@
             }
         }
 
-        // ===== DELETE: CUSTOMERS =====
         async function confirmDeleteCustomer(userId) {
             const pass1 = prompt('Enter admin password to delete this customer:');
             if (!pass1) return;
@@ -2773,7 +3291,6 @@
             }
         }
 
-        // ===== DELETE: ORDERS =====
         async function confirmDeleteOrder(orderId) {
             const pass1 = prompt('Enter admin password to delete this order:');
             if (!pass1) return;
@@ -2819,7 +3336,6 @@
             }
         }
 
-        // ===== DELETE: INQUIRIES =====
         async function confirmDeleteInquiry(inquiryId) {
             const pass1 = prompt('Enter admin password to delete this inquiry:');
             if (!pass1) return;
@@ -2865,7 +3381,6 @@
             }
         }
 
-        // ===== DELETE: MESSAGES =====
         async function confirmDeleteMessage(messageId) {
             const pass1 = prompt('Enter admin password to delete this message:');
             if (!pass1) return;
@@ -3089,13 +3604,27 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function navigateToCategory(category) { navigate('products'); document.getElementById('categoryFilter').value = category; filterProducts(); }
         function toggleMobileMenu() { document.getElementById('navMenu').classList.toggle('open'); }
 
         document.addEventListener('click', function(e) {
             const menu = document.getElementById('navMenu');
             const toggle = document.getElementById('menuToggle');
             if (menu.classList.contains('open') && !menu.contains(e.target) && !toggle.contains(e.target)) menu.classList.remove('open');
+        });
+
+        // Mobile dropdown handling
+        document.querySelectorAll('.nav-menu > li').forEach(li => {
+            const megaDropdown = li.querySelector('.mega-dropdown');
+            const link = li.querySelector('a');
+            if (megaDropdown && link && link.textContent.includes('Products')) {
+                link.addEventListener('click', (e) => {
+                    if (window.innerWidth <= 768) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        megaDropdown.style.display = megaDropdown.style.display === 'flex' ? 'none' : 'flex';
+                    }
+                });
+            }
         });
 
         // ================================================================
