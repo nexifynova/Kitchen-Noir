@@ -788,7 +788,7 @@
                     </div>
 
                     <!-- ================================================================ -->
-                    <!-- TAB 2: PRODUCTS (WITH IMAGE UPLOAD + CATEGORY FROM SUPABASE) -->
+                    <!-- TAB 2: PRODUCTS (WITH CATEGORY DROPDOWN) -->
                     <!-- ================================================================ -->
                     <div class="admin-tab-content" id="tab-products">
                         <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
@@ -1352,7 +1352,7 @@
         // ===== CATEGORIES =====
         async function getCategories() {
             try {
-                const { data, error } = await supabaseClient.from('categories').select('*').order('level', { ascending: true });
+                const { data, error } = await supabaseClient.from('categories').select('*').order('id');
                 if (error) throw error;
                 if (data) {
                     cachedCategories = data;
@@ -1562,30 +1562,26 @@
             return cat ? cat.name : 'Uncategorized';
         }
 
-        function renderCategorySelect(selectId, selectedId = null) {
-            const select = document.getElementById(selectId);
+        function loadCategoryDropdown() {
+            const select = document.getElementById('prodCategory');
             if (!select) return;
             select.innerHTML = '';
-            const opt = document.createElement('option');
-            opt.value = '';
-            opt.textContent = '-- Select Category --';
-            select.appendChild(opt);
 
-            if (cachedCategories.length === 0) return;
+            // Add default option
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = '';
+            defaultOpt.textContent = '-- Select Category --';
+            select.appendChild(defaultOpt);
 
-            cachedCategories.forEach(cat => {
-                const opt = document.createElement('option');
-                opt.value = cat.id;
-                opt.textContent = cat.name;
-                if (selectedId && cat.id === selectedId) {
-                    opt.selected = true;
-                }
-                select.appendChild(opt);
-            });
-        }
-
-        function updateProductCategoryDropdown() {
-            renderCategorySelect('prodCategory', null);
+            // Add categories from Supabase
+            if (cachedCategories && cachedCategories.length > 0) {
+                cachedCategories.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat.id;
+                    opt.textContent = cat.name;
+                    select.appendChild(opt);
+                });
+            }
         }
 
         // ================================================================
@@ -2164,6 +2160,7 @@
                 localStorage.setItem('sk_admin_logged', 'true');
                 document.getElementById('adminLogin').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'block';
+                await loadCategories();
                 loadAdminDashboard();
                 showToast('Welcome Admin!');
                 document.getElementById('adminPassword').value = '';
@@ -2187,10 +2184,15 @@
             document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             if (tabId === 'tab-dashboard') loadAdminDashboard();
-            if (tabId === 'tab-products') loadAdminProducts();
+            if (tabId === 'tab-products') { loadCategories(); loadAdminProducts(); }
             if (tabId === 'tab-customers') loadAdminCustomers();
             if (tabId === 'tab-inquiries') loadAdminInquiries();
             if (tabId === 'tab-messages') loadAdminMessages();
+        }
+
+        async function loadCategories() {
+            cachedCategories = await getCategories();
+            loadCategoryDropdown();
         }
 
         // ===== ADMIN: GLOBAL SEARCH =====
@@ -2427,7 +2429,7 @@
         }
 
         // ================================================================
-        // 14. ADMIN: PRODUCTS (WITH IMAGE UPLOAD + CATEGORY)
+        // 14. ADMIN: PRODUCTS (WITH CATEGORY DROPDOWN)
         // ================================================================
         async function loadAdminProducts() {
             const products = await getProducts();
@@ -2463,7 +2465,7 @@
                 document.getElementById('prodImageFile').value = '';
                 document.getElementById('imagePreview').classList.remove('show');
                 document.getElementById('productFormTitle').textContent = 'Add New Product';
-                updateProductCategoryDropdown();
+                loadCategoryDropdown();
             }
             if (data) {
                 document.getElementById('editProductId').value = data.id;
@@ -2474,7 +2476,7 @@
                 document.getElementById('prodImage').value = data.image;
                 document.getElementById('prodDesc').value = data.description || '';
                 document.getElementById('productFormTitle').textContent = 'Edit Product';
-                updateProductCategoryDropdown();
+                loadCategoryDropdown();
                 if (data.image) {
                     const preview = document.getElementById('imagePreview');
                     const img = document.getElementById('previewImg');
@@ -2498,7 +2500,7 @@
                     document.getElementById('prodImage').value = product.image;
                     document.getElementById('prodDesc').value = product.description || '';
                     document.getElementById('productFormTitle').textContent = 'Edit Product';
-                    updateProductCategoryDropdown();
+                    loadCategoryDropdown();
                     if (product.image) {
                         const preview = document.getElementById('imagePreview');
                         const img = document.getElementById('previewImg');
@@ -2511,77 +2513,57 @@
         }
 
         async function saveProduct() {
-    const id = document.getElementById('editProductId').value;
-    const name = document.getElementById('prodName').value.trim();
-    const categoryId = document.getElementById('prodCategory').value;
-    const price = parseFloat(document.getElementById('prodPrice').value);
-    const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
-    const description = document.getElementById('prodDesc').value.trim();
+            const id = document.getElementById('editProductId').value;
+            const name = document.getElementById('prodName').value.trim();
+            const categoryId = document.getElementById('prodCategory').value;
+            const price = parseFloat(document.getElementById('prodPrice').value);
+            const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
+            const description = document.getElementById('prodDesc').value.trim();
 
-    const fileInput = document.getElementById('prodImageFile');
-    const existingImage = document.getElementById('prodImage').value;
-    let imageUrl = existingImage;
+            const fileInput = document.getElementById('prodImageFile');
+            const existingImage = document.getElementById('prodImage').value;
+            let imageUrl = existingImage;
 
-    // ===== IMAGE UPLOAD =====
-    if (fileInput.files && fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const uploadedUrl = await uploadImage(file);
-        if (uploadedUrl) {
-            imageUrl = uploadedUrl;
-        } else {
-            alert('Image upload failed. Please try again.');
-            return;
+            if (fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const uploadedUrl = await uploadImage(file);
+                if (uploadedUrl) {
+                    imageUrl = uploadedUrl;
+                } else {
+                    alert('Image upload failed. Please try again.');
+                    return;
+                }
+            }
+
+            if (!name || !price || !imageUrl) {
+                alert('Please fill Name, Price, and Image.');
+                return;
+            }
+
+            if (!categoryId || categoryId === '') {
+                alert('Please select a Category.');
+                return;
+            }
+
+            let products = await getProducts();
+            if (id) {
+                const index = products.findIndex(p => p.id === parseInt(id));
+                if (index > -1) {
+                    products[index] = { ...products[index], name, category_id: parseInt(categoryId), price, old_price: oldPrice, image: imageUrl, description };
+                }
+                showToast('Product updated!');
+            } else {
+                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                products.push({ id: newId, name, category_id: parseInt(categoryId), price, old_price: oldPrice, image: imageUrl, description });
+                showToast('Product added!');
+            }
+
+            await saveProducts(products);
+            toggleProductForm();
+            loadAdminProducts();
+            renderProducts();
+            filterProducts();
         }
-    }
-
-    // ===== VALIDATION =====
-    if (!name || !price || !imageUrl) {
-        alert('Please fill Name, Price, and Image.');
-        return;
-    }
-
-    // ===== CATEGORY VALIDATION =====
-    if (!categoryId || categoryId === '') {
-        alert('Please select a Category.');
-        return;
-    }
-
-    // ===== SAVE PRODUCT =====
-    let products = await getProducts();
-    if (id) {
-        const index = products.findIndex(p => p.id === parseInt(id));
-        if (index > -1) {
-            products[index] = {
-                ...products[index],
-                name,
-                category_id: parseInt(categoryId),
-                price,
-                old_price: oldPrice,
-                image: imageUrl,
-                description
-            };
-        }
-        showToast('Product updated!');
-    } else {
-        const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-        products.push({
-            id: newId,
-            name,
-            category_id: parseInt(categoryId),
-            price,
-            old_price: oldPrice,
-            image: imageUrl,
-            description
-        });
-        showToast('Product added!');
-    }
-
-    await saveProducts(products);
-    toggleProductForm();
-    loadAdminProducts();
-    renderProducts();
-    filterProducts();
-}
 
         // ================================================================
         // 15. ADMIN: CUSTOMERS (WITH DELETE + CLEAR ALL)
@@ -3180,6 +3162,7 @@
                 if (localStorage.getItem('sk_admin_logged') === 'true') {
                     document.getElementById('adminLogin').style.display = 'none';
                     document.getElementById('adminDashboard').style.display = 'block';
+                    loadCategories();
                     loadAdminDashboard();
                 }
             }
@@ -3239,7 +3222,7 @@
         // ================================================================
         async function init() {
             await getProducts();
-            await getCategories();
+            await loadCategories();
             renderGallery();
             await renderProducts();
             updateCartCount();
