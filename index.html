@@ -2400,6 +2400,7 @@
     const id = document.getElementById('editProductId').value;
     const name = document.getElementById('prodName').value.trim();
     const categoryId = document.getElementById('prodCategory').value;
+    const categoryName = document.getElementById('prodCategory').selectedOptions[0]?.text || '';
     const price = parseFloat(document.getElementById('prodPrice').value);
     const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
     const description = document.getElementById('prodDesc').value.trim();
@@ -2427,7 +2428,7 @@
         return;
     }
 
-    console.log('Saving product:', { name, categoryId, price, oldPrice, imageUrl, description });
+    console.log('Saving product:', { name, categoryName, categoryId, price, oldPrice, imageUrl, description });
 
     try {
         let products = await getProducts();
@@ -2438,7 +2439,8 @@
                 products[index] = {
                     ...products[index],
                     name,
-                    category_id: parseInt(categoryId),  // ← یہاں category_id ہے
+                    category: categoryName,
+                    category_id: parseInt(categoryId),
                     price,
                     old_price: oldPrice,
                     image: imageUrl,
@@ -2451,7 +2453,8 @@
             const newProduct = {
                 id: newId,
                 name,
-                category_id: parseInt(categoryId),  // ← یہاں category_id ہے
+                category: categoryName,
+                category_id: parseInt(categoryId),
                 price,
                 old_price: oldPrice,
                 image: imageUrl,
