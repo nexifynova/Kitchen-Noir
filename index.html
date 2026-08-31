@@ -10,17 +10,39 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
+        /* ===== RESET ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --primary: #0d0d0d; --gold: #d4af37; --gold-dark: #a8884e; --gold-light: #e8d5a8; --white: #fff; --light: #f5f5f5; --gray: #888; --dark: #333; --shadow: 0 4px 30px rgba(0,0,0,.1); --shadow-hover: 0 8px 40px rgba(0,0,0,.2); --radius: 12px; --transition: all .3s ease; --danger: #e74c3c; --success: #2ecc71; --warning: #f39c12; --info: #3498db; }
+        :root {
+            --primary: #0d0d0d;
+            --gold: #d4af37;
+            --gold-dark: #a8884e;
+            --gold-light: #e8d5a8;
+            --white: #fff;
+            --light: #f5f5f5;
+            --gray: #888;
+            --dark: #333;
+            --shadow: 0 4px 30px rgba(0,0,0,.1);
+            --shadow-hover: 0 8px 40px rgba(0,0,0,.2);
+            --radius: 12px;
+            --transition: all .3s ease;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --info: #3498db;
+        }
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--primary); overflow-x: hidden; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--primary); }
         ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
+        /* ===== ANIMATIONS ===== */
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes zoomIn { from { transform: scale(.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* ===== TOP BAR ===== */
         .top-bar { background: var(--primary); color: var(--white); padding: 8px 5%; display: flex; justify-content: space-between; align-items: center; font-size: 13px; border-bottom: 2px solid var(--gold); flex-wrap: wrap; gap: 8px; }
         .top-bar .left { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
         .top-bar .left span { display: flex; align-items: center; gap: 6px; color: var(--gold-light); }
@@ -28,48 +50,85 @@
         .top-bar .right { display: flex; align-items: center; gap: 16px; }
         .top-bar .right a { color: var(--white); text-decoration: none; font-size: 13px; transition: var(--transition); }
         .top-bar .right a:hover { color: var(--gold); }
+
+        /* ===== SALE BANNER ===== */
         .sale-banner { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: var(--primary); padding: 14px 5%; text-align: center; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; letter-spacing: .5px; }
         .sale-banner a { color: var(--primary); background: var(--white); padding: 6px 24px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 14px; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; }
         .sale-banner a:hover { transform: scale(1.05); }
-        header { background: var(--white); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 999; box-shadow: 0 2px 20px rgba(0,0,0,.06); border-bottom: 1px solid rgba(0,0,0,.04); flex-wrap: wrap; gap: 10px; }
+
+        /* ===== HEADER ===== */
+        header { background: var(--white); padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 999; box-shadow: 0 2px 20px rgba(0,0,0,.06); border-bottom: 1px solid rgba(0,0,0,.04); flex-wrap: wrap; gap: 10px; }
         .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; cursor: pointer; }
-        .logo .logo-icon { width: auto; height: 60px; display: flex; align-items: center; justify-content: center; background: transparent; border-radius: 8px; overflow: hidden; }
+        .logo .logo-icon { height: 50px; display: flex; align-items: center; justify-content: center; }
         .logo .logo-icon img { height: 100%; width: auto; object-fit: contain; }
-        .logo-text .brand { font-size: 24px; font-weight: 800; font-family: 'Playfair Display', serif; color: var(--primary); line-height: 1.2; }
+        .logo-text .brand { font-size: 22px; font-weight: 800; font-family: 'Playfair Display', serif; color: var(--primary); line-height: 1.2; }
         .logo-text .brand span { color: var(--gold); }
         .logo-text .tagline { font-size: 10px; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; display: block; }
-        .nav-menu { display: flex; align-items: center; gap: 24px; list-style: none; flex-wrap: wrap; }
-        .nav-menu > li { position: relative; padding-bottom: 8px; }
-        .nav-menu > li::after { content: ''; position: absolute; top: 100%; left: 0; width: 100%; height: 20px; background: transparent; }
-        .nav-menu > li > a { text-decoration: none; color: var(--primary); font-weight: 600; font-size: 14px; padding: 8px 0; transition: var(--transition); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 6px; }
-        .nav-menu > li > a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--gold); transition: var(--transition); }
-        .nav-menu > li > a:hover::after, .nav-menu > li > a.active::after { width: 100%; }
-        .nav-menu > li > a:hover { color: var(--gold); }
-        .dropdown { display: none; position: absolute; top: 100%; left: 0; background: var(--white); min-width: 220px; border-radius: var(--radius); box-shadow: var(--shadow-hover); padding: 12px 0; border-top: 3px solid var(--gold); z-index: 1000; padding-top: 15px; margin-top: -8px; }
-        .nav-menu > li:hover .dropdown { display: block; animation: fadeDown .2s ease; }
-        .dropdown li a { display: block; padding: 10px 20px; color: var(--primary); text-decoration: none; font-size: 14px; transition: var(--transition); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; width: 100%; text-align: left; border-bottom: 1px solid #f5f5f5; }
-        .dropdown li:last-child a { border-bottom: none; }
-        .dropdown li a:hover { background: var(--gold-light); color: var(--primary); padding-left: 30px; }
+
+        /* ===== MEGA DROPDOWN NAVIGATION ===== */
+        .nav-menu { display: flex; align-items: center; gap: 0; list-style: none; flex-wrap: wrap; }
+        .nav-menu > li { position: relative; padding: 0; }
+        .nav-menu > li > a { text-decoration: none; color: var(--primary); font-weight: 600; font-size: 14px; padding: 14px 18px; transition: var(--transition); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 6px; border-bottom: 3px solid transparent; }
+        .nav-menu > li > a:hover, .nav-menu > li > a.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .nav-menu > li > a i.fa-chevron-down { font-size: 10px; transition: var(--transition); }
+
+        /* ===== MEGA DROPDOWN (FULL WIDTH) ===== */
+        .mega-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--white);
+            width: 100vw;
+            min-width: 800px;
+            max-width: 1200px;
+            border-radius: 0 0 var(--radius) var(--radius);
+            box-shadow: var(--shadow-hover);
+            border-top: 3px solid var(--gold);
+            z-index: 1000;
+            padding: 30px 40px;
+            margin-top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .nav-menu > li:hover .mega-dropdown { display: block; animation: fadeDown .25s ease; }
+
+        /* Mega dropdown columns */
+        .mega-dropdown .mega-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+        .mega-dropdown .mega-col h4 { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--gold); display: flex; align-items: center; gap: 8px; }
+        .mega-dropdown .mega-col h4 i { color: var(--gold); font-size: 16px; }
+        .mega-dropdown .mega-col ul { list-style: none; }
+        .mega-dropdown .mega-col ul li { margin-bottom: 6px; }
+        .mega-dropdown .mega-col ul li a { color: var(--dark); text-decoration: none; font-size: 13px; transition: var(--transition); display: flex; align-items: center; gap: 6px; padding: 4px 0; border-radius: 4px; cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; width: 100%; text-align: left; }
+        .mega-dropdown .mega-col ul li a:hover { color: var(--gold); padding-left: 8px; background: rgba(212,175,55,.06); }
+        .mega-dropdown .mega-col ul li a .sub-icon { color: var(--gold); font-size: 12px; }
+        .mega-dropdown .mega-col .view-all { display: inline-block; margin-top: 8px; color: var(--gold); font-weight: 600; font-size: 13px; text-decoration: none; transition: var(--transition); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; }
+        .mega-dropdown .mega-col .view-all:hover { color: var(--gold-dark); text-decoration: underline; }
+
+        /* ===== HEADER RIGHT ===== */
         .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .header-right .search-wrap { position: relative; display: flex; align-items: center; }
         .header-right .search-wrap input { padding: 8px 16px 8px 36px; border-radius: 50px; border: 1px solid #ddd; font-size: 13px; width: 180px; transition: var(--transition); font-family: 'Inter', sans-serif; background: var(--light); }
         .header-right .search-wrap input:focus { outline: none; border-color: var(--gold); width: 220px; box-shadow: 0 0 0 3px rgba(212,175,55,.15); }
         .header-right .search-wrap .search-icon { position: absolute; left: 12px; color: var(--gray); font-size: 14px; cursor: pointer; transition: var(--transition); }
         .header-right .search-wrap .search-icon:hover { color: var(--gold); }
-        .btn-appointment { background: var(--gold); color: var(--primary); padding: 10px 24px; border-radius: 50px; font-weight: 700; font-size: 13px; text-decoration: none; transition: var(--transition); border: none; cursor: pointer; font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+        .btn-appointment { background: var(--gold); color: var(--primary); padding: 8px 18px; border-radius: 50px; font-weight: 700; font-size: 12px; text-decoration: none; transition: var(--transition); border: none; cursor: pointer; font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
         .btn-appointment:hover { background: var(--gold-dark); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,175,55,.3); }
-        .cart-icon-wrap { position: relative; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; color: var(--primary); font-size: 22px; padding: 8px 12px; border-radius: 50px; transition: var(--transition); background: rgba(212,175,55,.08); }
+        .cart-icon-wrap { position: relative; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; color: var(--primary); font-size: 20px; padding: 6px 10px; border-radius: 50px; transition: var(--transition); background: rgba(212,175,55,.08); }
         .cart-icon-wrap:hover { background: rgba(212,175,55,.2); transform: scale(1.05); }
-        .cart-count { position: absolute; top: -2px; right: -2px; background: var(--gold); color: var(--primary); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; border: 2px solid var(--white); }
-        .user-icon-wrap { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; color: var(--primary); font-size: 20px; padding: 8px 10px; border-radius: 50px; transition: var(--transition); background: rgba(212,175,55,.08); position: relative; }
+        .cart-count { position: absolute; top: -2px; right: -2px; background: var(--gold); color: var(--primary); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; border: 2px solid var(--white); }
+        .user-icon-wrap { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; color: var(--primary); font-size: 18px; padding: 6px 10px; border-radius: 50px; transition: var(--transition); background: rgba(212,175,55,.08); position: relative; }
         .user-icon-wrap:hover { background: rgba(212,175,55,.2); transform: scale(1.05); }
-        .user-dropdown { display: none; position: absolute; top: 48px; right: 0; background: var(--white); min-width: 200px; border-radius: var(--radius); box-shadow: var(--shadow-hover); padding: 8px 0; border-top: 3px solid var(--gold); z-index: 100; }
+        .user-dropdown { display: none; position: absolute; top: 42px; right: 0; background: var(--white); min-width: 200px; border-radius: var(--radius); box-shadow: var(--shadow-hover); padding: 8px 0; border-top: 3px solid var(--gold); z-index: 100; }
         .user-icon-wrap:hover .user-dropdown, .user-dropdown:hover { display: block; animation: fadeDown .3s ease; }
         .user-dropdown a { display: block; padding: 10px 20px; color: var(--primary); text-decoration: none; font-size: 13px; transition: var(--transition); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; width: 100%; text-align: left; }
         .user-dropdown a:hover { background: var(--light); color: var(--gold); }
         .user-dropdown .divider { height: 1px; background: #eee; margin: 4px 12px; }
         .user-dropdown .user-name { padding: 8px 20px 4px; font-weight: 700; font-size: 14px; color: var(--primary); }
         .user-dropdown .user-email { padding: 0 20px 8px; font-size: 12px; color: var(--gray); }
+        .menu-toggle { display: none; background: none; border: none; font-size: 28px; color: var(--primary); cursor: pointer; padding: 4px 10px; }
+
+        /* ===== BUTTONS ===== */
         .btn-primary { background: var(--gold); color: var(--primary); padding: 14px 30px; border-radius: 50px; font-weight: 700; font-size: 14px; text-decoration: none; transition: var(--transition); border: none; cursor: pointer; font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 10px; }
         .btn-primary:hover { background: var(--gold-dark); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,175,55,.35); }
         .btn-primary.small { padding: 8px 18px; font-size: 12px; }
@@ -79,10 +138,13 @@
         .btn-danger:hover { background: #c0392b; transform: scale(1.02); }
         .btn-success { background: var(--success); color: white; padding: 8px 20px; border-radius: 50px; font-weight: 600; font-size: 12px; border: none; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
         .btn-success:hover { background: #27ae60; transform: scale(1.02); }
-        .menu-toggle { display: none; background: none; border: none; font-size: 28px; color: var(--primary); cursor: pointer; padding: 4px 10px; }
+
+        /* ===== PAGES ===== */
         .page { display: none; animation: fadeIn .5s ease; }
         .page.active { display: block; }
-        .hero { position: relative; min-height: 75vh; background: var(--primary); display: flex; align-items: center; overflow: hidden; }
+
+        /* ===== HERO ===== */
+        .hero { position: relative; min-height: 60vh; background: var(--primary); display: flex; align-items: center; overflow: hidden; }
         .hero-bg { position: absolute; inset: 0; background: url('https://i.ibb.co/0RnBKXRf/Wren-Kitchens-Ad-Website-Images-111.jpg') center/cover no-repeat; opacity: .5; }
         .hero-content { position: relative; z-index: 2; padding: 60px 8%; max-width: 700px; color: var(--white); }
         .hero-content .badge { display: inline-block; background: var(--gold); color: var(--primary); padding: 4px 18px; border-radius: 50px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
@@ -90,6 +152,8 @@
         .hero-content h1 span { color: var(--gold); }
         .hero-content p { font-size: 17px; color: rgba(255,255,255,.8); line-height: 1.7; margin-bottom: 24px; max-width: 500px; }
         .hero-content .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+
+        /* ===== CONTAINER ===== */
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .section-padding { padding: 60px 0; }
         .section-heading { text-align: center; margin-bottom: 36px; }
@@ -97,6 +161,8 @@
         .section-heading h2 { font-size: 34px; font-weight: 800; font-family: 'Playfair Display', serif; color: var(--primary); }
         .section-heading h2 span { color: var(--gold); }
         .section-heading p { color: var(--gray); max-width: 600px; margin: 10px auto 0; font-size: 15px; }
+
+        /* ===== FEATURES ===== */
         .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; padding: 20px 0; }
         .feature-card { background: var(--white); padding: 28px 22px; border-radius: var(--radius); text-align: center; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid rgba(0,0,0,.04); }
         .feature-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); border-color: var(--gold); }
@@ -104,7 +170,7 @@
         .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
         .feature-card p { color: var(--gray); font-size: 13px; line-height: 1.6; }
 
-        /* ===== CATEGORY TREE - COLLAPSIBLE ===== */
+        /* ===== CATEGORY TREE ===== */
         .category-tree-container { background: var(--white); border: 1px solid #eee; border-radius: var(--radius); padding: 8px 0; margin-bottom: 20px; box-shadow: var(--shadow); max-height: 500px; overflow-y: auto; }
         .category-tree-container .tree-item { display: flex; align-items: center; padding: 6px 12px; cursor: pointer; transition: var(--transition); border-left: 3px solid transparent; font-size: 14px; }
         .category-tree-container .tree-item:hover { background: var(--gold-light); }
@@ -118,11 +184,10 @@
         .category-tree-container .tree-item.level-1 { padding-left: 32px; }
         .category-tree-container .tree-item.level-2 { padding-left: 52px; }
         .category-tree-container .tree-item.level-3 { padding-left: 72px; }
-        .category-tree-container .tree-item.level-4 { padding-left: 92px; }
-        .category-tree-container .tree-item.level-5 { padding-left: 112px; }
         .category-tree-container .tree-item .sub-items { display: none; }
         .category-tree-container .tree-item .sub-items.open { display: block; }
 
+        /* ===== FILTER BAR ===== */
         .filter-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 24px; padding: 16px 20px; background: var(--light); border-radius: var(--radius); }
         .filter-bar .filters-left { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         .filter-bar select, .filter-bar input[type="number"] { padding: 8px 14px; border-radius: 50px; border: 1px solid #ddd; font-size: 13px; font-family: 'Inter', sans-serif; background: var(--white); transition: var(--transition); }
@@ -134,6 +199,7 @@
         .filter-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--gold); color: var(--primary); padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: 600; }
         .filter-tag .remove { cursor: pointer; font-weight: 900; }
 
+        /* ===== PRODUCTS GRID ===== */
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; padding: 10px 0; }
         .product-card { background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid rgba(0,0,0,.04); display: flex; flex-direction: column; position: relative; }
         .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); border-color: var(--gold); }
@@ -167,6 +233,7 @@
         .breadcrumb .separator { color: var(--gray); }
         .breadcrumb .current { color: var(--primary); font-weight: 600; }
 
+        /* ===== REVIEWS ===== */
         .reviews-section { margin-top: 12px; border-top: 1px solid #f0f0f0; padding-top: 12px; }
         .reviews-section .review-item { background: var(--light); padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; }
         .reviews-section .review-item .review-header { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; }
@@ -174,6 +241,8 @@
         .reviews-section .review-item .review-comment { font-size: 13px; color: var(--dark); margin-top: 2px; }
         .reviews-section .review-item .review-date { font-size: 11px; color: var(--gray); }
         .reviews-section .no-reviews { color: var(--gray); font-size: 13px; font-style: italic; }
+
+        /* ===== MODALS ===== */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .modal.active { display: flex; }
         .modal-content { background: var(--white); border-radius: 16px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,.3); animation: zoomIn .3s ease; }
@@ -196,6 +265,8 @@
         .cart-total { display: flex; justify-content: space-between; padding: 16px 0; border-top: 2px solid var(--light); font-size: 18px; font-weight: 700; }
         .cart-total span { color: var(--gray); }
         .cart-total strong { color: var(--primary); }
+
+        /* ===== CHECKOUT ===== */
         .checkout-form .form-group { margin-bottom: 14px; }
         .checkout-form .form-group label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 4px; color: var(--dark); }
         .checkout-form .form-group input, .checkout-form .form-group textarea, .checkout-form .form-group select { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif; transition: var(--transition); }
@@ -203,6 +274,8 @@
         .checkout-form .card-details { background: var(--light); padding: 16px; border-radius: 8px; margin-top: 8px; display: none; }
         .checkout-form .card-details.show { display: block; animation: fadeIn .3s ease; }
         .checkout-form .card-details .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        /* ===== GALLERY ===== */
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
         .gallery-grid .gallery-item { border-radius: var(--radius); overflow: hidden; position: relative; cursor: pointer; aspect-ratio: 1/1; box-shadow: var(--shadow); transition: var(--transition); }
         .gallery-grid .gallery-item:hover { transform: scale(1.02); box-shadow: var(--shadow-hover); }
@@ -213,6 +286,8 @@
         .lightbox.active { display: flex; }
         .lightbox img { max-width: 100%; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
         .lightbox .close-btn { position: absolute; top: 20px; right: 30px; font-size: 40px; color: var(--white); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; }
+
+        /* ===== ABOUT ===== */
         .about-content { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; padding: 20px 0; }
         .about-content .about-image img { width: 100%; border-radius: var(--radius); box-shadow: var(--shadow-hover); height: 400px; object-fit: cover; }
         .about-content .about-text h2 { font-size: 32px; font-family: 'Playfair Display', serif; font-weight: 800; margin-bottom: 12px; }
@@ -220,6 +295,8 @@
         .about-content .about-text .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
         .about-content .about-text .stats .stat { text-align: center; padding: 14px; background: var(--light); border-radius: var(--radius); }
         .about-content .about-text .stats .stat .num { font-size: 24px; font-weight: 800; color: var(--gold); }
+
+        /* ===== CONTACT ===== */
         .contact-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 10px 0; }
         .contact-form { background: var(--light); padding: 30px; border-radius: var(--radius); }
         .contact-form h3 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
@@ -229,10 +306,14 @@
         .contact-info { display: flex; flex-direction: column; gap: 20px; }
         .contact-info .info-card { background: var(--light); padding: 20px; border-radius: var(--radius); display: flex; align-items: center; gap: 14px; }
         .contact-info .info-card .icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(212,175,55,.12); display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--gold); flex-shrink: 0; }
+
+        /* ===== CAREER ===== */
         .career-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 10px 0; }
         .career-card { background: var(--light); padding: 22px; border-radius: var(--radius); border-left: 4px solid var(--gold); transition: var(--transition); }
         .career-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
         .career-card .location { color: var(--gold); font-weight: 600; font-size: 13px; margin: 4px 0 8px; }
+
+        /* ===== AUTH ===== */
         .auth-tabs { display: flex; gap: 0; margin-bottom: 20px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; }
         .auth-tabs button { flex: 1; padding: 10px; border: none; background: var(--light); font-weight: 600; font-size: 14px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
         .auth-tabs button.active { background: var(--gold); color: var(--primary); }
@@ -245,10 +326,14 @@
         .auth-form .form-group input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.15); }
         .auth-form .btn-primary { width: 100%; justify-content: center; }
         .auth-error { color: var(--danger); font-size: 13px; margin-top: 8px; display: none; }
+
+        /* ===== WISHLIST ===== */
         .wishlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px; padding: 10px 0; }
         .wishlist-empty { text-align: center; padding: 60px 20px; color: var(--gray); }
         .wishlist-empty i { font-size: 48px; color: var(--gold-light); margin-bottom: 16px; display: block; }
         .wishlist-empty h3 { font-size: 22px; color: var(--primary); margin-bottom: 8px; }
+
+        /* ===== PROFILE ===== */
         .profile-section { background: var(--light); border-radius: var(--radius); padding: 30px; margin-bottom: 30px; }
         .profile-section .profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
         .profile-section .profile-header .avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--primary); font-weight: 700; font-family: 'Playfair Display', serif; }
@@ -263,6 +348,8 @@
         .profile-section .order-history .order-item .order-status.pending { background: #ffecb3; color: #ff8f00; }
         .profile-section .order-history .order-item .order-status.completed { background: #c8e6c9; color: #2e7d32; }
         .profile-section .order-history .order-item .order-status.cancelled { background: #ffcdd2; color: #c62828; }
+
+        /* ===== ADMIN ===== */
         .admin-login { max-width: 400px; margin: 60px auto; padding: 30px; background: var(--light); border-radius: 16px; text-align: center; }
         .admin-login h2 { font-size: 24px; margin-bottom: 20px; }
         .admin-dashboard { padding: 20px 0; }
@@ -307,13 +394,35 @@
         .admin-product-form .form-group { margin-bottom: 12px; }
         .admin-product-form .form-group label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 4px; }
         .admin-product-form .form-group input, .admin-product-form .form-group select, .admin-product-form .form-group textarea { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
-        .admin-product-form .form-group input:focus, .admin-product-form .form-group select:focus, .admin-product-form .form-group textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.15); }
         .admin-product-form .form-actions { display: flex; gap: 10px; margin-top: 8px; }
-        .admin-logout { background: var(--danger); color: white; border: none; padding: 8px 20px; border-radius: 50px; cursor: pointer; font-weight: 600; font-size: 13px; margin-top: 16px; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+        .admin-header h2 { font-size: 28px; font-family: 'Playfair Display', serif; }
+        .admin-header .admin-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .btn-change-password { background: var(--info); color: white; padding: 8px 18px; border: none; border-radius: 50px; font-weight: 600; font-size: 13px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-change-password:hover { background: #2980b9; transform: translateY(-2px); }
+        .date-filter-bar { background: var(--light); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .date-filter-bar label { font-weight: 600; font-size: 14px; }
+        .date-filter-bar input[type="date"] { padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
+        .date-filter-bar .btn-outline { padding: 8px 15px; font-size: 12px; }
+        .admin-global-search { background: var(--white); padding: 15px 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .admin-global-search input { flex: 1; min-width: 200px; padding: 10px 16px; border: 2px solid #ddd; border-radius: 50px; font-size: 14px; font-family: 'Inter', sans-serif; transition: var(--transition); }
+        .admin-global-search input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.15); }
+        .admin-global-search .search-btn { background: var(--gold); color: var(--primary); border: none; padding: 10px 24px; border-radius: 50px; font-weight: 600; font-size: 14px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 8px; }
+        .admin-global-search .search-btn:hover { background: var(--gold-dark); transform: scale(1.02); }
         .track-result { background: var(--light); padding: 16px; border-radius: 8px; margin-top: 12px; display: none; }
         .track-result.show { display: block; animation: fadeIn .3s ease; }
         .track-result .track-status { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
         .track-result .track-details { color: var(--gray); font-size: 14px; }
+        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
+        .file-input-wrapper input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+        .file-input-wrapper .file-label { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--light); border: 2px dashed #ddd; border-radius: 8px; font-weight: 600; font-size: 13px; color: var(--gray); cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+        .file-input-wrapper .file-label:hover { border-color: var(--gold); color: var(--primary); }
+        .file-input-wrapper .file-label i { font-size: 18px; color: var(--gold); }
+        .image-preview { margin-top: 10px; max-width: 150px; max-height: 150px; border-radius: 8px; overflow: hidden; border: 2px solid #ddd; display: none; }
+        .image-preview img { width: 100%; height: auto; display: block; }
+        .image-preview.show { display: block; }
+
+        /* ===== FOOTER ===== */
         footer { background: var(--primary); color: var(--white); padding: 50px 5% 25px; margin-top: 60px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 30px; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,.06); }
         .footer-grid .brand h3 { font-size: 24px; font-family: 'Playfair Display', serif; font-weight: 800; margin-bottom: 6px; }
@@ -329,48 +438,65 @@
         .footer-grid .col ul li a:hover { color: var(--gold); padding-left: 4px; }
         .footer-bottom { padding-top: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 13px; color: rgba(255,255,255,.4); }
         .footer-bottom a { color: var(--gold); text-decoration: none; }
+
+        /* ===== TOAST ===== */
         .toast { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 14px 24px; border-radius: 50px; font-size: 14px; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,.3); z-index: 10000; display: flex; align-items: center; gap: 8px; animation: slideUp .3s ease; transition: opacity .3s; }
-        @media (max-width:992px) { .about-content, .contact-wrapper { grid-template-columns: 1fr; } .footer-grid { grid-template-columns: 1fr 1fr; } .hero-content h1 { font-size: 40px; } .header-right .search-wrap input { width: 120px; } .header-right .search-wrap input:focus { width: 150px; } .admin-product-form .form-row { grid-template-columns: 1fr; } .checkout-form .card-details .row { grid-template-columns: 1fr; } }
-        @media (max-width:768px) { .menu-toggle { display: block; } .nav-menu { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--white); padding: 20px; box-shadow: var(--shadow-hover); gap: 14px; border-top: 3px solid var(--gold); z-index: 100; } .nav-menu.open { display: flex; } .nav-menu>li { width: 100%; padding-bottom: 0; } .nav-menu>li::after { display: none; } .dropdown { position: static; display: none; box-shadow: none; padding: 4px 0 4px 16px; border-top: none; margin-top: 0; } .nav-menu>li:hover .dropdown { display: none; } .nav-menu>li .dropdown.open { display: block; } .footer-grid { grid-template-columns: 1fr; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); } .filter-bar { flex-direction: column; align-items: stretch; } .filter-bar .filters-left { flex-direction: column; align-items: stretch; } .filter-bar .price-range { flex-wrap: wrap; } .header-right .search-wrap input { width: 100px; } .header-right .search-wrap input:focus { width: 130px; } .hero-content h1 { font-size: 32px; } .top-bar .left span { font-size: 11px; } .profile-section .order-history .order-item { flex-direction: column; align-items: flex-start; } .admin-tabs { flex-wrap: wrap; } .admin-tabs button { padding: 6px 12px; font-size: 12px; } .modal-content.xlarge { padding: 16px; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } .product-card .info .action-row { flex-direction: column; } .product-card .info .action-row .btn-add-cart { min-width: unset; } }
-        @media (max-width:480px) { .header-right .search-wrap input { width: 80px; font-size: 11px; padding: 6px 10px 6px 28px; } .header-right .search-wrap input:focus { width: 100px; } .btn-appointment { padding: 6px 14px; font-size: 11px; } .cart-icon-wrap { padding: 6px 8px; font-size: 18px; } .user-icon-wrap { padding: 6px 8px; font-size: 16px; } .hero-content { padding: 40px 5%; } .hero-content h1 { font-size: 28px; } .modal-content { padding: 16px; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); } }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
-        .admin-header h2 { font-size: 28px; font-family: 'Playfair Display', serif; }
-        .admin-header .admin-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .btn-change-password { background: var(--info); color: white; padding: 8px 18px; border: none; border-radius: 50px; font-weight: 600; font-size: 13px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 8px; }
-        .btn-change-password:hover { background: #2980b9; transform: translateY(-2px); }
-        .date-filter-bar { background: var(--light); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-        .date-filter-bar label { font-weight: 600; font-size: 14px; }
-        .date-filter-bar input[type="date"] { padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
-        .date-filter-bar .btn-outline { padding: 8px 15px; font-size: 12px; }
-        .admin-global-search { background: var(--white); padding: 15px 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-        .admin-global-search input { flex: 1; min-width: 200px; padding: 10px 16px; border: 2px solid #ddd; border-radius: 50px; font-size: 14px; font-family: 'Inter', sans-serif; transition: var(--transition); }
-        .admin-global-search input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.15); }
-        .admin-global-search .search-btn { background: var(--gold); color: var(--primary); border: none; padding: 10px 24px; border-radius: 50px; font-weight: 600; font-size: 14px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 8px; }
-        .admin-global-search .search-btn:hover { background: var(--gold-dark); transform: scale(1.02); }
-        .auth-tabs button { cursor: pointer; padding: 12px 20px; }
-        .auth-tabs button:hover { background: var(--gold-light); }
-        .auth-form { padding: 10px 0; }
-        .auth-form .form-group input { padding: 12px 14px; }
-        .user-icon-wrap { position: relative; }
-        .user-dropdown { display: none; position: absolute; top: 100%; right: 0; background: var(--white); min-width: 220px; border-radius: var(--radius); box-shadow: var(--shadow-hover); padding: 8px 0; border-top: 3px solid var(--gold); z-index: 100; margin-top: 5px; }
-        .user-icon-wrap:hover .user-dropdown, .user-dropdown:hover { display: block; animation: fadeDown .3s ease; }
-        .user-dropdown a { display: block; padding: 10px 20px; color: var(--primary); text-decoration: none; font-size: 13px; transition: var(--transition); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; width: 100%; text-align: left; }
-        .user-dropdown a:hover { background: var(--light); color: var(--gold); }
-        .user-dropdown .divider { height: 1px; background: #eee; margin: 4px 12px; }
-        .user-dropdown .user-name { padding: 8px 20px 4px; font-weight: 700; font-size: 14px; color: var(--primary); }
-        .user-dropdown .user-email { padding: 0 20px 8px; font-size: 12px; color: var(--gray); }
-        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
-        .file-input-wrapper input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-        .file-input-wrapper .file-label { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--light); border: 2px dashed #ddd; border-radius: 8px; font-weight: 600; font-size: 13px; color: var(--gray); cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
-        .file-input-wrapper .file-label:hover { border-color: var(--gold); color: var(--primary); }
-        .file-input-wrapper .file-label i { font-size: 18px; color: var(--gold); }
-        .image-preview { margin-top: 10px; max-width: 150px; max-height: 150px; border-radius: 8px; overflow: hidden; border: 2px solid #ddd; display: none; }
-        .image-preview img { width: 100%; height: auto; display: block; }
-        .image-preview.show { display: block; }
+
+        /* ================================================================ */
+        /* ===== RESPONSIVE ===== */
+        @media (max-width:992px) {
+            .about-content, .contact-wrapper { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .hero-content h1 { font-size: 40px; }
+            .header-right .search-wrap input { width: 120px; }
+            .header-right .search-wrap input:focus { width: 150px; }
+            .admin-product-form .form-row { grid-template-columns: 1fr; }
+            .checkout-form .card-details .row { grid-template-columns: 1fr; }
+            .mega-dropdown { min-width: 100%; padding: 20px; }
+            .mega-dropdown .mega-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        }
+        @media (max-width:768px) {
+            .menu-toggle { display: block; }
+            .nav-menu { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--white); padding: 20px; box-shadow: var(--shadow-hover); gap: 14px; border-top: 3px solid var(--gold); z-index: 100; }
+            .nav-menu.open { display: flex; }
+            .nav-menu>li { width: 100%; padding-bottom: 0; }
+            .nav-menu>li>a { padding: 10px 0; border-bottom: none; }
+            .nav-menu>li>a::after { display: none; }
+            .mega-dropdown { position: static; transform: none; min-width: 100%; border-radius: 8px; padding: 16px; margin-top: 8px; box-shadow: var(--shadow); }
+            .mega-dropdown .mega-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+            .filter-bar { flex-direction: column; align-items: stretch; }
+            .filter-bar .filters-left { flex-direction: column; align-items: stretch; }
+            .filter-bar .price-range { flex-wrap: wrap; }
+            .header-right .search-wrap input { width: 100px; }
+            .header-right .search-wrap input:focus { width: 130px; }
+            .hero-content h1 { font-size: 32px; }
+            .top-bar .left span { font-size: 11px; }
+            .profile-section .order-history .order-item { flex-direction: column; align-items: flex-start; }
+            .admin-tabs { flex-wrap: wrap; }
+            .admin-tabs button { padding: 6px 12px; font-size: 12px; }
+            .modal-content.xlarge { padding: 16px; }
+            .product-card .info .action-row { flex-direction: column; }
+            .product-card .info .action-row .btn-add-cart { min-width: unset; }
+            .mega-dropdown .mega-grid { grid-template-columns: 1fr; gap: 12px; }
+            .mega-dropdown .mega-col h4 { font-size: 14px; }
+        }
+        @media (max-width:480px) {
+            .header-right .search-wrap input { width: 80px; font-size: 11px; padding: 6px 10px 6px 28px; }
+            .header-right .search-wrap input:focus { width: 100px; }
+            .btn-appointment { padding: 6px 14px; font-size: 11px; }
+            .cart-icon-wrap { padding: 6px 8px; font-size: 18px; }
+            .user-icon-wrap { padding: 6px 8px; font-size: 16px; }
+            .hero-content { padding: 40px 5%; }
+            .hero-content h1 { font-size: 28px; }
+            .modal-content { padding: 16px; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+        }
     </style>
 </head>
 <body>
-    <!-- TOP BAR -->
+    <!-- ===== TOP BAR ===== -->
     <div class="top-bar">
         <div class="left">
             <span><i class="fas fa-phone"></i> +44 20 1234 5678</span>
@@ -385,13 +511,13 @@
         </div>
     </div>
 
-    <!-- SALE BANNER -->
+    <!-- ===== SALE BANNER ===== -->
     <div class="sale-banner">
         <span><i class="fas fa-fire"></i> Summer Sale - Selected Offers End Soon</span>
         <a href="#" onclick="navigate('products')">SHOP NOW →</a>
     </div>
 
-    <!-- HEADER -->
+    <!-- ===== HEADER ===== -->
     <header>
         <a class="logo" onclick="navigate('home')">
             <div class="logo-icon">
@@ -405,16 +531,69 @@
         <button class="menu-toggle" id="menuToggle" onclick="toggleMobileMenu()">
             <i class="fas fa-bars"></i>
         </button>
+
+        <!-- ===== NAVIGATION WITH MEGA DROPDOWN ===== -->
         <ul class="nav-menu" id="navMenu">
             <li><a class="active" onclick="navigate('home')">Home</a></li>
             <li><a onclick="navigate('about')">About</a></li>
             <li>
                 <a onclick="navigate('products')">Products <i class="fas fa-chevron-down"></i></a>
-                <ul class="dropdown">
-                    <li><a onclick="navigateToCategory('Kitchen')"><i class="fas fa-utensils"></i> Kitchens</a></li>
-                    <li><a onclick="navigateToCategory('Bedrooms')"><i class="fas fa-bed"></i> Bedrooms</a></li>
-                    <li><a onclick="navigateToCategory('Home Office')"><i class="fas fa-laptop"></i> Home Offices</a></li>
-                </ul>
+                <!-- ===== MEGA DROPDOWN ===== -->
+                <div class="mega-dropdown">
+                    <div class="mega-grid">
+                        <!-- Column 1: Kitchens -->
+                        <div class="mega-col">
+                            <h4><i class="fas fa-utensils"></i> Kitchens</h4>
+                            <ul>
+                                <li><a onclick="navigateToCategory('Kitchen')"><span class="sub-icon">›</span> All Kitchens</a></li>
+                                <li><a onclick="navigateToCategory('Kitchen Cabinets')"><span class="sub-icon">›</span> Cabinets & Units</a></li>
+                                <li><a onclick="navigateToCategory('Kitchen Worktops')"><span class="sub-icon">›</span> Worktops</a></li>
+                                <li><a onclick="navigateToCategory('Kitchen Appliances')"><span class="sub-icon">›</span> Appliances</a></li>
+                                <li><a onclick="navigateToCategory('Kitchen Storage')"><span class="sub-icon">›</span> Storage Solutions</a></li>
+                                <li><a onclick="navigateToCategory('Kitchen Accessories')"><span class="sub-icon">›</span> Accessories</a></li>
+                            </ul>
+                            <button class="view-all" onclick="navigateToCategory('Kitchen')">View All Kitchens →</button>
+                        </div>
+                        <!-- Column 2: Bedrooms -->
+                        <div class="mega-col">
+                            <h4><i class="fas fa-bed"></i> Bedrooms</h4>
+                            <ul>
+                                <li><a onclick="navigateToCategory('Bedrooms')"><span class="sub-icon">›</span> All Bedrooms</a></li>
+                                <li><a onclick="navigateToCategory('Beds')"><span class="sub-icon">›</span> Beds & Headboards</a></li>
+                                <li><a onclick="navigateToCategory('Wardrobes')"><span class="sub-icon">›</span> Wardrobes</a></li>
+                                <li><a onclick="navigateToCategory('Bedside Tables')"><span class="sub-icon">›</span> Bedside Tables</a></li>
+                                <li><a onclick="navigateToCategory('Dressing Tables')"><span class="sub-icon">›</span> Dressing Tables</a></li>
+                                <li><a onclick="navigateToCategory('Bedroom Accessories')"><span class="sub-icon">›</span> Accessories</a></li>
+                            </ul>
+                            <button class="view-all" onclick="navigateToCategory('Bedrooms')">View All Bedrooms →</button>
+                        </div>
+                        <!-- Column 3: Home Office -->
+                        <div class="mega-col">
+                            <h4><i class="fas fa-laptop"></i> Home Office</h4>
+                            <ul>
+                                <li><a onclick="navigateToCategory('Home Office')"><span class="sub-icon">›</span> All Home Office</a></li>
+                                <li><a onclick="navigateToCategory('Desks')"><span class="sub-icon">›</span> Desks</a></li>
+                                <li><a onclick="navigateToCategory('Office Chairs')"><span class="sub-icon">›</span> Office Chairs</a></li>
+                                <li><a onclick="navigateToCategory('Storage & Shelving')"><span class="sub-icon">›</span> Storage & Shelving</a></li>
+                                <li><a onclick="navigateToCategory('Office Accessories')"><span class="sub-icon">›</span> Accessories</a></li>
+                            </ul>
+                            <button class="view-all" onclick="navigateToCategory('Home Office')">View All Home Office →</button>
+                        </div>
+                        <!-- Column 4: Quick Links / Brands -->
+                        <div class="mega-col">
+                            <h4><i class="fas fa-tags"></i> Popular</h4>
+                            <ul>
+                                <li><a onclick="navigateToCategory('Kitchen')"><span class="sub-icon">›</span> Luxury Kitchens</a></li>
+                                <li><a onclick="navigateToCategory('Bedrooms')"><span class="sub-icon">›</span> Modern Bedrooms</a></li>
+                                <li><a onclick="navigateToCategory('Home Office')"><span class="sub-icon">›</span> Ergonomic Offices</a></li>
+                                <li><a onclick="navigateToCategory('Kitchen')"><span class="sub-icon">›</span> Smart Storage</a></li>
+                                <li><a onclick="navigateToCategory('Bedrooms')"><span class="sub-icon">›</span> Luxury Beds</a></li>
+                                <li><a onclick="navigate('gallery')"><span class="sub-icon">›</span> View Gallery</a></li>
+                            </ul>
+                            <button class="view-all" onclick="navigate('products')">All Products →</button>
+                        </div>
+                    </div>
+                </div>
             </li>
             <li><a onclick="navigate('gallery')">Gallery</a></li>
             <li><a onclick="navigate('career')">Career</a></li>
@@ -423,6 +602,7 @@
             <li><a onclick="openTrackModal()"><i class="fas fa-truck"></i> Track Order</a></li>
             <li><a onclick="navigate('admin')"><i class="fas fa-user-shield"></i> Admin</a></li>
         </ul>
+
         <div class="header-right">
             <div class="search-wrap">
                 <i class="fas fa-search search-icon" onclick="doSearch()"></i>
@@ -452,9 +632,9 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT -->
+    <!-- ===== MAIN CONTENT ===== -->
     <main>
-        <!-- HOME PAGE -->
+        <!-- ===== HOME PAGE ===== -->
         <section class="page active" id="page-home">
             <div class="hero">
                 <div class="hero-bg"></div>
@@ -489,7 +669,7 @@
             </div>
         </section>
 
-        <!-- ABOUT PAGE -->
+        <!-- ===== ABOUT PAGE ===== -->
         <section class="page" id="page-about">
             <div class="container section-padding">
                 <div class="section-heading">
@@ -511,23 +691,17 @@
             </div>
         </section>
 
-        <!-- PRODUCTS PAGE (WITH COLLAPSIBLE TREE) -->
+        <!-- ===== PRODUCTS PAGE ===== -->
         <section class="page" id="page-products">
             <div class="container section-padding">
                 <div class="section-heading">
                     <span class="sub">Our Collection</span>
                     <h2>All <span>Products</span></h2>
                 </div>
-
-                <!-- ===== COLLAPSIBLE CATEGORY TREE ===== -->
                 <div class="category-tree-container" id="categoryTreeContainer"></div>
-
-                <!-- ===== BREADCRUMB ===== -->
                 <div class="breadcrumb" id="breadcrumb">
                     <a onclick="filterByCategory(null)">🏠 All Products</a>
                 </div>
-
-                <!-- ===== FILTER BAR ===== -->
                 <div class="filter-bar" id="filterBar">
                     <div class="filters-left">
                         <select id="categoryFilter" onchange="filterProducts()">
@@ -550,7 +724,6 @@
                     </div>
                     <div id="filterTags" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
                 </div>
-
                 <div class="products-grid" id="allProducts"></div>
                 <div class="no-products" id="noProducts" style="display:none;">
                     <i class="fas fa-search"></i>
@@ -560,7 +733,7 @@
             </div>
         </section>
 
-        <!-- GALLERY PAGE -->
+        <!-- ===== GALLERY PAGE ===== -->
         <section class="page" id="page-gallery">
             <div class="container section-padding">
                 <div class="section-heading">
@@ -571,7 +744,7 @@
             </div>
         </section>
 
-        <!-- WISHLIST PAGE -->
+        <!-- ===== WISHLIST PAGE ===== -->
         <section class="page" id="page-wishlist">
             <div class="container section-padding">
                 <div class="section-heading">
@@ -590,7 +763,7 @@
             </div>
         </section>
 
-        <!-- PROFILE PAGE -->
+        <!-- ===== PROFILE PAGE ===== -->
         <section class="page" id="page-profile">
             <div class="container section-padding">
                 <div class="section-heading">
@@ -621,7 +794,7 @@
             </div>
         </section>
 
-        <!-- CAREER PAGE -->
+        <!-- ===== CAREER PAGE ===== -->
         <section class="page" id="page-career">
             <div class="container section-padding">
                 <div class="section-heading">
@@ -636,7 +809,7 @@
             </div>
         </section>
 
-        <!-- CONTACT PAGE -->
+        <!-- ===== CONTACT PAGE ===== -->
         <section class="page" id="page-contact">
             <div class="container section-padding">
                 <div class="section-heading">
@@ -663,7 +836,7 @@
             </div>
         </section>
 
-        <!-- ADMIN PAGE -->
+        <!-- ===== ADMIN PAGE ===== -->
         <section class="page" id="page-admin">
             <div class="container section-padding">
                 <div id="adminLogin" class="admin-login">
@@ -687,7 +860,7 @@
 
                     <div class="admin-global-search">
                         <i class="fas fa-search" style="color:var(--gray);font-size:18px;"></i>
-                        <input type="text" id="adminGlobalSearch" placeholder="Search across all tables... (Orders, Customers, Products, Messages, Inquiries)" />
+                        <input type="text" id="adminGlobalSearch" placeholder="Search across all tables..." />
                         <button class="search-btn" onclick="adminGlobalSearch()"><i class="fas fa-search"></i> Search</button>
                         <button class="btn-outline small" onclick="clearAdminSearch()" style="padding:8px 16px;">Clear</button>
                     </div>
@@ -697,14 +870,13 @@
                         <button data-tab="tab-products" onclick="switchAdminTab('tab-products')"><i class="fas fa-box"></i> Products</button>
                         <button data-tab="tab-orders" onclick="switchAdminTab('tab-orders')"><i class="fas fa-shopping-cart"></i> Orders</button>
                         <button data-tab="tab-customers" onclick="switchAdminTab('tab-customers')"><i class="fas fa-users"></i> Customers</button>
-                        <button data-tab="tab-inquiries" onclick="switchAdminTab('tab-inquiries')"><i class="fas fa-question-circle"></i> Product Inquiries</button>
-                        <button data-tab="tab-messages" onclick="switchAdminTab('tab-messages')"><i class="fas fa-envelope"></i> Customer Messages</button>
+                        <button data-tab="tab-inquiries" onclick="switchAdminTab('tab-inquiries')"><i class="fas fa-question-circle"></i> Inquiries</button>
+                        <button data-tab="tab-messages" onclick="switchAdminTab('tab-messages')"><i class="fas fa-envelope"></i> Messages</button>
                     </div>
 
-                    <!-- TAB 1: DASHBOARD -->
                     <div class="admin-tab-content active" id="tab-dashboard">
                         <div class="date-filter-bar">
-                            <label>Select Date: <input type="date" id="dashFromDate"></label>
+                            <label>From: <input type="date" id="dashFromDate"></label>
                             <label>To: <input type="date" id="dashToDate"></label>
                             <button class="btn-primary small" onclick="filterDashboardByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetDashboardDate()">Full History</button>
@@ -720,7 +892,6 @@
                         </div>
                     </div>
 
-                    <!-- TAB 2: PRODUCTS -->
                     <div class="admin-tab-content" id="tab-products">
                         <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
                             <h3 style="font-size:20px;">Manage Products</h3>
@@ -769,11 +940,10 @@
                         </div>
                     </div>
 
-                    <!-- TAB 3: ORDERS -->
                     <div class="admin-tab-content" id="tab-orders">
                         <h3 style="font-size:20px;margin-bottom:16px;">All Orders</h3>
                         <div class="date-filter-bar">
-                            <label>Select Date: <input type="date" id="ordersFromDate"></label>
+                            <label>From: <input type="date" id="ordersFromDate"></label>
                             <label>To: <input type="date" id="ordersToDate"></label>
                             <button class="btn-primary small" onclick="filterOrdersByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetOrdersDate()">Show All</button>
@@ -792,11 +962,10 @@
                         <p id="noOrders" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No orders yet.</p>
                     </div>
 
-                    <!-- TAB 4: CUSTOMERS -->
                     <div class="admin-tab-content" id="tab-customers">
                         <h3 style="font-size:20px;margin-bottom:16px;">Registered Customers</h3>
                         <div class="date-filter-bar">
-                            <label>Select Date: <input type="date" id="custFromDate"></label>
+                            <label>From: <input type="date" id="custFromDate"></label>
                             <label>To: <input type="date" id="custToDate"></label>
                             <button class="btn-primary small" onclick="filterCustomersByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetCustomersDate()">Show All</button>
@@ -814,12 +983,11 @@
                         </div>
                     </div>
 
-                    <!-- TAB 5: INQUIRIES -->
                     <div class="admin-tab-content" id="tab-inquiries">
-                        <h3 style="font-size:20px;margin-bottom:16px;">Product Inquiries (Unmatched Search Queries)</h3>
+                        <h3 style="font-size:20px;margin-bottom:16px;">Product Inquiries (Search Queries)</h3>
                         <p style="color:var(--gray);font-size:13px;margin-bottom:12px;">⚠️ Only search queries that did NOT match any product appear here.</p>
                         <div class="date-filter-bar">
-                            <label>Select Date: <input type="date" id="inqFromDate"></label>
+                            <label>From: <input type="date" id="inqFromDate"></label>
                             <label>To: <input type="date" id="inqToDate"></label>
                             <button class="btn-primary small" onclick="filterInquiriesByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetInquiriesDate()">Show All</button>
@@ -838,12 +1006,11 @@
                         <p id="noInquiries" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No inquiries yet.</p>
                     </div>
 
-                    <!-- TAB 6: MESSAGES -->
                     <div class="admin-tab-content" id="tab-messages">
-                        <h3 style="font-size:20px;margin-bottom:16px;">Customer Messages (Contact Form)</h3>
+                        <h3 style="font-size:20px;margin-bottom:16px;">Customer Messages</h3>
                         <p style="color:var(--gray);font-size:13px;margin-bottom:12px;">💬 Messages sent through the Contact Us form appear here.</p>
                         <div class="date-filter-bar">
-                            <label>Select Date: <input type="date" id="msgFromDate"></label>
+                            <label>From: <input type="date" id="msgFromDate"></label>
                             <label>To: <input type="date" id="msgToDate"></label>
                             <button class="btn-primary small" onclick="filterMessagesByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetMessagesDate()">Show All</button>
@@ -866,7 +1033,7 @@
         </section>
     </main>
 
-    <!-- AUTH MODAL -->
+    <!-- ===== MODALS ===== -->
     <div class="modal" id="authModal" onclick="if(event.target===this)closeAuthModal()">
         <div class="modal-content">
             <div class="modal-header">
@@ -897,7 +1064,6 @@
         </div>
     </div>
 
-    <!-- CART MODAL -->
     <div class="modal" id="cartModal" onclick="if(event.target===this)closeCart()">
         <div class="modal-content">
             <div class="modal-header">
@@ -910,7 +1076,6 @@
         </div>
     </div>
 
-    <!-- CHECKOUT MODAL -->
     <div class="modal" id="checkoutModal" onclick="if(event.target===this)closeCheckout()">
         <div class="modal-content large">
             <div class="modal-header">
@@ -946,7 +1111,6 @@
         </div>
     </div>
 
-    <!-- REVIEW MODAL -->
     <div class="modal" id="reviewModal" onclick="if(event.target===this)closeReviewModal()">
         <div class="modal-content">
             <div class="modal-header">
@@ -973,7 +1137,6 @@
         </div>
     </div>
 
-    <!-- TRACK ORDER MODAL -->
     <div class="modal" id="trackModal" onclick="if(event.target===this)closeTrackModal()">
         <div class="modal-content">
             <div class="modal-header">
@@ -992,13 +1155,12 @@
         </div>
     </div>
 
-    <!-- LIGHTBOX -->
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
         <button class="close-btn" onclick="closeLightbox()">&times;</button>
         <img id="lightboxImage" src="" alt="Zoom" />
     </div>
 
-    <!-- FOOTER -->
+    <!-- ===== FOOTER ===== -->
     <footer>
         <div class="container">
             <div class="footer-grid">
@@ -1037,7 +1199,9 @@
         </div>
     </footer>
 
+    <!-- ================================================================ -->
     <!-- ===== JAVASCRIPT ===== -->
+    <!-- ================================================================ -->
     <script>
         // ================================================================
         // 0. SUPABASE CONFIGURATION
@@ -1357,7 +1521,6 @@
             const rootCategories = cachedCategories.filter(c => c.parent_id === null);
 
             if (rootCategories.length === 0) {
-                // If no root categories, show all as flat list
                 cachedCategories.forEach(cat => {
                     const item = createTreeItem(cat, 0);
                     container.appendChild(item);
@@ -1381,7 +1544,6 @@
             div.dataset.id = category.id;
             div.dataset.level = level;
 
-            // Toggle icon
             const toggleSpan = document.createElement('span');
             toggleSpan.className = 'toggle-icon';
             if (hasChildren) {
@@ -1393,7 +1555,6 @@
             }
             div.appendChild(toggleSpan);
 
-            // Icon
             const iconSpan = document.createElement('span');
             iconSpan.className = 'icon';
             const icons = {
@@ -1417,23 +1578,19 @@
             iconSpan.textContent = icons[category.name] || '📂';
             div.appendChild(iconSpan);
 
-            // Name
             const nameSpan = document.createElement('span');
             nameSpan.className = 'name';
             nameSpan.textContent = category.name;
             div.appendChild(nameSpan);
 
-            // Click handler
             div.addEventListener('click', function(e) {
                 e.stopPropagation();
 
-                // If leaf node, filter products
                 if (isLeaf) {
                     filterByCategory(category.id);
                     return;
                 }
 
-                // Toggle children
                 const subItems = div.querySelector('.sub-items');
                 if (subItems) {
                     const isOpen = subItems.classList.contains('open');
@@ -1449,7 +1606,6 @@
                     return;
                 }
 
-                // Build children
                 if (hasChildren) {
                     const subContainer = document.createElement('div');
                     subContainer.className = 'sub-items open';
@@ -1465,7 +1621,6 @@
                 }
             });
 
-            // If category is expanded by default (for root), show children
             if (level === 0 && hasChildren) {
                 const subContainer = document.createElement('div');
                 subContainer.className = 'sub-items open';
@@ -1721,7 +1876,6 @@
         function filterByCategory(categoryId) {
             selectedCategoryId = categoryId;
 
-            // Update breadcrumb
             const breadcrumb = document.getElementById('breadcrumb');
             if (categoryId === null) {
                 breadcrumb.innerHTML = `<a onclick="filterByCategory(null)">🏠 All Products</a>`;
@@ -1733,7 +1887,6 @@
                 }
             }
 
-            // Update tree view active state
             document.querySelectorAll('.category-tree-container .tree-item').forEach(el => {
                 el.classList.remove('active');
                 if (parseInt(el.dataset.id) === categoryId) {
@@ -2369,7 +2522,7 @@
             }
 
             if (filteredInquiries.length > 0) {
-                resultHtml += `<h4 style="color:var(--gold);margin-top:10px;">🔍 Product Inquiries (${filteredInquiries.length})</h4><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Customer</th><th>Inquiry</th></tr></thead><tbody>`;
+                resultHtml += `<h4 style="color:var(--gold);margin-top:10px;">🔍 Inquiries (${filteredInquiries.length})</h4><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Customer</th><th>Inquiry</th></tr></thead><tbody>`;
                 filteredInquiries.slice(0, 10).forEach(i => {
                     resultHtml += `<tr><td>${i.customer_name || 'Guest'}</td><td>${(i.message || '').substring(0, 50)}${(i.message || '').length > 50 ? '...' : ''}</td></tr>`;
                 });
@@ -2911,24 +3064,18 @@
         // 17. DELETE FUNCTIONS
         // ================================================================
 
-        // ===== DELETE: PRODUCTS =====
         async function confirmDeleteProduct(productId) {
             const pass1 = prompt('Enter admin password to delete this product:');
             if (!pass1) return;
             const hash1 = await sha256(pass1);
             if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             const pass2 = prompt('Confirm password again to delete:');
             if (!pass2) return;
             const hash2 = await sha256(pass2);
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             if (confirm('⚠️ Warning: This product will be permanently deleted. Are you sure?')) {
                 const { error } = await supabaseClient.from('products').delete().eq('id', parseInt(productId));
-                if (error) {
-                    alert('Delete failed: ' + error.message);
-                    return;
-                }
+                if (error) { alert('Delete failed: ' + error.message); return; }
                 let products = await getProducts();
                 products = products.filter(p => String(p.id) !== String(productId));
                 setLocalData('sk_products', products);
@@ -2945,12 +3092,10 @@
             if (!pass1) return;
             const hash1 = await sha256(pass1);
             if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             const pass2 = prompt('Confirm password again to clear ALL products:');
             if (!pass2) return;
             const hash2 = await sha256(pass2);
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             if (confirm('⚠️ FINAL WARNING: ALL products will be permanently deleted. Press OK to continue.')) {
                 const { error } = await supabaseClient.from('products').delete().neq('id', 0);
                 if (error) console.error('Clear products error:', error);
@@ -2962,24 +3107,18 @@
             }
         }
 
-        // ===== DELETE: CUSTOMERS =====
         async function confirmDeleteCustomer(userId) {
             const pass1 = prompt('Enter admin password to delete this customer:');
             if (!pass1) return;
             const hash1 = await sha256(pass1);
             if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             const pass2 = prompt('Confirm password again to delete:');
             if (!pass2) return;
             const hash2 = await sha256(pass2);
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             if (confirm('⚠️ Warning: This customer will be permanently deleted. Are you sure?')) {
                 const { error } = await supabaseClient.from('users').delete().eq('id', userId);
-                if (error) {
-                    alert('Delete failed: ' + error.message);
-                    return;
-                }
+                if (error) { alert('Delete failed: ' + error.message); return; }
                 let users = await getUsers();
                 users = users.filter(u => String(u.id) !== String(userId));
                 setLocalData('sk_users_encrypted', users);
@@ -2993,12 +3132,10 @@
             if (!pass1) return;
             const hash1 = await sha256(pass1);
             if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             const pass2 = prompt('Confirm password again to clear ALL customers:');
             if (!pass2) return;
             const hash2 = await sha256(pass2);
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             if (confirm('⚠️ FINAL WARNING: ALL customers will be permanently deleted. Press OK to continue.')) {
                 const { error } = await supabaseClient.from('users').delete().neq('id', 0);
                 if (error) console.error('Clear customers error:', error);
@@ -3008,24 +3145,18 @@
             }
         }
 
-        // ===== DELETE: ORDERS =====
         async function confirmDeleteOrder(orderId) {
             const pass1 = prompt('Enter admin password to delete this order:');
             if (!pass1) return;
             const hash1 = await sha256(pass1);
             if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             const pass2 = prompt('Confirm password again to delete:');
             if (!pass2) return;
             const hash2 = await sha256(pass2);
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-            if (confirm('⚠️ Warning: This order will be permanently deleted. Data recovery is very difficult. Are you sure?')) {
+            if (confirm('⚠️ Warning: This order will be permanently deleted. Are you sure?')) {
                 const { error } = await supabaseClient.from('orders').delete().eq('id', orderId);
-                if (error) {
-                    alert('Delete failed: ' + error.message);
-                    return;
-                }
+                if (error) { alert('Delete failed: ' + error.message); return; }
                 const orders = await getOrders();
                 const filtered = orders.filter(o => String(o.id) !== String(orderId));
                 setLocalData('sk_orders_encrypted', filtered);
@@ -3039,13 +3170,11 @@
             if (!pass1) return;
             const hash1 = await sha256(pass1);
             if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             const pass2 = prompt('Confirm password again to clear ALL history:');
             if (!pass2) return;
             const hash2 = await sha256(pass2);
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-            if (confirm('⚠️ FINAL WARNING: ALL order history will be permanently deleted. Data recovery is extremely difficult. Press OK to continue.')) {
+            if (confirm('⚠️ FINAL WARNING: ALL order history will be permanently deleted. Press OK to continue.')) {
                 const { error } = await supabaseClient.from('orders').delete().neq('id', 0);
                 if (error) console.error('Clear orders error:', error);
                 await saveOrders([]);
@@ -3054,24 +3183,18 @@
             }
         }
 
-        // ===== DELETE: INQUIRIES =====
         async function confirmDeleteInquiry(inquiryId) {
             const pass1 = prompt('Enter admin password to delete this inquiry:');
             if (!pass1) return;
             const hash1 = await sha256(pass1);
             if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             const pass2 = prompt('Confirm password again to delete:');
             if (!pass2) return;
             const hash2 = await sha256(pass2);
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             if (confirm('⚠️ Warning: This inquiry will be permanently deleted. Are you sure?')) {
                 const { error } = await supabaseClient.from('inquiries').delete().eq('id', inquiryId);
-                if (error) {
-                    alert('Delete failed: ' + error.message);
-                    return;
-                }
+                if (error) { alert('Delete failed: ' + error.message); return; }
                 let inquiries = await getInquiries();
                 inquiries = inquiries.filter(i => String(i.id) !== String(inquiryId));
                 setLocalData('sk_inquiries_encrypted', inquiries);
@@ -3085,12 +3208,10 @@
             if (!pass1) return;
             const hash1 = await sha256(pass1);
             if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             const pass2 = prompt('Confirm password again to clear ALL inquiries:');
             if (!pass2) return;
             const hash2 = await sha256(pass2);
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             if (confirm('⚠️ FINAL WARNING: ALL inquiries will be permanently deleted. Press OK to continue.')) {
                 const { error } = await supabaseClient.from('inquiries').delete().neq('id', 0);
                 if (error) console.error('Clear inquiries error:', error);
@@ -3100,24 +3221,18 @@
             }
         }
 
-        // ===== DELETE: MESSAGES =====
         async function confirmDeleteMessage(messageId) {
             const pass1 = prompt('Enter admin password to delete this message:');
             if (!pass1) return;
             const hash1 = await sha256(pass1);
             if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             const pass2 = prompt('Confirm password again to delete:');
             if (!pass2) return;
             const hash2 = await sha256(pass2);
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             if (confirm('⚠️ Warning: This message will be permanently deleted. Are you sure?')) {
                 const { error } = await supabaseClient.from('inquiries').delete().eq('id', messageId);
-                if (error) {
-                    alert('Delete failed: ' + error.message);
-                    return;
-                }
+                if (error) { alert('Delete failed: ' + error.message); return; }
                 let inquiries = await getInquiries();
                 inquiries = inquiries.filter(i => String(i.id) !== String(messageId));
                 setLocalData('sk_inquiries_encrypted', inquiries);
@@ -3131,12 +3246,10 @@
             if (!pass1) return;
             const hash1 = await sha256(pass1);
             if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             const pass2 = prompt('Confirm password again to clear ALL messages:');
             if (!pass2) return;
             const hash2 = await sha256(pass2);
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
             if (confirm('⚠️ FINAL WARNING: ALL messages will be permanently deleted. Press OK to continue.')) {
                 let inquiries = await getInquiries();
                 inquiries = inquiries.filter(i =>
