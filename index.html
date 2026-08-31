@@ -803,7 +803,7 @@
                     </div>
 
                     <!-- ================================================================ -->
-                    <!-- TAB 2: PRODUCTS (WITH IMAGE UPLOAD + CATEGORY DROPDOWN) -->
+                    <!-- TAB 2: PRODUCTS (WITH IMAGE UPLOAD + CATEGORY) -->
                     <!-- ================================================================ -->
                     <div class="admin-tab-content" id="tab-products">
                         <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
@@ -957,7 +957,7 @@
                     </div>
 
                     <!-- ================================================================ -->
-                    <!-- TAB 7: CATEGORIES (NEW) -->
+                    <!-- TAB 7: CATEGORIES -->
                     <!-- ================================================================ -->
                     <div class="admin-tab-content" id="tab-categories">
                         <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
@@ -1637,15 +1637,7 @@
 
         function getCategoryNameById(id) {
             const cat = cachedCategories.find(c => c.id === id);
-            return cat ? cat.name : 'Unknown';
-        }
-
-        function getCategoryPath(id) {
-            const cat = cachedCategories.find(c => c.id === id);
-            if (!cat) return '';
-            if (cat.parent_id === null) return cat.name;
-            const parentPath = getCategoryPath(cat.parent_id);
-            return parentPath ? `${parentPath} → ${cat.name}` : cat.name;
+            return cat ? cat.name : 'Uncategorized';
         }
 
         function renderCategorySelect(selectId, selectedId = null, includeEmpty = true) {
@@ -1719,7 +1711,6 @@
                 return;
             }
 
-            // Check if category already exists
             if (cachedCategories.some(c => c.name.toLowerCase() === name.toLowerCase() && c.parent_id === (parentId || null))) {
                 alert('Category already exists!');
                 return;
@@ -1733,7 +1724,6 @@
                 created_at: new Date().toISOString()
             };
 
-            // Calculate level
             if (parentId) {
                 const parent = cachedCategories.find(c => c.id === parseInt(parentId));
                 newCategory.level = parent ? parent.level + 1 : 0;
@@ -1747,6 +1737,7 @@
             showToast('✅ Category added successfully!');
         }
 
+        // ===== DELETE CATEGORY (FIXED - Direct Supabase Delete) =====
         async function confirmDeleteCategory(categoryId) {
             const pass1 = prompt('Enter admin password to delete this category:');
             if (!pass1) return;
@@ -1758,25 +1749,18 @@
             const hash2 = await sha256(pass2);
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
 
-            // Check if category has sub-categories
             const hasChildren = cachedCategories.some(c => c.parent_id === categoryId);
             if (hasChildren) {
-                if (!confirm('⚠️ This category has sub-categories. Deleting it will also delete all sub-categories. Are you sure?')) {
-                    return;
-                }
+                if (!confirm('⚠️ This category has sub-categories. Deleting it will also delete all sub-categories. Are you sure?')) return;
             }
 
-            // Check if category is used in products
             const products = await getProducts();
             const isUsed = products.some(p => p.category_id === categoryId);
             if (isUsed) {
-                if (!confirm('⚠️ This category is used in products. Deleting it will remove category from those products. Continue?')) {
-                    return;
-                }
+                if (!confirm('⚠️ This category is used in products. Deleting it will remove category from those products. Continue?')) return;
             }
 
             if (confirm('⚠️ Warning: This category will be permanently deleted. Are you sure?')) {
-                // Delete category and all sub-categories
                 const toDelete = [];
                 const findChildren = (id) => {
                     const children = cachedCategories.filter(c => c.parent_id === id);
@@ -1788,15 +1772,20 @@
                 toDelete.push(categoryId);
                 findChildren(categoryId);
 
-                cachedCategories = cachedCategories.filter(c => !toDelete.includes(c.id));
-                await saveCategories(cachedCategories);
+                // Delete from Supabase
+                for (const id of toDelete) {
+                    const { error } = await supabaseClient.from('categories').delete().eq('id', id);
+                    if (error) console.error('Delete category error:', error);
+                }
 
-                // Update products - remove category_id if deleted
+                // Update local cache
+                cachedCategories = cachedCategories.filter(c => !toDelete.includes(c.id));
+                setLocalData('sk_categories', cachedCategories);
+
+                // Update products - remove category_id
                 let products = await getProducts();
                 products = products.map(p => {
-                    if (toDelete.includes(p.category_id)) {
-                        p.category_id = null;
-                    }
+                    if (toDelete.includes(p.category_id)) p.category_id = null;
                     return p;
                 });
                 await saveProducts(products);
@@ -1810,6 +1799,7 @@
             }
         }
 
+        // ===== CLEAR ALL CATEGORIES =====
         async function clearAllCategories() {
             const pass1 = prompt('Enter admin password to clear all categories:');
             if (!pass1) return;
@@ -1822,15 +1812,17 @@
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
 
             if (confirm('⚠️ FINAL WARNING: ALL categories will be permanently deleted. Press OK to continue.')) {
-                await saveCategories([]);
+                // Delete all from Supabase
+                const { error } = await supabaseClient.from('categories').delete().neq('id', 0);
+                if (error) console.error('Clear categories error:', error);
+
                 cachedCategories = [];
-                // Update products - remove all category references
+                setLocalData('sk_categories', []);
+
                 let products = await getProducts();
-                products = products.map(p => {
-                    p.category_id = null;
-                    return p;
-                });
+                products = products.map(p => { p.category_id = null; return p; });
                 await saveProducts(products);
+
                 loadAdminCategories();
                 updateProductCategoryDropdown();
                 loadAdminProducts();
@@ -3012,7 +3004,7 @@
         }
 
         // ================================================================
-        // 18. DELETE FUNCTIONS (All Tabs - FIXED with String comparison)
+        // 18. DELETE FUNCTIONS (FIXED - Direct Supabase Delete)
         // ================================================================
 
         // ===== DELETE: PRODUCTS =====
@@ -3028,9 +3020,23 @@
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
 
             if (confirm('⚠️ Warning: This product will be permanently deleted. Are you sure?')) {
+                // Direct Supabase Delete
+                const { error } = await supabaseClient
+                    .from('products')
+                    .delete()
+                    .eq('id', parseInt(productId));
+
+                if (error) {
+                    alert('Delete failed: ' + error.message);
+                    return;
+                }
+
+                // Update local cache
                 let products = await getProducts();
                 products = products.filter(p => String(p.id) !== String(productId));
-                await saveProducts(products);
+                setLocalData('sk_products', products);
+                cachedProducts = products;
+
                 loadAdminProducts();
                 renderProducts();
                 filterProducts();
@@ -3050,6 +3056,9 @@
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
 
             if (confirm('⚠️ FINAL WARNING: ALL products will be permanently deleted. Press OK to continue.')) {
+                const { error } = await supabaseClient.from('products').delete().neq('id', 0);
+                if (error) console.error('Clear products error:', error);
+
                 await saveProducts([]);
                 loadAdminProducts();
                 renderProducts();
@@ -3071,9 +3080,15 @@
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
 
             if (confirm('⚠️ Warning: This customer will be permanently deleted. Are you sure?')) {
+                const { error } = await supabaseClient.from('users').delete().eq('id', userId);
+                if (error) {
+                    alert('Delete failed: ' + error.message);
+                    return;
+                }
+
                 let users = await getUsers();
                 users = users.filter(u => String(u.id) !== String(userId));
-                await saveUsers(users);
+                setLocalData('sk_users_encrypted', users);
                 loadAdminCustomers();
                 showToast('Customer deleted successfully.');
             }
@@ -3091,6 +3106,9 @@
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
 
             if (confirm('⚠️ FINAL WARNING: ALL customers will be permanently deleted. Press OK to continue.')) {
+                const { error } = await supabaseClient.from('users').delete().neq('id', 0);
+                if (error) console.error('Clear customers error:', error);
+
                 await saveUsers([]);
                 loadAdminCustomers();
                 showToast('All customers cleared.');
@@ -3110,9 +3128,15 @@
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
 
             if (confirm('⚠️ Warning: This order will be permanently deleted. Data recovery is very difficult. Are you sure?')) {
+                const { error } = await supabaseClient.from('orders').delete().eq('id', orderId);
+                if (error) {
+                    alert('Delete failed: ' + error.message);
+                    return;
+                }
+
                 const orders = await getOrders();
                 const filtered = orders.filter(o => String(o.id) !== String(orderId));
-                await saveOrders(filtered);
+                setLocalData('sk_orders_encrypted', filtered);
                 loadAdminDashboard();
                 showToast('Order deleted successfully.');
             }
@@ -3130,6 +3154,9 @@
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
 
             if (confirm('⚠️ FINAL WARNING: ALL order history will be permanently deleted. Data recovery is extremely difficult. Press OK to continue.')) {
+                const { error } = await supabaseClient.from('orders').delete().neq('id', 0);
+                if (error) console.error('Clear orders error:', error);
+
                 await saveOrders([]);
                 loadAdminDashboard();
                 showToast('All order history cleared.');
@@ -3149,9 +3176,15 @@
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
 
             if (confirm('⚠️ Warning: This inquiry will be permanently deleted. Are you sure?')) {
+                const { error } = await supabaseClient.from('inquiries').delete().eq('id', inquiryId);
+                if (error) {
+                    alert('Delete failed: ' + error.message);
+                    return;
+                }
+
                 let inquiries = await getInquiries();
                 inquiries = inquiries.filter(i => String(i.id) !== String(inquiryId));
-                await saveInquiries(inquiries);
+                setLocalData('sk_inquiries_encrypted', inquiries);
                 loadAdminInquiries();
                 showToast('Inquiry deleted successfully.');
             }
@@ -3169,6 +3202,9 @@
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
 
             if (confirm('⚠️ FINAL WARNING: ALL inquiries will be permanently deleted. Press OK to continue.')) {
+                const { error } = await supabaseClient.from('inquiries').delete().neq('id', 0);
+                if (error) console.error('Clear inquiries error:', error);
+
                 await saveInquiries([]);
                 loadAdminInquiries();
                 showToast('All inquiries cleared.');
@@ -3188,9 +3224,15 @@
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
 
             if (confirm('⚠️ Warning: This message will be permanently deleted. Are you sure?')) {
+                const { error } = await supabaseClient.from('inquiries').delete().eq('id', messageId);
+                if (error) {
+                    alert('Delete failed: ' + error.message);
+                    return;
+                }
+
                 let inquiries = await getInquiries();
                 inquiries = inquiries.filter(i => String(i.id) !== String(messageId));
-                await saveInquiries(inquiries);
+                setLocalData('sk_inquiries_encrypted', inquiries);
                 loadAdminMessages();
                 showToast('Message deleted successfully.');
             }
