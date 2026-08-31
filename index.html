@@ -841,13 +841,11 @@
 
                     <!-- Tab: Customers (WITH CALENDAR) -->
                    <!-- Tab: Customers -->
+<!-- Tab: Customers -->
 <div class="admin-tab-content" id="tab-customers">
-    <!-- ===== CLEAR ALL BUTTON ADD KAREIN ===== -->
-    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
-        <h3 style="font-size:20px;">Registered Customers</h3>
-        <button class="btn-danger" onclick="clearAllCustomers()"><i class="fas fa-trash-alt"></i> Clear All Customers</button>
-    </div>
+    <h3 style="font-size:20px;margin-bottom:16px;">Registered Customers</h3>
 
+    <!-- ===== DATE FILTER ===== -->
     <div class="date-filter-bar">
         <label>Select Date: <input type="date" id="custFromDate"></label>
         <label>To: <input type="date" id="custToDate"></label>
@@ -855,11 +853,14 @@
         <button class="btn-outline small" onclick="resetCustomersDate()">Show All</button>
     </div>
 
+    <!-- ===== EXPORT BAR WITH CLEAR ALL BUTTON ===== -->
     <div class="admin-export-bar">
+        <button class="btn-danger" onclick="clearAllCustomers()"><i class="fas fa-trash-alt"></i> Clear All Customers</button>
         <button class="csv-btn" onclick="exportCustomersCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
         <button class="refresh-btn" onclick="loadAdminCustomers()"><i class="fas fa-sync"></i> Refresh</button>
     </div>
 
+    <!-- ===== TABLE ===== -->
     <div class="admin-table-wrap">
         <table class="admin-table">
             <thead>
@@ -869,7 +870,7 @@
                     <th>Email</th>
                     <th>Registered</th>
                     <th>Orders</th>
-                    <th>Delete</th>  <!-- ===== DELETE COLUMN ADD KAREIN ===== -->
+                    <th>Delete</th>
                 </tr>
             </thead>
             <tbody id="adminCustomersTable"></tbody>
