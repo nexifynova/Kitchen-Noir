@@ -383,6 +383,12 @@
         .admin-header .admin-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
         .btn-change-password { background: var(--info); color: white; padding: 8px 18px; border: none; border-radius: 50px; font-weight: 600; font-size: 13px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 8px; }
         .btn-change-password:hover { background: #2980b9; transform: translateY(-2px); }
+
+        /* Date Filter Bar */
+        .date-filter-bar { background: var(--light); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .date-filter-bar label { font-weight: 600; font-size: 14px; }
+        .date-filter-bar input[type="date"] { padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
+        .date-filter-bar .btn-outline { padding: 8px 15px; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -666,7 +672,7 @@
                     <div class="contact-form">
                         <h3>Send a Message</h3>
 
-                        <!-- ===== CONTACT FORM ===== -->
+                        <!-- ===== CONTACT FORM (FIXED) ===== -->
                         <form id="contactForm" onsubmit="submitContact(event)">
                             <div class="form-group"><label>Name *</label><input type="text" id="contactName" placeholder="Your Name" required /></div>
                             <div class="form-group"><label>Email *</label><input type="email" id="contactEmail" placeholder="Your Email" required /></div>
@@ -704,7 +710,7 @@
                         <h2><i class="fas fa-chart-line"></i> Admin Dashboard</h2>
                         <div class="admin-actions">
                             <button class="btn-change-password" onclick="openAdminChangePassword()"><i class="fas fa-key"></i> Change Password</button>
-                            <button class="admin-logout" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                            <button class="btn-danger" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
                         </div>
                     </div>
 
@@ -714,11 +720,20 @@
                         <button data-tab="tab-products" onclick="switchAdminTab('tab-products')"><i class="fas fa-box"></i> Products</button>
                         <button data-tab="tab-orders" onclick="switchAdminTab('tab-orders')"><i class="fas fa-shopping-cart"></i> Orders</button>
                         <button data-tab="tab-customers" onclick="switchAdminTab('tab-customers')"><i class="fas fa-users"></i> Customers</button>
-                        <button data-tab="tab-inquiries" onclick="switchAdminTab('tab-inquiries')"><i class="fas fa-envelope"></i> Customer Messages</button>
+                        <button data-tab="tab-inquiries" onclick="switchAdminTab('tab-inquiries')"><i class="fas fa-question-circle"></i> Product Inquiries</button>
+                        <button data-tab="tab-messages" onclick="switchAdminTab('tab-messages')"><i class="fas fa-envelope"></i> Customer Messages</button>
                     </div>
 
                     <!-- Tab: Dashboard -->
                     <div class="admin-tab-content active" id="tab-dashboard">
+
+                        <div class="date-filter-bar">
+                            <label>Select Date: <input type="date" id="dashFromDate"></label>
+                            <label>To: <input type="date" id="dashToDate"></label>
+                            <button class="btn-primary small" onclick="filterDashboardByDate()">Filter</button>
+                            <button class="btn-outline small" onclick="resetDashboardDate()">Full History</button>
+                        </div>
+
                         <div class="stats-cards">
                             <div class="stat-card"><div class="num" id="totalOrders">0</div><div class="label">Total Orders</div></div>
                             <div class="stat-card"><div class="num" id="totalRevenue">£0</div><div class="label">Total Revenue</div></div>
@@ -769,26 +784,33 @@
                         </div>
                     </div>
 
-                    <!-- Tab: Orders -->
+                    <!-- Tab: Orders (WITH DELETE BUTTON & CLEAR HISTORY) -->
                     <div class="admin-tab-content" id="tab-orders">
                         <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
                             <h3 style="font-size:20px;">All Orders</h3>
                             <div class="admin-export-bar">
+                                <button class="btn-danger" onclick="clearAllOrders()"><i class="fas fa-trash-alt"></i> Clear History</button>
                                 <button class="csv-btn" onclick="exportOrdersCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
                                 <button class="refresh-btn" onclick="loadAdminDashboard()"><i class="fas fa-sync"></i> Refresh</button>
                             </div>
                         </div>
                         <div class="admin-table-wrap">
                             <table class="admin-table">
-                                <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+                                <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>Date</th><th>Status</th><th>Action</th><th>Delete</th></tr></thead>
                                 <tbody id="ordersTableBody"></tbody>
                             </table>
                         </div>
                         <p id="noOrders" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No orders yet.</p>
                     </div>
 
-                    <!-- Tab: Customers -->
+                    <!-- Tab: Customers (WITH CALENDAR) -->
                     <div class="admin-tab-content" id="tab-customers">
+                        <div class="date-filter-bar">
+                            <label>Select Date: <input type="date" id="custFromDate"></label>
+                            <label>To: <input type="date" id="custToDate"></label>
+                            <button class="btn-primary small" onclick="filterCustomersByDate()">Filter</button>
+                            <button class="btn-outline small" onclick="resetCustomersDate()">Show All</button>
+                        </div>
                         <h3 style="font-size:20px;margin-bottom:16px;">Registered Customers</h3>
                         <div class="admin-export-bar">
                             <button class="csv-btn" onclick="exportCustomersCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
@@ -802,20 +824,48 @@
                         </div>
                     </div>
 
-                    <!-- Tab: Customer Messages (Inquiries) -->
+                    <!-- Tab: Product Inquiries (Search Queries) -->
                     <div class="admin-tab-content" id="tab-inquiries">
-                        <h3 style="font-size:20px;margin-bottom:16px;">Customer Messages (Contact Form)</h3>
+                        <div class="date-filter-bar">
+                            <label>Select Date: <input type="date" id="inqFromDate"></label>
+                            <label>To: <input type="date" id="inqToDate"></label>
+                            <button class="btn-primary small" onclick="filterInquiriesByDate()">Filter</button>
+                            <button class="btn-outline small" onclick="resetInquiriesDate()">Show All</button>
+                        </div>
+                        <h3 style="font-size:20px;margin-bottom:16px;">Product Inquiries (Unmatched Search Queries)</h3>
                         <div class="admin-export-bar">
                             <button class="csv-btn" onclick="exportInquiriesCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
                             <button class="refresh-btn" onclick="loadAdminInquiries()"><i class="fas fa-sync"></i> Refresh</button>
                         </div>
                         <div class="admin-table-wrap">
                             <table class="admin-table">
-                                <thead><tr><th>#</th><th>Date</th><th>Customer Name</th><th>Email</th><th>Phone</th><th>Message</th></tr></thead>
+                                <thead><tr><th>#</th><th>Date</th><th>Customer</th><th>Inquiry</th></tr></thead>
                                 <tbody id="inquiriesTableBody"></tbody>
                             </table>
                         </div>
-                        <p id="noInquiries" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No messages yet.</p>
+                        <p id="noInquiries" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No inquiries yet.</p>
+                    </div>
+
+                    <!-- Tab: Customer Messages (Contact Form) -->
+                    <div class="admin-tab-content" id="tab-messages">
+                        <div class="date-filter-bar">
+                            <label>Select Date: <input type="date" id="msgFromDate"></label>
+                            <label>To: <input type="date" id="msgToDate"></label>
+                            <button class="btn-primary small" onclick="filterMessagesByDate()">Filter</button>
+                            <button class="btn-outline small" onclick="resetMessagesDate()">Show All</button>
+                        </div>
+                        <h3 style="font-size:20px;margin-bottom:16px;">Customer Messages (Contact Form)</h3>
+                        <div class="admin-export-bar">
+                            <button class="csv-btn" onclick="exportMessagesCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
+                            <button class="refresh-btn" onclick="loadAdminMessages()"><i class="fas fa-sync"></i> Refresh</button>
+                        </div>
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead><tr><th>#</th><th>Date</th><th>Customer Name</th><th>Email</th><th>Phone</th><th>Message</th></tr></thead>
+                                <tbody id="messagesTableBody"></tbody>
+                            </table>
+                        </div>
+                        <p id="noMessages" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No messages yet.</p>
                     </div>
                 </div>
             </div>
@@ -847,7 +897,7 @@
                     <div class="form-group"><label>Full Name</label><input type="text" id="regName" placeholder="John Doe" required /></div>
                     <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="your@email.com" required /></div>
                     <div class="form-group"><label>Password</label><input type="password" id="regPassword" placeholder="Min 6 characters" required minlength="6" /></div>
-                    <div class="auth-error" id="registerError">Registration failed. Please try again.</div>
+                    <div class="auth-error" id="registerError">Registration failed</div>
                     <button type="submit" class="btn-primary"><i class="fas fa-user-plus"></i> Create Account</button>
                 </form>
             </div>
@@ -1280,7 +1330,7 @@
             }
         }
 
-        // ===== INQUIRIES (Contact Form Messages) =====
+        // ===== INQUIRIES (Search Queries) =====
         async function getInquiries() {
             try {
                 const { data, error } = await supabaseClient.from('inquiries').select('*').order('date', { ascending: false });
@@ -1343,10 +1393,40 @@
         // ================================================================
         let filteredProducts = [];
 
+        // Updated product images with working URLs
+        const defaultProducts = [
+            { id: 1, name: 'Heavy Duty Pencil Hob', category: 'Kitchen', price: 895, oldPrice: 1095, image: 'https://i.ibb.co/nsF2ydLW/23-WREN-S114-HEAVY-DUTY-PENCIL-HOB-D01-0000.jpg' },
+            { id: 2, name: 'Luxury Pet Bed', category: 'Home', price: 495, oldPrice: null, image: 'https://i.ibb.co/21K6PTS7/23-WREN-S114-HEAVY-DUTY-PENCIL-PETBED-D01-0000.jpg' },
+            { id: 3, name: 'Built-in Dishwasher', category: 'Kitchen', price: 1495, oldPrice: null, image: 'https://i.ibb.co/CpB15hSt/23-WREN-S114-HEAVY-DUTY-PENCIL-DISHWASHER-D01-0000.jpg' },
+            { id: 4, name: '300mm Wine Cooler', category: 'Kitchen', price: 1695, oldPrice: 1895, image: 'https://i.ibb.co/CKSpgnck/UK-Easy-Fit-Autograph-Cashmere-Gloss-300mm-Wine-Cooler.jpg' },
+            { id: 5, name: 'EST Unit', category: 'Kitchen', price: 1095, oldPrice: null, image: 'https://i.ibb.co/4gRmmgnh/23-WREN-S114-HEAVY-DUTY-PENCIL-EST-D01-0000.jpg' },
+            { id: 6, name: 'Magic Corner', category: 'Kitchen', price: 1295, oldPrice: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
+            { id: 7, name: 'Premium Kitchen Tap', category: 'Kitchen', price: 695, oldPrice: null, image: 'https://i.ibb.co/TqMh7Qsm/23-WREN-S114-HEAVY-DUTY-PENCIL-TAP-D01-0000.jpg' },
+            { id: 8, name: 'Built-in Microwave', category: 'Kitchen', price: 1295, oldPrice: null, image: 'https://i.ibb.co/dwjHbsmt/UK-Easy-Fit-Autograph-Cashmere-Gloss-Microwave.jpg' },
+            { id: 9, name: 'Navy Blue Silk Finish', category: 'Kitchen', price: 2395, oldPrice: 2795, image: 'https://i.ibb.co/r2x5xM1Z/Easy-Fit-Autograph-Navy-Blue-Silk-JPG.jpg' },
+            { id: 10, name: 'Moss Green Slab', category: 'Kitchen', price: 2195, oldPrice: 2595, image: 'https://i.ibb.co/bRRRDYQx/Easy-Fit-Slab-Moss-Green-Hero.jpg' },
+            { id: 11, name: 'Cashmere Gloss Magic Corner', category: 'Kitchen', price: 1395, oldPrice: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
+            { id: 12, name: 'Shaker Chelsea Cashmere', category: 'Kitchen', price: 1895, oldPrice: 2195, image: 'https://i.ibb.co/G4h8d3kh/Easy-Fit-Shaker-Chelsea-Cashmere-Corner-Carousel-Unit.jpg' },
+            // Bedroom products with working images
+            { id: 13, name: 'Luxury Bed Frame', category: 'Bedrooms', price: 1499, oldPrice: 1799, image: 'https://images.pexels.com/photos/271705/pexels-photo-271705.jpeg?w=500' },
+            { id: 14, name: 'Modern Wardrobe', category: 'Bedrooms', price: 1899, oldPrice: 2199, image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?w=500' },
+            { id: 15, name: 'Bedside Table', category: 'Bedrooms', price: 399, oldPrice: null, image: 'https://images.pexels.com/photos/271706/pexels-photo-271706.jpeg?w=500' },
+            { id: 16, name: 'Dressing Table', category: 'Bedrooms', price: 899, oldPrice: null, image: 'https://images.pexels.com/photos/3861972/pexels-photo-3861972.jpeg?w=500' },
+            { id: 17, name: 'Memory Foam Mattress', category: 'Bedrooms', price: 749, oldPrice: 999, image: 'https://images.pexels.com/photos/3772098/pexels-photo-3772098.jpeg?w=500' },
+            { id: 18, name: 'Luxury Headboard', category: 'Bedrooms', price: 599, oldPrice: null, image: 'https://images.pexels.com/photos/271707/pexels-photo-271707.jpeg?w=500' },
+            // Home Office products with working images
+            { id: 19, name: 'Executive Desk', category: 'Home Office', price: 1299, oldPrice: null, image: 'https://images.pexels.com/photos/276583/pexels-photo-276583.jpeg?w=500' },
+            { id: 20, name: 'Ergonomic Office Chair', category: 'Home Office', price: 699, oldPrice: null, image: 'https://images.pexels.com/photos/112466/pexels-photo-112466.jpeg?w=500' },
+            { id: 21, name: 'Bookcase', category: 'Home Office', price: 1099, oldPrice: null, image: 'https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg?w=500' },
+            { id: 22, name: 'Filing Cabinet', category: 'Home Office', price: 599, oldPrice: null, image: 'https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg?w=500' },
+            { id: 23, name: 'Standing Desk Converter', category: 'Home Office', price: 349, oldPrice: null, image: 'https://images.pexels.com/photos/1571461/pexels-photo-1571461.jpeg?w=500' },
+            { id: 24, name: 'Office Bookshelf Set', category: 'Home Office', price: 799, oldPrice: 999, image: 'https://images.pexels.com/photos/1571462/pexels-photo-1571462.jpeg?w=500' }
+        ];
+
         function createProductCard(p) {
             const wishlist = JSON.parse(localStorage.getItem('sk_wishlist')) || [];
             const inWishlist = wishlist.includes(p.id);
-            const oldPriceHtml = p.old_price ? `<span class="old">£${p.old_price.toLocaleString()}</span>` : '';
+            const oldPriceHtml = p.oldPrice ? `<span class="old">£${p.oldPrice.toLocaleString()}</span>` : '';
             const reviews = getLocalData('sk_reviews_encrypted', {});
             const productReviews = reviews[p.id] || [];
             const avgRating = productReviews.length > 0 ? (productReviews.reduce((s, r) => s + r.rating, 0) / productReviews.length).toFixed(1) : null;
@@ -1456,10 +1536,21 @@
             setTimeout(async () => {
                 const noProducts = document.getElementById('noProducts');
                 if (noProducts.style.display !== 'none') {
-                    noProducts.innerHTML =
-                        `<i class="fas fa-search"></i><h3>Product is not available</h3><p>Your query has been despatched to our Product Collection and Management Team.</p><p style="font-weight:700;color:var(--gold);margin-top:8px;">Thank You.</p>`;
+                    // Show custom message for unavailable product
+                    noProducts.innerHTML = `
+                        <i class="fas fa-search" style="font-size:48px;color:var(--gold-light);display:block;margin-bottom:16px;"></i>
+                        <h3 style="font-size:22px;color:var(--primary);margin-bottom:8px;">Your Search Product Query has been dispatched to our product management team Successfully.</h3>
+                        <p style="color:var(--gray);">Soon you will have the same product on the same platform.</p>
+                        <p style="font-weight:700;color:var(--gold);margin-top:8px;">Thank You for your interest!</p>
+                    `;
                     const user = getCurrentUser();
-                    await saveInquiries([{ customer_name: user ? user.name : 'Unknown', customer_email: user ? user.email : '', customer_phone: '', message: 'Search Query: ' + searchTerm, date: new Date().toISOString() }]);
+                    await saveInquiries([{
+                        customer_name: user ? user.name : 'Guest User',
+                        customer_email: user ? user.email : 'guest@email.com',
+                        customer_phone: '',
+                        message: 'Search Query: ' + searchTerm,
+                        date: new Date().toISOString()
+                    }]);
                 }
             }, 100);
         }
@@ -1598,7 +1689,7 @@
             wishlist.forEach(id => {
                 const product = products.find(p => p.id === id);
                 if (!product) return;
-                const oldPriceHtml = product.old_price ? `<span class="old">£${product.old_price.toLocaleString()}</span>` : '';
+                const oldPriceHtml = product.oldPrice ? `<span class="old">£${product.oldPrice.toLocaleString()}</span>` : '';
                 grid.innerHTML +=
                     `<div class="product-card" data-id="${product.id}"><button class="wishlist-btn active" onclick="toggleWishlist(${product.id}, event)"><i class="fas fa-heart"></i></button><img src="${product.image}" alt="${product.name}" onclick="openLightbox('${product.image}')" /><div class="info"><div class="product-top"><div class="name-group"><h3>${product.name}</h3><span class="category">${product.category}</span></div></div><p>Premium quality product.</p><div class="price">£${product.price.toLocaleString()} ${oldPriceHtml}</div><div class="action-row"><button class="btn-add-cart" onclick="addToCart(${product.id})"><i class="fas fa-cart-plus"></i> Add to Cart</button></div></div></div>`;
             });
@@ -1645,7 +1736,7 @@
         }
 
         // ================================================================
-        // 7. AUTHENTICATION (FIXED - UUID id generation)
+        // 7. AUTHENTICATION
         // ================================================================
         function openAuthModal() { document.getElementById('authModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1681,7 +1772,6 @@
                     return;
                 }
                 const hashedPassword = await sha256(password);
-                // Generate UUID v4 style id
                 const userId = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
                 const { data, error } = await supabaseClient.from('users').insert([{ id: userId, name, email, password_hash: hashedPassword }]).select().single();
                 if (error) throw error;
@@ -1880,7 +1970,7 @@
         }
 
         // ================================================================
-        // 9. CONTACT FORM (Data goes to inquiries table)
+        // 9. CONTACT FORM (FIXED - Data goes to inquiries table with correct columns)
         // ================================================================
         async function submitContact(event) {
             event.preventDefault();
@@ -1986,21 +2076,13 @@
             if (tabId === 'tab-products') loadAdminProducts();
             if (tabId === 'tab-customers') loadAdminCustomers();
             if (tabId === 'tab-inquiries') loadAdminInquiries();
+            if (tabId === 'tab-messages') loadAdminMessages();
         }
 
         // ===== ADMIN: DASHBOARD =====
         async function loadAdminDashboard() {
             const orders = await getOrders();
-
-            const totalOrders = orders.length;
-            const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
-            const pending = orders.filter(o => o.status === 'pending').length;
-            const completed = orders.filter(o => o.status === 'completed').length;
-
-            document.getElementById('totalOrders').textContent = totalOrders;
-            document.getElementById('totalRevenue').textContent = '£' + totalRevenue.toLocaleString();
-            document.getElementById('pendingOrders').textContent = pending;
-            document.getElementById('completedOrders').textContent = completed;
+            renderDashboardData(orders);
 
             const tbody = document.getElementById('ordersTableBody');
             const noOrders = document.getElementById('noOrders');
@@ -2010,8 +2092,21 @@
                 let html = '';
                 orders.forEach(order => {
                     const itemsList = order.items ? order.items.map(item => `${item.name} x${item.qty}`).join(', ') : '';
-                    html +=
-                        `<tr><td><strong>${order.id}</strong></td><td>${order.customer_name || 'N/A'}<br/><small style="color:var(--gray);">${order.customer_email || ''}</small></td><td>${itemsList}</td><td><strong>£${(order.total || 0).toLocaleString()}</strong></td><td>${new Date(order.date).toLocaleDateString()}</td><td><span class="status status-${order.status || 'pending'}">${order.status || 'pending'}</span></td><td><select onchange="updateOrderStatus('${order.id}', this.value)" style="padding:6px;border-radius:6px;border:1px solid #ddd;font-size:13px;"><option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option><option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option><option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option></select></td></tr>`;
+                    html += `
+                        <tr>
+                            <td><strong>${order.id}</strong></td>
+                            <td>${order.customer_name || 'N/A'}<br/><small style="color:var(--gray);">${order.customer_email || ''}</small></td>
+                            <td>${itemsList}</td>
+                            <td><strong>£${(order.total || 0).toLocaleString()}</strong></td>
+                            <td>${new Date(order.date).toLocaleDateString()}</td>
+                            <td><span class="status status-${order.status || 'pending'}">${order.status || 'pending'}</span></td>
+                            <td><select onchange="updateOrderStatus('${order.id}', this.value)" style="padding:6px;border-radius:6px;border:1px solid #ddd;font-size:13px;">
+                                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                            </select></td>
+                            <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteOrder('${order.id}')"><i class="fas fa-trash"></i></button></td>
+                        </tr>`;
                 });
                 tbody.innerHTML = html;
             }
@@ -2035,6 +2130,39 @@
                 data: { labels: labels.length ? labels : ['No Data'], datasets: [{ label: 'Daily Revenue (£)', data: labels.length ? data : [0], backgroundColor: 'rgba(212,175,55,0.6)', borderColor: 'var(--gold)', borderWidth: 2, borderRadius: 6 }] },
                 options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: true, labels: { color: 'var(--primary)' } } }, scales: { y: { beginAtZero: true, ticks: { callback: v => '£' + v } } } }
             });
+        }
+
+        function filterDashboardByDate() {
+            const from = document.getElementById('dashFromDate').value;
+            const to = document.getElementById('dashToDate').value;
+            if (!from || !to) { alert('Please select both dates.'); return; }
+            getOrders().then(orders => {
+                const filtered = orders.filter(o => {
+                    const d = new Date(o.date);
+                    return d >= new Date(from) && d <= new Date(to);
+                });
+                renderDashboardData(filtered);
+            });
+        }
+
+        function resetDashboardDate() {
+            document.getElementById('dashFromDate').value = '';
+            document.getElementById('dashToDate').value = '';
+            loadAdminDashboard();
+        }
+
+        function renderDashboardData(orders) {
+            const totalOrders = orders.length;
+            const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+            const pending = orders.filter(o => o.status === 'pending').length;
+            const completed = orders.filter(o => o.status === 'completed').length;
+
+            document.getElementById('totalOrders').textContent = totalOrders;
+            document.getElementById('totalRevenue').textContent = '£' + totalRevenue.toLocaleString();
+            document.getElementById('pendingOrders').textContent = pending;
+            document.getElementById('completedOrders').textContent = completed;
+
+            updateAdminChart(orders);
         }
 
         async function updateOrderStatus(orderId, newStatus) {
@@ -2073,7 +2201,7 @@
                 document.getElementById('prodName').value = data.name;
                 document.getElementById('prodCategory').value = data.category;
                 document.getElementById('prodPrice').value = data.price;
-                document.getElementById('prodOldPrice').value = data.old_price || '';
+                document.getElementById('prodOldPrice').value = data.oldPrice || '';
                 document.getElementById('prodImage').value = data.image;
                 document.getElementById('prodDesc').value = data.description || '';
                 document.getElementById('productFormTitle').textContent = 'Edit Product';
@@ -2090,7 +2218,7 @@
                     document.getElementById('prodName').value = product.name;
                     document.getElementById('prodCategory').value = product.category;
                     document.getElementById('prodPrice').value = product.price;
-                    document.getElementById('prodOldPrice').value = product.old_price || '';
+                    document.getElementById('prodOldPrice').value = product.oldPrice || '';
                     document.getElementById('prodImage').value = product.image;
                     document.getElementById('prodDesc').value = product.description || '';
                     document.getElementById('productFormTitle').textContent = 'Edit Product';
@@ -2111,12 +2239,11 @@
             let products = await getProducts();
             if (id) {
                 const index = products.findIndex(p => p.id === parseInt(id));
-                if (index > -1) products[index] = { ...products[index], name, category, price, old_price: oldPrice, image,
-                    description };
+                if (index > -1) products[index] = { ...products[index], name, category, price, oldPrice, image, description };
                 showToast('Product updated!');
             } else {
                 const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-                products.push({ id: newId, name, category, price, old_price: oldPrice, image, description });
+                products.push({ id: newId, name, category, price, oldPrice, image, description });
                 showToast('Product added!');
             }
             await saveProducts(products);
@@ -2141,7 +2268,7 @@
             getProducts().then(products => {
                 if (products.length === 0) { alert('No products to export.'); return; }
                 let csv = 'ID,Name,Category,Price,Old Price,Image\n';
-                products.forEach(p => { csv += `${p.id},"${p.name}","${p.category}",${p.price},${p.old_price || ''},"${p.image}"\n`; });
+                products.forEach(p => { csv += `${p.id},"${p.name}","${p.category}",${p.price},${p.oldPrice || ''},"${p.image}"\n`; });
                 downloadCSV(csv, 'products_export.csv');
             });
         }
@@ -2150,6 +2277,38 @@
         async function loadAdminCustomers() {
             const users = await getUsers();
             const orders = await getOrders();
+            const tbody = document.getElementById('adminCustomersTable');
+            if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--gray);">No registered customers.</td></tr>'; return; }
+            let html = '';
+            users.forEach(u => {
+                const orderCount = orders.filter(o => o.customer_email === u.email).length;
+                html +=
+                    `<tr><td>${u.id}</td><td>${u.name}</td><td>${u.email}</td><td>${new Date(u.created_at).toLocaleDateString()}</td><td>${orderCount}</td></tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function filterCustomersByDate() {
+            const from = document.getElementById('custFromDate').value;
+            const to = document.getElementById('custToDate').value;
+            if (!from || !to) { alert('Please select both dates.'); return; }
+            getUsers().then(users => {
+                const filtered = users.filter(u => {
+                    const d = new Date(u.created_at);
+                    return d >= new Date(from) && d <= new Date(to);
+                });
+                renderCustomersData(filtered);
+            });
+        }
+
+        function resetCustomersDate() {
+            document.getElementById('custFromDate').value = '';
+            document.getElementById('custToDate').value = '';
+            loadAdminCustomers();
+        }
+
+        function renderCustomersData(users) {
+            const orders = getOrders();
             const tbody = document.getElementById('adminCustomersTable');
             if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--gray);">No registered customers.</td></tr>'; return; }
             let html = '';
@@ -2176,7 +2335,7 @@
             });
         }
 
-        // ===== ADMIN: INQUIRIES (Customer Messages) =====
+        // ===== ADMIN: INQUIRIES (Search Queries) =====
         async function loadAdminInquiries() {
             const inquiries = await getInquiries();
             const tbody = document.getElementById('inquiriesTableBody');
@@ -2187,18 +2346,116 @@
             let html = '';
             inquiries.forEach((inq, idx) => {
                 html +=
-                    `<tr><td>${idx + 1}</td><td>${new Date(inq.date).toLocaleString()}</td><td>${inq.customer_name || 'N/A'}</td><td>${inq.customer_email || 'N/A'}</td><td>${inq.customer_phone || 'N/A'}</td><td>${inq.message || ''}</td></tr>`;
+                    `<tr><td>${idx + 1}</td><td>${new Date(inq.date).toLocaleString()}</td><td>${inq.customer_name || 'Guest'}</td><td>${inq.message || ''}</td></tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function filterInquiriesByDate() {
+            const from = document.getElementById('inqFromDate').value;
+            const to = document.getElementById('inqToDate').value;
+            if (!from || !to) { alert('Please select both dates.'); return; }
+            getInquiries().then(inquiries => {
+                const filtered = inquiries.filter(inq => {
+                    const d = new Date(inq.date);
+                    return d >= new Date(from) && d <= new Date(to);
+                });
+                renderInquiriesData(filtered);
+            });
+        }
+
+        function resetInquiriesDate() {
+            document.getElementById('inqFromDate').value = '';
+            document.getElementById('inqToDate').value = '';
+            loadAdminInquiries();
+        }
+
+        function renderInquiriesData(inquiries) {
+            const tbody = document.getElementById('inquiriesTableBody');
+            const noInquiries = document.getElementById('noInquiries');
+            if (inquiries.length === 0) { tbody.innerHTML = '';
+                noInquiries.style.display = 'block'; return; }
+            noInquiries.style.display = 'none';
+            let html = '';
+            inquiries.forEach((inq, idx) => {
+                html +=
+                    `<tr><td>${idx + 1}</td><td>${new Date(inq.date).toLocaleString()}</td><td>${inq.customer_name || 'Guest'}</td><td>${inq.message || ''}</td></tr>`;
             });
             tbody.innerHTML = html;
         }
 
         function exportInquiriesCSV() {
             getInquiries().then(inquiries => {
-                if (inquiries.length === 0) { alert('No messages to export.'); return; }
-                let csv = 'Date,Customer Name,Email,Phone,Message\n';
+                if (inquiries.length === 0) { alert('No inquiries to export.'); return; }
+                let csv = 'Date,Customer,Inquiry\n';
                 inquiries.forEach(inq => {
                     csv +=
-                        `${new Date(inq.date).toLocaleString()},"${inq.customer_name || ''}","${inq.customer_email || ''}","${inq.customer_phone || ''}","${inq.message || ''}"\n`;
+                        `${new Date(inq.date).toLocaleString()},"${inq.customer_name || 'Guest'}","${inq.message || ''}"\n`;
+                });
+                downloadCSV(csv, 'inquiries_export.csv');
+            });
+        }
+
+        // ===== ADMIN: MESSAGES (Contact Form) =====
+        async function loadAdminMessages() {
+            const inquiries = await getInquiries();
+            // Filter messages that have customer_email (contact form submissions)
+            const messages = inquiries.filter(inq => inq.customer_email && inq.customer_email !== 'guest@email.com');
+            const tbody = document.getElementById('messagesTableBody');
+            const noMessages = document.getElementById('noMessages');
+            if (messages.length === 0) { tbody.innerHTML = '';
+                noMessages.style.display = 'block'; return; }
+            noMessages.style.display = 'none';
+            let html = '';
+            messages.forEach((msg, idx) => {
+                html +=
+                    `<tr><td>${idx + 1}</td><td>${new Date(msg.date).toLocaleString()}</td><td>${msg.customer_name || 'N/A'}</td><td>${msg.customer_email || 'N/A'}</td><td>${msg.customer_phone || 'N/A'}</td><td>${msg.message || ''}</td></tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function filterMessagesByDate() {
+            const from = document.getElementById('msgFromDate').value;
+            const to = document.getElementById('msgToDate').value;
+            if (!from || !to) { alert('Please select both dates.'); return; }
+            getInquiries().then(inquiries => {
+                const messages = inquiries.filter(inq => inq.customer_email && inq.customer_email !== 'guest@email.com');
+                const filtered = messages.filter(msg => {
+                    const d = new Date(msg.date);
+                    return d >= new Date(from) && d <= new Date(to);
+                });
+                renderMessagesData(filtered);
+            });
+        }
+
+        function resetMessagesDate() {
+            document.getElementById('msgFromDate').value = '';
+            document.getElementById('msgToDate').value = '';
+            loadAdminMessages();
+        }
+
+        function renderMessagesData(messages) {
+            const tbody = document.getElementById('messagesTableBody');
+            const noMessages = document.getElementById('noMessages');
+            if (messages.length === 0) { tbody.innerHTML = '';
+                noMessages.style.display = 'block'; return; }
+            noMessages.style.display = 'none';
+            let html = '';
+            messages.forEach((msg, idx) => {
+                html +=
+                    `<tr><td>${idx + 1}</td><td>${new Date(msg.date).toLocaleString()}</td><td>${msg.customer_name || 'N/A'}</td><td>${msg.customer_email || 'N/A'}</td><td>${msg.customer_phone || 'N/A'}</td><td>${msg.message || ''}</td></tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function exportMessagesCSV() {
+            getInquiries().then(inquiries => {
+                const messages = inquiries.filter(inq => inq.customer_email && inq.customer_email !== 'guest@email.com');
+                if (messages.length === 0) { alert('No messages to export.'); return; }
+                let csv = 'Date,Customer Name,Email,Phone,Message\n';
+                messages.forEach(msg => {
+                    csv +=
+                        `${new Date(msg.date).toLocaleString()},"${msg.customer_name || ''}","${msg.customer_email || ''}","${msg.customer_phone || ''}","${msg.message || ''}"\n`;
                 });
                 downloadCSV(csv, 'customer_messages_export.csv');
             });
@@ -2224,6 +2481,46 @@
             link.download = filename;
             link.click();
             URL.revokeObjectURL(link.href);
+        }
+
+        // ===== ADMIN: DELETE ORDER =====
+        async function confirmDeleteOrder(orderId) {
+            const pass1 = prompt('Enter admin password to delete this order:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to delete:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ Warning: This order will be permanently deleted. Data recovery is very difficult. Are you sure?')) {
+                const orders = await getOrders();
+                const filtered = orders.filter(o => o.id !== orderId);
+                await saveOrders(filtered);
+                loadAdminDashboard();
+                showToast('Order deleted successfully.');
+            }
+        }
+
+        // ===== ADMIN: CLEAR ALL ORDERS =====
+        async function clearAllOrders() {
+            const pass1 = prompt('Enter admin password to clear all history:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to clear ALL history:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ FINAL WARNING: ALL order history will be permanently deleted. Data recovery is extremely difficult. Press OK to continue.')) {
+                await saveOrders([]);
+                loadAdminDashboard();
+                showToast('All order history cleared.');
+            }
         }
 
         // ===== ADMIN: CHANGE PASSWORD =====
