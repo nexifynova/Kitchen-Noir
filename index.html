@@ -334,6 +334,8 @@
         .admin-chart-container canvas { max-height: 280px; }
         .admin-export-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
         .admin-export-bar button { padding: 8px 20px; border: none; border-radius: 50px; font-weight: 600; font-size: 13px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+        .admin-export-bar .btn-danger { background: var(--danger); color: white; }
+        .admin-export-bar .btn-danger:hover { background: #c0392b; transform: scale(1.02); }
         .admin-export-bar .csv-btn { background: var(--success); color: white; }
         .admin-export-bar .csv-btn:hover { background: #27ae60; transform: scale(1.02); }
         .admin-export-bar .refresh-btn { background: var(--info); color: white; }
@@ -754,16 +756,16 @@
                         <button data-tab="tab-messages" onclick="switchAdminTab('tab-messages')"><i class="fas fa-envelope"></i> Customer Messages</button>
                     </div>
 
-                    <!-- Tab: Dashboard -->
+                    <!-- ================================================================ -->
+                    <!-- TAB 1: DASHBOARD -->
+                    <!-- ================================================================ -->
                     <div class="admin-tab-content active" id="tab-dashboard">
-
                         <div class="date-filter-bar">
                             <label>Select Date: <input type="date" id="dashFromDate"></label>
                             <label>To: <input type="date" id="dashToDate"></label>
                             <button class="btn-primary small" onclick="filterDashboardByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetDashboardDate()">Full History</button>
                         </div>
-
                         <div class="stats-cards">
                             <div class="stat-card"><div class="num" id="totalOrders">0</div><div class="label">Total Orders</div></div>
                             <div class="stat-card"><div class="num" id="totalRevenue">£0</div><div class="label">Total Revenue</div></div>
@@ -775,7 +777,9 @@
                         </div>
                     </div>
 
-                    <!-- Tab: Products -->
+                    <!-- ================================================================ -->
+                    <!-- TAB 2: PRODUCTS (WITH CLEAR ALL + DELETE) -->
+                    <!-- ================================================================ -->
                     <div class="admin-tab-content" id="tab-products">
                         <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
                             <h3 style="font-size:20px;">Manage Products</h3>
@@ -801,34 +805,36 @@
                                 <input type="hidden" id="editProductId" value="" />
                             </div>
                         </div>
+                        <!-- EXPORT BAR WITH CLEAR ALL (First) -->
                         <div class="admin-export-bar">
-                            <button class="csv-btn" onclick="exportProductsCSV()"><i class="fas fa-file-csv"></i> Export Products CSV</button>
+                            <button class="btn-danger" onclick="clearAllProducts()"><i class="fas fa-trash-alt"></i> Clear All Products</button>
+                            <button class="csv-btn" onclick="exportProductsCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
                             <button class="refresh-btn" onclick="loadAdminProducts()"><i class="fas fa-sync"></i> Refresh</button>
                             <button class="refresh-btn" onclick="syncProductsToSupabase()"><i class="fas fa-cloud-upload-alt"></i> Sync to Cloud</button>
                         </div>
                         <div class="admin-table-wrap">
                             <table class="admin-table">
-                                <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Actions</th></tr></thead>
+                                <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Actions</th><th>Delete</th></tr></thead>
                                 <tbody id="adminProductsTable"></tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- Tab: Orders (WITH CALENDAR) -->
+                    <!-- ================================================================ -->
+                    <!-- TAB 3: ORDERS (WITH CLEAR ALL + DELETE - Already Working) -->
+                    <!-- ================================================================ -->
                     <div class="admin-tab-content" id="tab-orders">
-                        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
-                            <h3 style="font-size:20px;">All Orders</h3>
-                            <div class="admin-export-bar">
-                                <button class="btn-danger" onclick="clearAllOrders()"><i class="fas fa-trash-alt"></i> Clear History</button>
-                                <button class="csv-btn" onclick="exportOrdersCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
-                                <button class="refresh-btn" onclick="loadAdminDashboard()"><i class="fas fa-sync"></i> Refresh</button>
-                            </div>
-                        </div>
+                        <h3 style="font-size:20px;margin-bottom:16px;">All Orders</h3>
                         <div class="date-filter-bar">
                             <label>Select Date: <input type="date" id="ordersFromDate"></label>
                             <label>To: <input type="date" id="ordersToDate"></label>
                             <button class="btn-primary small" onclick="filterOrdersByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetOrdersDate()">Show All</button>
+                        </div>
+                        <div class="admin-export-bar">
+                            <button class="btn-danger" onclick="clearAllOrders()"><i class="fas fa-trash-alt"></i> Clear History</button>
+                            <button class="csv-btn" onclick="exportOrdersCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
+                            <button class="refresh-btn" onclick="loadAdminDashboard()"><i class="fas fa-sync"></i> Refresh</button>
                         </div>
                         <div class="admin-table-wrap">
                             <table class="admin-table">
@@ -839,90 +845,82 @@
                         <p id="noOrders" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No orders yet.</p>
                     </div>
 
-                    <!-- Tab: Customers (WITH CALENDAR) -->
-                   <!-- Tab: Customers -->
-<!-- Tab: Customers -->
-<div class="admin-tab-content" id="tab-customers">
-    <h3 style="font-size:20px;margin-bottom:16px;">Registered Customers</h3>
+                    <!-- ================================================================ -->
+                    <!-- TAB 4: CUSTOMERS (WITH CLEAR ALL + DELETE) -->
+                    <!-- ================================================================ -->
+                    <div class="admin-tab-content" id="tab-customers">
+                        <h3 style="font-size:20px;margin-bottom:16px;">Registered Customers</h3>
+                        <div class="date-filter-bar">
+                            <label>Select Date: <input type="date" id="custFromDate"></label>
+                            <label>To: <input type="date" id="custToDate"></label>
+                            <button class="btn-primary small" onclick="filterCustomersByDate()">Filter</button>
+                            <button class="btn-outline small" onclick="resetCustomersDate()">Show All</button>
+                        </div>
+                        <div class="admin-export-bar">
+                            <button class="btn-danger" onclick="clearAllCustomers()"><i class="fas fa-trash-alt"></i> Clear All Customers</button>
+                            <button class="csv-btn" onclick="exportCustomersCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
+                            <button class="refresh-btn" onclick="loadAdminCustomers()"><i class="fas fa-sync"></i> Refresh</button>
+                        </div>
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Registered</th><th>Orders</th><th>Delete</th></tr></thead>
+                                <tbody id="adminCustomersTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
 
-    <!-- ===== DATE FILTER ===== -->
-    <div class="date-filter-bar">
-        <label>Select Date: <input type="date" id="custFromDate"></label>
-        <label>To: <input type="date" id="custToDate"></label>
-        <button class="btn-primary small" onclick="filterCustomersByDate()">Filter</button>
-        <button class="btn-outline small" onclick="resetCustomersDate()">Show All</button>
-    </div>
-
-    <!-- ===== EXPORT BAR WITH CLEAR ALL BUTTON ===== -->
-    <div class="admin-export-bar">
-        <button class="btn-danger" onclick="clearAllCustomers()"><i class="fas fa-trash-alt"></i> Clear All Customers</button>
-        <button class="csv-btn" onclick="exportCustomersCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
-        <button class="refresh-btn" onclick="loadAdminCustomers()"><i class="fas fa-sync"></i> Refresh</button>
-    </div>
-
-    <!-- ===== TABLE ===== -->
-    <div class="admin-table-wrap">
-        <table class="admin-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Registered</th>
-                    <th>Orders</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            <tbody id="adminCustomersTable"></tbody>
-        </table>
-    </div>
-</div>
-
-                    <!-- Tab: Product Inquiries (Search Queries ONLY) -->
+                    <!-- ================================================================ -->
+                    <!-- TAB 5: PRODUCT INQUIRIES (WITH CLEAR ALL + DELETE) -->
+                    <!-- ================================================================ -->
                     <div class="admin-tab-content" id="tab-inquiries">
+                        <h3 style="font-size:20px;margin-bottom:16px;">Product Inquiries (Unmatched Search Queries)</h3>
+                        <p style="color:var(--gray);font-size:13px;margin-bottom:12px;">⚠️ Only search queries that did NOT match any product appear here.</p>
                         <div class="date-filter-bar">
                             <label>Select Date: <input type="date" id="inqFromDate"></label>
                             <label>To: <input type="date" id="inqToDate"></label>
                             <button class="btn-primary small" onclick="filterInquiriesByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetInquiriesDate()">Show All</button>
                         </div>
-                        <h3 style="font-size:20px;margin-bottom:16px;">Product Inquiries (Unmatched Search Queries)</h3>
-                        <p style="color:var(--gray);font-size:13px;margin-bottom:12px;">⚠️ Only search queries that did NOT match any product appear here.</p>
                         <div class="admin-export-bar">
+                            <button class="btn-danger" onclick="clearAllInquiries()"><i class="fas fa-trash-alt"></i> Clear All Inquiries</button>
                             <button class="csv-btn" onclick="exportInquiriesCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
                             <button class="refresh-btn" onclick="loadAdminInquiries()"><i class="fas fa-sync"></i> Refresh</button>
                         </div>
                         <div class="admin-table-wrap">
                             <table class="admin-table">
-                                <thead><tr><th>#</th><th>Date</th><th>Customer</th><th>Inquiry</th></tr></thead>
+                                <thead><tr><th>#</th><th>Date</th><th>Customer</th><th>Inquiry</th><th>Delete</th></tr></thead>
                                 <tbody id="inquiriesTableBody"></tbody>
                             </table>
                         </div>
                         <p id="noInquiries" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No inquiries yet.</p>
                     </div>
 
-                    <!-- Tab: Customer Messages (Contact Form ONLY) -->
+                    <!-- ================================================================ -->
+                    <!-- TAB 6: CUSTOMER MESSAGES (WITH CLEAR ALL + DELETE) -->
+                    <!-- ================================================================ -->
                     <div class="admin-tab-content" id="tab-messages">
+                        <h3 style="font-size:20px;margin-bottom:16px;">Customer Messages (Contact Form)</h3>
+                        <p style="color:var(--gray);font-size:13px;margin-bottom:12px;">💬 Messages sent through the Contact Us form appear here.</p>
                         <div class="date-filter-bar">
                             <label>Select Date: <input type="date" id="msgFromDate"></label>
                             <label>To: <input type="date" id="msgToDate"></label>
                             <button class="btn-primary small" onclick="filterMessagesByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetMessagesDate()">Show All</button>
                         </div>
-                        <h3 style="font-size:20px;margin-bottom:16px;">Customer Messages (Contact Form)</h3>
-                        <p style="color:var(--gray);font-size:13px;margin-bottom:12px;">💬 Messages sent through the Contact Us form appear here.</p>
                         <div class="admin-export-bar">
+                            <button class="btn-danger" onclick="clearAllMessages()"><i class="fas fa-trash-alt"></i> Clear All Messages</button>
                             <button class="csv-btn" onclick="exportMessagesCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
                             <button class="refresh-btn" onclick="loadAdminMessages()"><i class="fas fa-sync"></i> Refresh</button>
                         </div>
                         <div class="admin-table-wrap">
                             <table class="admin-table">
-                                <thead><tr><th>#</th><th>Date</th><th>Customer Name</th><th>Email</th><th>Phone</th><th>Message</th></tr></thead>
+                                <thead><tr><th>#</th><th>Date</th><th>Customer Name</th><th>Email</th><th>Phone</th><th>Message</th><th>Delete</th></tr></thead>
                                 <tbody id="messagesTableBody"></tbody>
                             </table>
                         </div>
                         <p id="noMessages" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No messages yet.</p>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -1265,32 +1263,33 @@
         // ===== WORKING PRODUCT IMAGES (Bedroom & Home Office Fixed) =====
         const defaultProducts = [
             // Kitchen Products
-            { id: 1, name: 'Heavy Duty Pencil Hob', category: 'Kitchen', price: 895, oldPrice: 1095, image: 'https://i.ibb.co/nsF2ydLW/23-WREN-S114-HEAVY-DUTY-PENCIL-HOB-D01-0000.jpg' },
-            { id: 2, name: 'Luxury Pet Bed', category: 'Home', price: 495, oldPrice: null, image: 'https://i.ibb.co/21K6PTS7/23-WREN-S114-HEAVY-DUTY-PENCIL-PETBED-D01-0000.jpg' },
-            { id: 3, name: 'Built-in Dishwasher', category: 'Kitchen', price: 1495, oldPrice: null, image: 'https://i.ibb.co/CpB15hSt/23-WREN-S114-HEAVY-DUTY-PENCIL-DISHWASHER-D01-0000.jpg' },
-            { id: 4, name: '300mm Wine Cooler', category: 'Kitchen', price: 1695, oldPrice: 1895, image: 'https://i.ibb.co/CKSpgnck/UK-Easy-Fit-Autograph-Cashmere-Gloss-300mm-Wine-Cooler.jpg' },
-            { id: 5, name: 'EST Unit', category: 'Kitchen', price: 1095, oldPrice: null, image: 'https://i.ibb.co/4gRmmgnh/23-WREN-S114-HEAVY-DUTY-PENCIL-EST-D01-0000.jpg' },
-            { id: 6, name: 'Magic Corner', category: 'Kitchen', price: 1295, oldPrice: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
-            { id: 7, name: 'Premium Kitchen Tap', category: 'Kitchen', price: 695, oldPrice: null, image: 'https://i.ibb.co/TqMh7Qsm/23-WREN-S114-HEAVY-DUTY-PENCIL-TAP-D01-0000.jpg' },
-            { id: 8, name: 'Built-in Microwave', category: 'Kitchen', price: 1295, oldPrice: null, image: 'https://i.ibb.co/dwjHbsmt/UK-Easy-Fit-Autograph-Cashmere-Gloss-Microwave.jpg' },
-            { id: 9, name: 'Navy Blue Silk Finish', category: 'Kitchen', price: 2395, oldPrice: 2795, image: 'https://i.ibb.co/r2x5xM1Z/Easy-Fit-Autograph-Navy-Blue-Silk-JPG.jpg' },
-            { id: 10, name: 'Moss Green Slab', category: 'Kitchen', price: 2195, oldPrice: 2595, image: 'https://i.ibb.co/bRRRDYQx/Easy-Fit-Slab-Moss-Green-Hero.jpg' },
-            { id: 11, name: 'Cashmere Gloss Magic Corner', category: 'Kitchen', price: 1395, oldPrice: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
-            { id: 12, name: 'Shaker Chelsea Cashmere', category: 'Kitchen', price: 1895, oldPrice: 2195, image: 'https://i.ibb.co/G4h8d3kh/Easy-Fit-Shaker-Chelsea-Cashmere-Corner-Carousel-Unit.jpg' },
+            { id: 1, name: 'Heavy Duty Pencil Hob', category: 'Kitchen', price: 895, old_price: 1095, image: 'https://i.ibb.co/nsF2ydLW/23-WREN-S114-HEAVY-DUTY-PENCIL-HOB-D01-0000.jpg' },
+            { id: 3, name: 'Built-in Dishwasher', category: 'Kitchen', price: 1495, old_price: null, image: 'https://i.ibb.co/CpB15hSt/23-WREN-S114-HEAVY-DUTY-PENCIL-DISHWASHER-D01-0000.jpg' },
+            { id: 4, name: '300mm Wine Cooler', category: 'Kitchen', price: 1695, old_price: 1895, image: 'https://i.ibb.co/CKSpgnck/UK-Easy-Fit-Autograph-Cashmere-Gloss-300mm-Wine-Cooler.jpg' },
+            { id: 5, name: 'EST Unit', category: 'Kitchen', price: 1095, old_price: null, image: 'https://i.ibb.co/4gRmmgnh/23-WREN-S114-HEAVY-DUTY-PENCIL-EST-D01-0000.jpg' },
+            { id: 6, name: 'Magic Corner', category: 'Kitchen', price: 1295, old_price: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
+            { id: 7, name: 'Premium Kitchen Tap', category: 'Kitchen', price: 695, old_price: null, image: 'https://i.ibb.co/TqMh7Qsm/23-WREN-S114-HEAVY-DUTY-PENCIL-TAP-D01-0000.jpg' },
+            { id: 8, name: 'Built-in Microwave', category: 'Kitchen', price: 1295, old_price: null, image: 'https://i.ibb.co/dwjHbsmt/UK-Easy-Fit-Autograph-Cashmere-Gloss-Microwave.jpg' },
+            { id: 9, name: 'Navy Blue Silk Finish', category: 'Kitchen', price: 2395, old_price: 2795, image: 'https://i.ibb.co/r2x5xM1Z/Easy-Fit-Autograph-Navy-Blue-Silk-JPG.jpg' },
+            { id: 10, name: 'Moss Green Slab', category: 'Kitchen', price: 2195, old_price: 2595, image: 'https://i.ibb.co/bRRRDYQx/Easy-Fit-Slab-Moss-Green-Hero.jpg' },
+            { id: 11, name: 'Cashmere Gloss Magic Corner', category: 'Kitchen', price: 1395, old_price: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
+            { id: 12, name: 'Shaker Chelsea Cashmere', category: 'Kitchen', price: 1895, old_price: 2195, image: 'https://i.ibb.co/G4h8d3kh/Easy-Fit-Shaker-Chelsea-Cashmere-Corner-Carousel-Unit.jpg' },
+            // Home Products
+            { id: 2, name: 'Luxury Pet Bed', category: 'Home', price: 495, old_price: null, image: 'https://i.ibb.co/21K6PTS7/23-WREN-S114-HEAVY-DUTY-PENCIL-PETBED-D01-0000.jpg' },
             // Bedroom Products (Fixed Images)
-            { id: 13, name: 'Luxury Bed Frame', category: 'Bedrooms', price: 1499, oldPrice: 1799, image: 'https://images.pexels.com/photos/271705/pexels-photo-271705.jpeg?w=500' },
-            { id: 14, name: 'Modern Wardrobe', category: 'Bedrooms', price: 1899, oldPrice: 2199, image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?w=500' },
-            { id: 15, name: 'Bedside Table', category: 'Bedrooms', price: 399, oldPrice: null, image: 'https://images.pexels.com/photos/271706/pexels-photo-271706.jpeg?w=500' },
-            { id: 16, name: 'Dressing Table', category: 'Bedrooms', price: 899, oldPrice: null, image: 'https://images.pexels.com/photos/3861972/pexels-photo-3861972.jpeg?w=500' },
-            { id: 17, name: 'Memory Foam Mattress', category: 'Bedrooms', price: 749, oldPrice: 999, image: 'https://images.pexels.com/photos/3772098/pexels-photo-3772098.jpeg?w=500' },
-            { id: 18, name: 'Luxury Headboard', category: 'Bedrooms', price: 599, oldPrice: null, image: 'https://images.pexels.com/photos/271707/pexels-photo-271707.jpeg?w=500' },
+            { id: 13, name: 'Luxury Bed Frame', category: 'Bedrooms', price: 1499, old_price: 1799, image: 'https://images.pexels.com/photos/271705/pexels-photo-271705.jpeg?w=500' },
+            { id: 14, name: 'Modern Wardrobe', category: 'Bedrooms', price: 1899, old_price: 2199, image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?w=500' },
+            { id: 15, name: 'Bedside Table', category: 'Bedrooms', price: 399, old_price: null, image: 'https://images.pexels.com/photos/271706/pexels-photo-271706.jpeg?w=500' },
+            { id: 16, name: 'Dressing Table', category: 'Bedrooms', price: 899, old_price: null, image: 'https://images.pexels.com/photos/3861972/pexels-photo-3861972.jpeg?w=500' },
+            { id: 17, name: 'Memory Foam Mattress', category: 'Bedrooms', price: 749, old_price: 999, image: 'https://images.pexels.com/photos/3772098/pexels-photo-3772098.jpeg?w=500' },
+            { id: 18, name: 'Luxury Headboard', category: 'Bedrooms', price: 599, old_price: null, image: 'https://images.pexels.com/photos/271707/pexels-photo-271707.jpeg?w=500' },
             // Home Office Products (Fixed Images)
-            { id: 19, name: 'Executive Desk', category: 'Home Office', price: 1299, oldPrice: null, image: 'https://images.pexels.com/photos/276583/pexels-photo-276583.jpeg?w=500' },
-            { id: 20, name: 'Ergonomic Office Chair', category: 'Home Office', price: 699, oldPrice: null, image: 'https://images.pexels.com/photos/112466/pexels-photo-112466.jpeg?w=500' },
-            { id: 21, name: 'Bookcase', category: 'Home Office', price: 1099, oldPrice: null, image: 'https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg?w=500' },
-            { id: 22, name: 'Filing Cabinet', category: 'Home Office', price: 599, oldPrice: null, image: 'https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg?w=500' },
-            { id: 23, name: 'Standing Desk Converter', category: 'Home Office', price: 349, oldPrice: null, image: 'https://images.pexels.com/photos/1571461/pexels-photo-1571461.jpeg?w=500' },
-            { id: 24, name: 'Office Bookshelf Set', category: 'Home Office', price: 799, oldPrice: 999, image: 'https://images.pexels.com/photos/1571462/pexels-photo-1571462.jpeg?w=500' }
+            { id: 19, name: 'Executive Desk', category: 'Home Office', price: 1299, old_price: null, image: 'https://images.pexels.com/photos/276583/pexels-photo-276583.jpeg?w=500' },
+            { id: 20, name: 'Ergonomic Office Chair', category: 'Home Office', price: 699, old_price: null, image: 'https://images.pexels.com/photos/112466/pexels-photo-112466.jpeg?w=500' },
+            { id: 21, name: 'Bookcase', category: 'Home Office', price: 1099, old_price: null, image: 'https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg?w=500' },
+            { id: 22, name: 'Filing Cabinet', category: 'Home Office', price: 599, old_price: null, image: 'https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg?w=500' },
+            { id: 23, name: 'Standing Desk Converter', category: 'Home Office', price: 349, old_price: null, image: 'https://images.pexels.com/photos/1571461/pexels-photo-1571461.jpeg?w=500' },
+            { id: 24, name: 'Office Bookshelf Set', category: 'Home Office', price: 799, old_price: 999, image: 'https://images.pexels.com/photos/1571462/pexels-photo-1571462.jpeg?w=500' }
         ];
 
         let cachedProducts = null;
@@ -1483,6 +1482,7 @@
         function createProductCard(p) {
             const wishlist = JSON.parse(localStorage.getItem('sk_wishlist')) || [];
             const inWishlist = wishlist.includes(p.id);
+            // FIXED: Using old_price from database
             const oldPriceHtml = p.old_price ? `<span class="old">£${p.old_price.toLocaleString()}</span>` : '';
             const reviews = getLocalData('sk_reviews_encrypted', {});
             const productReviews = reviews[p.id] || [];
@@ -1496,7 +1496,7 @@
                         <div class="name-group"><h3>${p.name}</h3><span class="category">${p.category}</span></div>
                         <div class="rating-display"><span class="stars">${avgRating ? '★'.repeat(Math.round(avgRating)) + '☆'.repeat(5 - Math.round(avgRating)) : '☆☆☆☆☆'}</span><span class="count">(${productReviews.length})</span></div>
                     </div>
-                    <p>Premium quality product from our collection.</p>
+                    <p>${p.description || 'Premium quality product from our collection.'}</p>
                     <div class="price">£${p.price.toLocaleString()} ${oldPriceHtml}</div>
                     <div class="action-row">
                         <button class="btn-add-cart" onclick="addToCart(${p.id})"><i class="fas fa-cart-plus"></i> Add to Cart</button>
@@ -1726,8 +1726,8 @@
             wishlist.forEach(id => {
                 const product = products.find(p => p.id === id);
                 if (!product) return;
-                const oldPriceHtml = product.oldPrice ? `<span class="old">£${product.oldPrice.toLocaleString()}</span>` : '';
-                grid.innerHTML += `<div class="product-card" data-id="${product.id}"><button class="wishlist-btn active" onclick="toggleWishlist(${product.id}, event)"><i class="fas fa-heart"></i></button><img src="${product.image}" alt="${product.name}" onclick="openLightbox('${product.image}')" /><div class="info"><div class="product-top"><div class="name-group"><h3>${product.name}</h3><span class="category">${product.category}</span></div></div><p>Premium quality product.</p><div class="price">£${product.price.toLocaleString()} ${oldPriceHtml}</div><div class="action-row"><button class="btn-add-cart" onclick="addToCart(${product.id})"><i class="fas fa-cart-plus"></i> Add to Cart</button></div></div></div>`;
+                const oldPriceHtml = product.old_price ? `<span class="old">£${product.old_price.toLocaleString()}</span>` : '';
+                grid.innerHTML += `<div class="product-card" data-id="${product.id}"><button class="wishlist-btn active" onclick="toggleWishlist(${product.id}, event)"><i class="fas fa-heart"></i></button><img src="${product.image}" alt="${product.name}" onclick="openLightbox('${product.image}')" /><div class="info"><div class="product-top"><div class="name-group"><h3>${product.name}</h3><span class="category">${product.category}</span></div></div><p>${product.description || 'Premium quality product.'}</p><div class="price">£${product.price.toLocaleString()} ${oldPriceHtml}</div><div class="action-row"><button class="btn-add-cart" onclick="addToCart(${product.id})"><i class="fas fa-cart-plus"></i> Add to Cart</button></div></div></div>`;
             });
         }
 
@@ -1972,7 +1972,7 @@
         }
 
         // ================================================================
-        // 9. CONTACT FORM (Data goes to inquiries table with contact fields)
+        // 9. CONTACT FORM
         // ================================================================
         async function submitContact(event) {
             event.preventDefault();
@@ -2085,12 +2085,10 @@
                 return;
             }
 
-            // Load all data
             const [orders, users, inquiries, products] = await Promise.all([
                 getOrders(), getUsers(), getInquiries(), getProducts()
             ]);
 
-            // Filter orders
             const filteredOrders = orders.filter(o =>
                 (o.id && o.id.toLowerCase().includes(searchTerm)) ||
                 (o.customer_name && o.customer_name.toLowerCase().includes(searchTerm)) ||
@@ -2098,25 +2096,21 @@
                 (o.address && o.address.toLowerCase().includes(searchTerm))
             );
 
-            // Filter users
             const filteredUsers = users.filter(u =>
                 (u.name && u.name.toLowerCase().includes(searchTerm)) ||
                 (u.email && u.email.toLowerCase().includes(searchTerm))
             );
 
-            // Filter inquiries (search queries)
             const filteredInquiries = inquiries.filter(i =>
                 (i.customer_name && i.customer_name.toLowerCase().includes(searchTerm)) ||
                 (i.message && i.message.toLowerCase().includes(searchTerm))
             );
 
-            // Filter products
             const filteredProductsData = products.filter(p =>
                 (p.name && p.name.toLowerCase().includes(searchTerm)) ||
                 (p.category && p.category.toLowerCase().includes(searchTerm))
             );
 
-            // Show results in a modal
             let resultHtml = `<div style="max-height:500px;overflow-y:auto;">`;
 
             if (filteredOrders.length > 0) {
@@ -2161,7 +2155,6 @@
 
             resultHtml += `</div>`;
 
-            // Show modal
             const modal = document.createElement('div');
             modal.className = 'modal active';
             modal.style.display = 'flex';
@@ -2317,130 +2310,47 @@
             showToast('Order status updated to ' + newStatus);
         }
 
-        // ===== ADMIN: PRODUCTS =====
+        // ===== ADMIN: PRODUCTS (WITH DELETE) =====
         async function loadAdminProducts() {
             const products = await getProducts();
             allProductsData = products;
             const tbody = document.getElementById('adminProductsTable');
-            if (products.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--gray);">No products yet.</td></tr>'; return; }
+            if (products.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray);">No products yet.</td></tr>'; return; }
             let html = '';
-            products.forEach(p => { html += `<tr><td>${p.id}</td><td>${p.name}</td><td>${p.category}</td><td>£${p.price.toLocaleString()}</td><td><div class="actions"><button class="edit-btn" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button><button class="delete-btn" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button></div></td></tr>`; });
+            products.forEach(p => {
+                html += `<tr>
+                    <td>${p.id}</td>
+                    <td>${p.name}</td>
+                    <td>${p.category}</td>
+                    <td>£${p.price.toLocaleString()}</td>
+                    <td><div class="actions"><button class="edit-btn" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button></div></td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteProduct(${p.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            });
             tbody.innerHTML = html;
         }
 
-        function toggleProductForm(data) {
-            const form = document.getElementById('productForm');
-            form.classList.toggle('show');
-            if (!form.classList.contains('show')) {
-                document.getElementById('editProductId').value = '';
-                document.getElementById('prodName').value = '';
-                document.getElementById('prodCategory').value = 'Kitchen';
-                document.getElementById('prodPrice').value = '';
-                document.getElementById('prodOldPrice').value = '';
-                document.getElementById('prodImage').value = '';
-                document.getElementById('prodDesc').value = '';
-                document.getElementById('productFormTitle').textContent = 'Add New Product';
-            }
-            if (data) {
-                document.getElementById('editProductId').value = data.id;
-                document.getElementById('prodName').value = data.name;
-                document.getElementById('prodCategory').value = data.category;
-                document.getElementById('prodPrice').value = data.price;
-                document.getElementById('prodOldPrice').value = data.oldPrice || '';
-                document.getElementById('prodImage').value = data.image;
-                document.getElementById('prodDesc').value = data.description || '';
-                document.getElementById('productFormTitle').textContent = 'Edit Product';
-            }
-        }
-
-        function editProduct(id) {
-            getProducts().then(products => {
-                const product = products.find(p => p.id === id);
-                if (product) {
-                    const form = document.getElementById('productForm');
-                    form.classList.add('show');
-                    document.getElementById('editProductId').value = product.id;
-                    document.getElementById('prodName').value = product.name;
-                    document.getElementById('prodCategory').value = product.category;
-                    document.getElementById('prodPrice').value = product.price;
-                    document.getElementById('prodOldPrice').value = product.oldPrice || '';
-                    document.getElementById('prodImage').value = product.image;
-                    document.getElementById('prodDesc').value = product.description || '';
-                    document.getElementById('productFormTitle').textContent = 'Edit Product';
-                    form.scrollIntoView({ behavior: 'smooth' });
-                }
+        // ===== ADMIN: CUSTOMERS (WITH DELETE) =====
+        async function loadAdminCustomers() {
+            const users = await getUsers();
+            allUsersData = users;
+            const orders = await getOrders();
+            const tbody = document.getElementById('adminCustomersTable');
+            if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray);">No registered customers.</td></tr>'; return; }
+            let html = '';
+            users.forEach(u => {
+                const orderCount = orders.filter(o => o.customer_email === u.email).length;
+                html += `<tr>
+                    <td>${u.id}</td>
+                    <td>${u.name}</td>
+                    <td>${u.email}</td>
+                    <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                    <td>${orderCount}</td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteCustomer('${u.id}')"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
             });
+            tbody.innerHTML = html;
         }
-
-        async function saveProduct() {
-            const id = document.getElementById('editProductId').value;
-            const name = document.getElementById('prodName').value.trim();
-            const category = document.getElementById('prodCategory').value;
-            const price = parseFloat(document.getElementById('prodPrice').value);
-            const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
-            const image = document.getElementById('prodImage').value.trim();
-            const description = document.getElementById('prodDesc').value.trim();
-            if (!name || !price || !image) { alert('Please fill Name, Price, and Image URL.'); return; }
-            let products = await getProducts();
-            if (id) {
-                const index = products.findIndex(p => p.id === parseInt(id));
-                if (index > -1) products[index] = { ...products[index], name, category, price, oldPrice, image, description };
-                showToast('Product updated!');
-            } else {
-                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-                products.push({ id: newId, name, category, price, oldPrice, image, description });
-                showToast('Product added!');
-            }
-            await saveProducts(products);
-            toggleProductForm();
-            loadAdminProducts();
-            renderProducts();
-            filterProducts();
-        }
-
-        async function deleteProduct(id) {
-            if (!confirm('Are you sure you want to delete this product?')) return;
-            let products = await getProducts();
-            products = products.filter(p => p.id !== id);
-            await saveProducts(products);
-            loadAdminProducts();
-            renderProducts();
-            filterProducts();
-            showToast('Product deleted.');
-        }
-
-        function exportProductsCSV() {
-            getProducts().then(products => {
-                if (products.length === 0) { alert('No products to export.'); return; }
-                let csv = 'ID,Name,Category,Price,Old Price,Image\n';
-                products.forEach(p => { csv += `${p.id},"${p.name}","${p.category}",${p.price},${p.oldPrice || ''},"${p.image}"\n`; });
-                downloadCSV(csv, 'products_export.csv');
-            });
-        }
-
-        // ===== ADMIN: CUSTOMERS =====
-       async function loadAdminCustomers() {
-    const users = await getUsers();
-    const orders = await getOrders();
-    const tbody = document.getElementById('adminCustomersTable');
-    if (users.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray);">No registered customers.</td></tr>';
-        return;
-    }
-    let html = '';
-    users.forEach(u => {
-        const orderCount = orders.filter(o => o.customer_email === u.email).length;
-        html += `<tr>
-            <td>${u.id}</td>
-            <td>${u.name}</td>
-            <td>${u.email}</td>
-            <td>${new Date(u.created_at).toLocaleDateString()}</td>
-            <td>${orderCount}</td>
-            <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteCustomer('${u.id}')"><i class="fas fa-trash"></i></button></td>
-        </tr>`;
-    });
-    tbody.innerHTML = html;
-}
 
         function filterCustomersByDate() {
             const from = document.getElementById('custFromDate').value;
@@ -2462,33 +2372,25 @@
         function renderCustomersData(users) {
             const orders = getOrders();
             const tbody = document.getElementById('adminCustomersTable');
-            if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--gray);">No registered customers.</td></tr>'; return; }
+            if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray);">No registered customers.</td></tr>'; return; }
             let html = '';
             users.forEach(u => {
                 const orderCount = orders.filter(o => o.customer_email === u.email).length;
-                html += `<tr><td>${u.id}</td><td>${u.name}</td><td>${u.email}</td><td>${new Date(u.created_at).toLocaleDateString()}</td><td>${orderCount}</td></tr>`;
+                html += `<tr>
+                    <td>${u.id}</td>
+                    <td>${u.name}</td>
+                    <td>${u.email}</td>
+                    <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                    <td>${orderCount}</td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteCustomer('${u.id}')"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
             });
             tbody.innerHTML = html;
         }
 
-        function exportCustomersCSV() {
-            getUsers().then(users => {
-                if (users.length === 0) { alert('No customers to export.'); return; }
-                getOrders().then(orders => {
-                    let csv = 'ID,Name,Email,Registered,Orders\n';
-                    users.forEach(u => {
-                        const orderCount = orders.filter(o => o.customer_email === u.email).length;
-                        csv += `${u.id},"${u.name}","${u.email}",${new Date(u.created_at).toLocaleDateString()},${orderCount}\n`;
-                    });
-                    downloadCSV(csv, 'customers_export.csv');
-                });
-            });
-        }
-
-        // ===== ADMIN: INQUIRIES (Search Queries ONLY) =====
+        // ===== ADMIN: INQUIRIES (Search Queries ONLY - WITH DELETE) =====
         async function loadAdminInquiries() {
             const inquiries = await getInquiries();
-            // Filter: Only search queries (guest email or message contains "Search Query")
             const searchQueries = inquiries.filter(i =>
                 i.customer_email === 'guest@email.com' ||
                 (i.message && i.message.includes('Search Query:'))
@@ -2500,7 +2402,13 @@
             noInquiries.style.display = 'none';
             let html = '';
             searchQueries.forEach((inq, idx) => {
-                html += `<tr><td>${idx + 1}</td><td>${new Date(inq.date).toLocaleString()}</td><td>${inq.customer_name || 'Guest'}</td><td>${inq.message || ''}</td></tr>`;
+                html += `<tr>
+                    <td>${idx + 1}</td>
+                    <td>${new Date(inq.date).toLocaleString()}</td>
+                    <td>${inq.customer_name || 'Guest'}</td>
+                    <td>${inq.message || ''}</td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteInquiry(${inq.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
             });
             tbody.innerHTML = html;
         }
@@ -2529,30 +2437,20 @@
             noInquiries.style.display = 'none';
             let html = '';
             inquiries.forEach((inq, idx) => {
-                html += `<tr><td>${idx + 1}</td><td>${new Date(inq.date).toLocaleString()}</td><td>${inq.customer_name || 'Guest'}</td><td>${inq.message || ''}</td></tr>`;
+                html += `<tr>
+                    <td>${idx + 1}</td>
+                    <td>${new Date(inq.date).toLocaleString()}</td>
+                    <td>${inq.customer_name || 'Guest'}</td>
+                    <td>${inq.message || ''}</td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteInquiry(${inq.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
             });
             tbody.innerHTML = html;
         }
 
-        function exportInquiriesCSV() {
-            getInquiries().then(inquiries => {
-                const searchQueries = inquiries.filter(i =>
-                    i.customer_email === 'guest@email.com' ||
-                    (i.message && i.message.includes('Search Query:'))
-                );
-                if (searchQueries.length === 0) { alert('No inquiries to export.'); return; }
-                let csv = 'Date,Customer,Inquiry\n';
-                searchQueries.forEach(inq => {
-                    csv += `${new Date(inq.date).toLocaleString()},"${inq.customer_name || 'Guest'}","${inq.message || ''}"\n`;
-                });
-                downloadCSV(csv, 'inquiries_export.csv');
-            });
-        }
-
-        // ===== ADMIN: MESSAGES (Contact Form ONLY) =====
+        // ===== ADMIN: MESSAGES (Contact Form ONLY - WITH DELETE) =====
         async function loadAdminMessages() {
             const inquiries = await getInquiries();
-            // Filter: Only contact form messages (has customer_email and NOT guest email)
             const messages = inquiries.filter(i =>
                 i.customer_email &&
                 i.customer_email !== 'guest@email.com' &&
@@ -2565,7 +2463,15 @@
             noMessages.style.display = 'none';
             let html = '';
             messages.forEach((msg, idx) => {
-                html += `<tr><td>${idx + 1}</td><td>${new Date(msg.date).toLocaleString()}</td><td>${msg.customer_name || 'N/A'}</td><td>${msg.customer_email || 'N/A'}</td><td>${msg.customer_phone || 'N/A'}</td><td>${msg.message || ''}</td></tr>`;
+                html += `<tr>
+                    <td>${idx + 1}</td>
+                    <td>${new Date(msg.date).toLocaleString()}</td>
+                    <td>${msg.customer_name || 'N/A'}</td>
+                    <td>${msg.customer_email || 'N/A'}</td>
+                    <td>${msg.customer_phone || 'N/A'}</td>
+                    <td>${msg.message || ''}</td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteMessage(${msg.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
             });
             tbody.innerHTML = html;
         }
@@ -2594,9 +2500,266 @@
             noMessages.style.display = 'none';
             let html = '';
             messages.forEach((msg, idx) => {
-                html += `<tr><td>${idx + 1}</td><td>${new Date(msg.date).toLocaleString()}</td><td>${msg.customer_name || 'N/A'}</td><td>${msg.customer_email || 'N/A'}</td><td>${msg.customer_phone || 'N/A'}</td><td>${msg.message || ''}</td></tr>`;
+                html += `<tr>
+                    <td>${idx + 1}</td>
+                    <td>${new Date(msg.date).toLocaleString()}</td>
+                    <td>${msg.customer_name || 'N/A'}</td>
+                    <td>${msg.customer_email || 'N/A'}</td>
+                    <td>${msg.customer_phone || 'N/A'}</td>
+                    <td>${msg.message || ''}</td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteMessage(${msg.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
             });
             tbody.innerHTML = html;
+        }
+
+        // ================================================================
+        // 12. DELETE FUNCTIONS (All Tabs)
+        // ================================================================
+
+        // ===== DELETE: PRODUCTS =====
+        async function confirmDeleteProduct(productId) {
+            const pass1 = prompt('Enter admin password to delete this product:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to delete:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ Warning: This product will be permanently deleted. Are you sure?')) {
+                let products = await getProducts();
+                products = products.filter(p => p.id !== productId);
+                await saveProducts(products);
+                loadAdminProducts();
+                renderProducts();
+                filterProducts();
+                showToast('Product deleted successfully.');
+            }
+        }
+
+        async function clearAllProducts() {
+            const pass1 = prompt('Enter admin password to clear all products:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to clear ALL products:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ FINAL WARNING: ALL products will be permanently deleted. Press OK to continue.')) {
+                await saveProducts([]);
+                loadAdminProducts();
+                renderProducts();
+                filterProducts();
+                showToast('All products cleared.');
+            }
+        }
+
+        // ===== DELETE: CUSTOMERS =====
+        async function confirmDeleteCustomer(userId) {
+            const pass1 = prompt('Enter admin password to delete this customer:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to delete:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ Warning: This customer will be permanently deleted. Are you sure?')) {
+                let users = await getUsers();
+                users = users.filter(u => u.id !== userId);
+                await saveUsers(users);
+                loadAdminCustomers();
+                showToast('Customer deleted successfully.');
+            }
+        }
+
+        async function clearAllCustomers() {
+            const pass1 = prompt('Enter admin password to clear all customers:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to clear ALL customers:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ FINAL WARNING: ALL customers will be permanently deleted. Press OK to continue.')) {
+                await saveUsers([]);
+                loadAdminCustomers();
+                showToast('All customers cleared.');
+            }
+        }
+
+        // ===== DELETE: INQUIRIES =====
+        async function confirmDeleteInquiry(inquiryId) {
+            const pass1 = prompt('Enter admin password to delete this inquiry:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to delete:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ Warning: This inquiry will be permanently deleted. Are you sure?')) {
+                let inquiries = await getInquiries();
+                inquiries = inquiries.filter(i => i.id !== inquiryId);
+                await saveInquiries(inquiries);
+                loadAdminInquiries();
+                showToast('Inquiry deleted successfully.');
+            }
+        }
+
+        async function clearAllInquiries() {
+            const pass1 = prompt('Enter admin password to clear all inquiries:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to clear ALL inquiries:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ FINAL WARNING: ALL inquiries will be permanently deleted. Press OK to continue.')) {
+                await saveInquiries([]);
+                loadAdminInquiries();
+                showToast('All inquiries cleared.');
+            }
+        }
+
+        // ===== DELETE: MESSAGES =====
+        async function confirmDeleteMessage(messageId) {
+            const pass1 = prompt('Enter admin password to delete this message:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to delete:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ Warning: This message will be permanently deleted. Are you sure?')) {
+                let inquiries = await getInquiries();
+                inquiries = inquiries.filter(i => i.id !== messageId);
+                await saveInquiries(inquiries);
+                loadAdminMessages();
+                showToast('Message deleted successfully.');
+            }
+        }
+
+        async function clearAllMessages() {
+            const pass1 = prompt('Enter admin password to clear all messages:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to clear ALL messages:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ FINAL WARNING: ALL messages will be permanently deleted. Press OK to continue.')) {
+                let inquiries = await getInquiries();
+                inquiries = inquiries.filter(i =>
+                    i.customer_email === 'guest@email.com' ||
+                    (i.message && i.message.includes('Search Query:'))
+                );
+                await saveInquiries(inquiries);
+                loadAdminMessages();
+                showToast('All messages cleared.');
+            }
+        }
+
+        // ===== DELETE: ORDERS (Already Existing) =====
+        async function confirmDeleteOrder(orderId) {
+            const pass1 = prompt('Enter admin password to delete this order:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to delete:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ Warning: This order will be permanently deleted. Data recovery is very difficult. Are you sure?')) {
+                const orders = await getOrders();
+                const filtered = orders.filter(o => o.id !== orderId);
+                await saveOrders(filtered);
+                loadAdminDashboard();
+                showToast('Order deleted successfully.');
+            }
+        }
+
+        async function clearAllOrders() {
+            const pass1 = prompt('Enter admin password to clear all history:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to clear ALL history:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ FINAL WARNING: ALL order history will be permanently deleted. Data recovery is extremely difficult. Press OK to continue.')) {
+                await saveOrders([]);
+                loadAdminDashboard();
+                showToast('All order history cleared.');
+            }
+        }
+
+        // ================================================================
+        // 13. EXPORT FUNCTIONS
+        // ================================================================
+        function exportProductsCSV() {
+            getProducts().then(products => {
+                if (products.length === 0) { alert('No products to export.'); return; }
+                let csv = 'ID,Name,Category,Price,Old Price,Image\n';
+                products.forEach(p => { csv += `${p.id},"${p.name}","${p.category}",${p.price},${p.old_price || ''},"${p.image}"\n`; });
+                downloadCSV(csv, 'products_export.csv');
+            });
+        }
+
+        function exportCustomersCSV() {
+            getUsers().then(users => {
+                if (users.length === 0) { alert('No customers to export.'); return; }
+                getOrders().then(orders => {
+                    let csv = 'ID,Name,Email,Registered,Orders\n';
+                    users.forEach(u => {
+                        const orderCount = orders.filter(o => o.customer_email === u.email).length;
+                        csv += `${u.id},"${u.name}","${u.email}",${new Date(u.created_at).toLocaleDateString()},${orderCount}\n`;
+                    });
+                    downloadCSV(csv, 'customers_export.csv');
+                });
+            });
+        }
+
+        function exportInquiriesCSV() {
+            getInquiries().then(inquiries => {
+                const searchQueries = inquiries.filter(i =>
+                    i.customer_email === 'guest@email.com' ||
+                    (i.message && i.message.includes('Search Query:'))
+                );
+                if (searchQueries.length === 0) { alert('No inquiries to export.'); return; }
+                let csv = 'Date,Customer,Inquiry\n';
+                searchQueries.forEach(inq => {
+                    csv += `${new Date(inq.date).toLocaleString()},"${inq.customer_name || 'Guest'}","${inq.message || ''}"\n`;
+                });
+                downloadCSV(csv, 'inquiries_export.csv');
+            });
         }
 
         function exportMessagesCSV() {
@@ -2634,46 +2797,6 @@
             link.download = filename;
             link.click();
             URL.revokeObjectURL(link.href);
-        }
-
-        // ===== ADMIN: DELETE ORDER =====
-        async function confirmDeleteOrder(orderId) {
-            const pass1 = prompt('Enter admin password to delete this order:');
-            if (!pass1) return;
-            const hash1 = await sha256(pass1);
-            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-            const pass2 = prompt('Confirm password again to delete:');
-            if (!pass2) return;
-            const hash2 = await sha256(pass2);
-            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-            if (confirm('⚠️ Warning: This order will be permanently deleted. Data recovery is very difficult. Are you sure?')) {
-                const orders = await getOrders();
-                const filtered = orders.filter(o => o.id !== orderId);
-                await saveOrders(filtered);
-                loadAdminDashboard();
-                showToast('Order deleted successfully.');
-            }
-        }
-
-        // ===== ADMIN: CLEAR ALL ORDERS =====
-        async function clearAllOrders() {
-            const pass1 = prompt('Enter admin password to clear all history:');
-            if (!pass1) return;
-            const hash1 = await sha256(pass1);
-            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-            const pass2 = prompt('Confirm password again to clear ALL history:');
-            if (!pass2) return;
-            const hash2 = await sha256(pass2);
-            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-            if (confirm('⚠️ FINAL WARNING: ALL order history will be permanently deleted. Data recovery is extremely difficult. Press OK to continue.')) {
-                await saveOrders([]);
-                loadAdminDashboard();
-                showToast('All order history cleared.');
-            }
         }
 
         // ===== ADMIN: CHANGE PASSWORD =====
@@ -2731,7 +2854,7 @@
         }
 
         // ================================================================
-        // 12. LIGHTBOX
+        // 14. LIGHTBOX
         // ================================================================
         function openLightbox(src) { document.getElementById('lightboxImage').src = src; document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden'; }
         function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = 'auto'; }
@@ -2741,7 +2864,7 @@
         });
 
         // ================================================================
-        // 13. NAVIGATION
+        // 15. NAVIGATION
         // ================================================================
         function navigate(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -2777,7 +2900,7 @@
         });
 
         // ================================================================
-        // 14. GALLERY
+        // 16. GALLERY
         // ================================================================
         const galleryImages = [
             'https://i.ibb.co/0RnBKXRf/Wren-Kitchens-Ad-Website-Images-111.jpg',
@@ -2801,7 +2924,7 @@
         }
 
         // ================================================================
-        // 15. TOAST
+        // 17. TOAST
         // ================================================================
         function showToast(message) {
             const existing = document.querySelector('.toast');
@@ -2814,7 +2937,7 @@
         }
 
         // ================================================================
-        // 16. INIT
+        // 18. INIT
         // ================================================================
         async function init() {
             await getProducts();
@@ -2837,74 +2960,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() { init(); navigate('home'); });
-
-
-
-
-
-
-
-
-
-        // ================================================================
-// DELETE SINGLE CUSTOMER
-// ================================================================
-async function confirmDeleteCustomer(userId) {
-    const pass1 = prompt('Enter admin password to delete this customer:');
-    if (!pass1) return;
-    const hash1 = await sha256(pass1);
-    if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-    const pass2 = prompt('Confirm password again to delete:');
-    if (!pass2) return;
-    const hash2 = await sha256(pass2);
-    if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-    if (confirm('⚠️ Warning: This customer will be permanently deleted. Are you sure?')) {
-        let users = await getUsers();
-        users = users.filter(u => u.id !== userId);
-        await saveUsers(users);
-        loadAdminCustomers();
-        showToast('Customer deleted successfully.');
-    }
-}
-
-// ================================================================
-// CLEAR ALL CUSTOMERS
-// ================================================================
-async function clearAllCustomers() {
-    const pass1 = prompt('Enter admin password to clear all customers:');
-    if (!pass1) return;
-    const hash1 = await sha256(pass1);
-    if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-    const pass2 = prompt('Confirm password again to clear ALL customers:');
-    if (!pass2) return;
-    const hash2 = await sha256(pass2);
-    if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-    if (confirm('⚠️ FINAL WARNING: ALL customers will be permanently deleted. Press OK to continue.')) {
-        await saveUsers([]);
-        loadAdminCustomers();
-        showToast('All customers cleared.');
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </script>
 </body>
 </html>
