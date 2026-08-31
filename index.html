@@ -61,7 +61,7 @@
             top: 100%;
             left: 0;
             background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
-            min-width: 780px;
+            min-width: 950px;
             border-radius: 16px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(212,175,55,0.1);
             border-top: 4px solid var(--gold);
@@ -77,9 +77,10 @@
         .mega-category {
             flex: 1;
             position: relative;
-            padding: 0 20px;
+            padding: 0 15px;
             border-right: 1px solid #f0f0f0;
             transition: all 0.3s ease;
+            min-width: 180px;
         }
 
         .mega-category:last-child {
@@ -92,22 +93,23 @@
         }
 
         .mega-category > h4 {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 800;
             color: var(--primary);
-            margin-bottom: 15px;
-            padding: 10px 0;
+            margin-bottom: 12px;
+            padding: 8px 0;
             border-bottom: 2px solid var(--gold);
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             transition: all 0.3s ease;
+            white-space: nowrap;
         }
 
         .mega-category > h4 i {
             color: var(--gold);
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .mega-category > h4:hover {
@@ -128,19 +130,20 @@
 
         .mega-category ul li a {
             display: block;
-            padding: 8px 12px;
+            padding: 7px 10px;
             color: #666;
             text-decoration: none;
-            font-size: 13.5px;
+            font-size: 13px;
             transition: all 0.25s ease;
             border-radius: 8px;
             position: relative;
+            white-space: nowrap;
         }
 
         .mega-category ul li a:hover {
             background: linear-gradient(90deg, rgba(212,175,55,0.1) 0%, transparent 100%);
             color: var(--primary);
-            padding-left: 18px;
+            padding-left: 15px;
             font-weight: 600;
         }
 
@@ -159,7 +162,7 @@
             left: 100%;
             top: -10px;
             background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%);
-            min-width: 260px;
+            min-width: 240px;
             border-radius: 12px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(212,175,55,0.15);
             padding: 15px;
@@ -173,7 +176,7 @@
         }
 
         .level-3-panel h5 {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 800;
             color: var(--primary);
             margin-bottom: 10px;
@@ -195,10 +198,10 @@
 
         .level-3-panel ul li a {
             display: block;
-            padding: 7px 10px;
+            padding: 6px 10px;
             color: #666;
             text-decoration: none;
-            font-size: 12.5px;
+            font-size: 12px;
             transition: all 0.2s ease;
             border-radius: 6px;
             white-space: nowrap;
@@ -564,102 +567,23 @@
             <li><a class="active" onclick="navigate('home')">Home</a></li>
             <li><a onclick="navigate('about')">About</a></li>
 
-            <!-- PRODUCTS WITH 3-LEVEL MEGA MENU -->
+            <!-- PRODUCTS WITH 10 CATEGORIES IN MEGA MENU -->
             <li>
                 <a onclick="navigate('products')">Products <i class="fas fa-chevron-down"></i></a>
                 <div class="mega-dropdown">
 
-                    <!-- KITCHEN -->
+                    <!-- KITCHENS -->
                     <div class="mega-category">
-                        <h4 onclick="navigateToCategory('Kitchen')"><i class="fas fa-utensils"></i> Kitchen</h4>
+                        <h4 onclick="navigateToCategory('Kitchens')"><i class="fas fa-utensils"></i> Kitchens</h4>
                         <ul>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Kitchen', 'Plates')">🍽️ Plates</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Plates', 'Ceramic')">Ceramic → White, Blue</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Plates', 'Glass')">Glass → Clear, Tinted</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Plates', 'Melamine')">Melamine → Solid</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Plates', 'Porcelain')">Porcelain → Classic</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Kitchen', 'Spoons')">🥄 Spoons</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Spoons', 'Steel')">Steel → Stainless</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Spoons', 'Wood')">Wood → Oak, Teak</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Spoons', 'Plastic')">Plastic → Colored</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Kitchen', 'Mugs')">☕ Mugs</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Mugs', 'Ceramic')">Ceramic → White, Black</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Mugs', 'Glass')">Glass → Clear</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Mugs', 'Melamine')">Melamine → Printed</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Kitchen', 'Knives')">🔪 Knives</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Knives', 'Steel')">Steel → Stainless</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Knives', 'Ceramic')">Ceramic → White</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Kitchen', 'Cutting Boards')">🪵 Cutting Boards</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Cutting Boards', 'Wood')">Wood → Oak, Bamboo</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Cutting Boards', 'Plastic')">Plastic → Colored</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Kitchen', 'Pots & Pans')">🍳 Pots & Pans</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Pots & Pans', 'Steel')">Steel → Stainless</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Pots & Pans', 'Iron')">Iron → Cast Iron</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Pots & Pans', 'Copper')">Copper → Classic</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Kitchen', 'Appliances')">⚡ Appliances</a>
-                                <div class="level-3-panel">
-                                    <h5>Type</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Appliances', 'Hobs')">Hobs → Gas, Electric</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Appliances', 'Ovens')">Ovens → Built-in</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Appliances', 'Dishwashers')">Dishwashers → Built-in</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Kitchen', 'Storage')">📦 Storage</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Storage', 'Plastic')">Plastic → Colored</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Storage', 'Glass')">Glass → Jars</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Kitchen', 'Storage', 'Steel')">Steel → Containers</a></li>
-                                    </ul>
-                                </div>
-                            </li>
+                            <li><a onclick="navigateToSubCategory('Kitchens', 'Plates')">🍽️ Plates</a></li>
+                            <li><a onclick="navigateToSubCategory('Kitchens', 'Spoons')">🥄 Spoons</a></li>
+                            <li><a onclick="navigateToSubCategory('Kitchens', 'Mugs')">☕ Mugs</a></li>
+                            <li><a onclick="navigateToSubCategory('Kitchens', 'Knives')">🔪 Knives</a></li>
+                            <li><a onclick="navigateToSubCategory('Kitchens', 'Cutting Boards')">🪵 Cutting Boards</a></li>
+                            <li><a onclick="navigateToSubCategory('Kitchens', 'Pots & Pans')">🍳 Pots & Pans</a></li>
+                            <li><a onclick="navigateToSubCategory('Kitchens', 'Appliances')">⚡ Appliances</a></li>
+                            <li><a onclick="navigateToSubCategory('Kitchens', 'Storage')">📦 Storage</a></li>
                         </ul>
                     </div>
 
@@ -667,182 +591,105 @@
                     <div class="mega-category">
                         <h4 onclick="navigateToCategory('Bedrooms')"><i class="fas fa-bed"></i> Bedrooms</h4>
                         <ul>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Bedrooms', 'Beds')">🛏️ Beds</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Beds', 'Wood')">Wood → Oak, Walnut</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Beds', 'Metal')">Metal → Iron, Steel</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Beds', 'Upholstered')">Upholstered → Velvet</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Bedrooms', 'Wardrobes')">🚪 Wardrobes</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Wardrobes', 'Wood')">Wood → Oak, Maple</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Wardrobes', 'Metal')">Metal → Steel</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Wardrobes', 'Glass')">Glass → Mirrored</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Bedrooms', 'Nightstands')">🕯️ Nightstands</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Nightstands', 'Wood')">Wood → Oak, Teak</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Nightstands', 'Metal')">Metal → Steel</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Bedrooms', 'Dressers')">🪞 Dressers</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Dressers', 'Wood')">Wood → Oak, Walnut</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Dressers', 'Metal')">Metal → Iron</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Bedrooms', 'Mattresses')">🛌 Mattresses</a>
-                                <div class="level-3-panel">
-                                    <h5>Type</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Mattresses', 'Memory Foam')">Memory Foam → Firm, Soft</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Mattresses', 'Latex')">Latex → Natural</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Mattresses', 'Spring')">Spring → Pocket</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Bedrooms', 'Headboards')">🪑 Headboards</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Headboards', 'Wood')">Wood → Oak, Pine</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Headboards', 'Upholstered')">Upholstered → Velvet</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Bedrooms', 'Bedding')">🧺 Bedding</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Bedding', 'Cotton')">Cotton → Egyptian</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Bedding', 'Silk')">Silk → Mulberry</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Bedding', 'Microfiber')">Microfiber → Soft</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Bedrooms', 'Pillows')">💤 Pillows</a>
-                                <div class="level-3-panel">
-                                    <h5>Type</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Pillows', 'Memory Foam')">Memory Foam → Contour</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Pillows', 'Down')">Down → Duck</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Pillows', 'Synthetic')">Synthetic → Polyester</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Bedrooms', 'Mirrors')">🪞 Mirrors</a>
-                                <div class="level-3-panel">
-                                    <h5>Frame</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Mirrors', 'Wood')">Wood → Oak</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Mirrors', 'Metal')">Metal → Brass</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Bedrooms', 'Lamps')">💡 Lamps</a>
-                                <div class="level-3-panel">
-                                    <h5>Base</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Lamps', 'Ceramic')">Ceramic → White</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Lamps', 'Metal')">Metal → Brass</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Bedrooms', 'Lamps', 'Wood')">Wood → Walnut</a></li>
-                                    </ul>
-                                </div>
-                            </li>
+                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Beds')">🛏️ Beds</a></li>
+                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Wardrobes')">🚪 Wardrobes</a></li>
+                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Nightstands')">🕯️ Nightstands</a></li>
+                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Dressers')">🪞 Dressers</a></li>
+                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Mattresses')">🛌 Mattresses</a></li>
+                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Headboards')">🪑 Headboards</a></li>
+                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Bedding')">🧺 Bedding</a></li>
+                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Pillows')">💤 Pillows</a></li>
+                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Mirrors')">🪞 Mirrors</a></li>
+                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Lamps')">💡 Lamps</a></li>
                         </ul>
                     </div>
 
-                    <!-- HOME OFFICE -->
+                    <!-- HOME OFFICES -->
                     <div class="mega-category">
-                        <h4 onclick="navigateToCategory('Home Office')"><i class="fas fa-laptop"></i> Home Office</h4>
+                        <h4 onclick="navigateToCategory('Home Offices')"><i class="fas fa-laptop"></i> Home Offices</h4>
                         <ul>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Home Office', 'Desks')">🖥️ Desks</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Desks', 'Wood')">Wood → Oak, Walnut</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Desks', 'Metal')">Metal → Steel</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Desks', 'Glass')">Glass → Tempered</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Home Office', 'Chairs')">💺 Chairs</a>
-                                <div class="level-3-panel">
-                                    <h5>Type</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Chairs', 'Ergonomic')">Ergonomic → Mesh</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Chairs', 'Executive')">Executive → Leather</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Chairs', 'Gaming')">Gaming → RGB</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Home Office', 'Bookshelves')">📚 Bookshelves</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Bookshelves', 'Wood')">Wood → Oak, Teak</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Bookshelves', 'Metal')">Metal → Steel</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Home Office', 'Filing')">🗄️ Filing Cabinets</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Filing', 'Metal')">Metal → Steel</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Filing', 'Wood')">Wood → Oak</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Home Office', 'Accessories')">🖱️ Accessories</a>
-                                <div class="level-3-panel">
-                                    <h5>Type</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Accessories', 'Laptop Stands')">Laptop Stands → Metal</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Accessories', 'Organizers')">Organizers → Acrylic</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Accessories', 'Cable')">Cable → Clips</a></li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="has-sub">
-                                <a onclick="navigateToSubCategory('Home Office', 'Storage')">📦 Storage</a>
-                                <div class="level-3-panel">
-                                    <h5>Material</h5>
-                                    <ul>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Storage', 'Plastic')">Plastic → Colored</a></li>
-                                        <li><a onclick="navigateToSubSubCategory('Home Office', 'Storage', 'Wood')">Wood → Oak</a></li>
-                                    </ul>
-                                </div>
-                            </li>
+                            <li><a onclick="navigateToSubCategory('Home Offices', 'Desks')">🖥️ Desks</a></li>
+                            <li><a onclick="navigateToSubCategory('Home Offices', 'Chairs')">💺 Chairs</a></li>
+                            <li><a onclick="navigateToSubCategory('Home Offices', 'Bookshelves')">📚 Bookshelves</a></li>
+                            <li><a onclick="navigateToSubCategory('Home Offices', 'Filing Cabinets')">🗄️ Filing Cabinets</a></li>
+                            <li><a onclick="navigateToSubCategory('Home Offices', 'Accessories')">🖱️ Accessories</a></li>
+                            <li><a onclick="navigateToSubCategory('Home Offices', 'Storage')">📦 Storage</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- CABINETS & UNITS -->
+                    <div class="mega-category">
+                        <h4 onclick="navigateToCategory('Cabinets & Units')"><i class="fas fa-cabinet"></i> Cabinets</h4>
+                        <ul>
+                            <li><a onclick="navigateToSubCategory('Cabinets & Units', 'Base Units')">Base Units</a></li>
+                            <li><a onclick="navigateToSubCategory('Cabinets & Units', 'Wall Units')">Wall Units</a></li>
+                            <li><a onclick="navigateToSubCategory('Cabinets & Units', 'Tall Units')">Tall Units</a></li>
+                            <li><a onclick="navigateToSubCategory('Cabinets & Units', 'Island Units')">Island Units</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- WORKTOPS -->
+                    <div class="mega-category">
+                        <h4 onclick="navigateToCategory('Worktops')"><i class="fas fa-th-large"></i> Worktops</h4>
+                        <ul>
+                            <li><a onclick="navigateToSubCategory('Worktops', 'Laminate')">Laminate</a></li>
+                            <li><a onclick="navigateToSubCategory('Worktops', 'Quartz')">Quartz</a></li>
+                            <li><a onclick="navigateToSubCategory('Worktops', 'Granite')">Granite</a></li>
+                            <li><a onclick="navigateToSubCategory('Worktops', 'Marble')">Marble</a></li>
+                            <li><a onclick="navigateToSubCategory('Worktops', 'Wood')">Wood</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- APPLIANCES -->
+                    <div class="mega-category">
+                        <h4 onclick="navigateToCategory('Appliances')"><i class="fas fa-plug"></i> Appliances</h4>
+                        <ul>
+                            <li><a onclick="navigateToSubCategory('Appliances', 'Hobs')">Hobs</a></li>
+                            <li><a onclick="navigateToSubCategory('Appliances', 'Ovens')">Ovens</a></li>
+                            <li><a onclick="navigateToSubCategory('Appliances', 'Dishwashers')">Dishwashers</a></li>
+                            <li><a onclick="navigateToSubCategory('Appliances', 'Microwaves')">Microwaves</a></li>
+                            <li><a onclick="navigateToSubCategory('Appliances', 'Fridges')">Fridges</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- BEDS & HEADBOARDS -->
+                    <div class="mega-category">
+                        <h4 onclick="navigateToCategory('Beds & Headboards')"><i class="fas fa-bed"></i> Beds</h4>
+                        <ul>
+                            <li><a onclick="navigateToSubCategory('Beds & Headboards', 'King Beds')">King Beds</a></li>
+                            <li><a onclick="navigateToSubCategory('Beds & Headboards', 'Double Beds')">Double Beds</a></li>
+                            <li><a onclick="navigateToSubCategory('Beds & Headboards', 'Single Beds')">Single Beds</a></li>
+                            <li><a onclick="navigateToSubCategory('Beds & Headboards', 'Headboards')">Headboards</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- WARDROBES -->
+                    <div class="mega-category">
+                        <h4 onclick="navigateToCategory('Wardrobes')"><i class="fas fa-door-open"></i> Wardrobes</h4>
+                        <ul>
+                            <li><a onclick="navigateToSubCategory('Wardrobes', 'Sliding Wardrobes')">Sliding</a></li>
+                            <li><a onclick="navigateToSubCategory('Wardrobes', 'Hinged Wardrobes')">Hinged</a></li>
+                            <li><a onclick="navigateToSubCategory('Wardrobes', 'Fitted Wardrobes')">Fitted</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- DESKS -->
+                    <div class="mega-category">
+                        <h4 onclick="navigateToCategory('Desks')"><i class="fas fa-desktop"></i> Desks</h4>
+                        <ul>
+                            <li><a onclick="navigateToSubCategory('Desks', 'Executive Desks')">Executive</a></li>
+                            <li><a onclick="navigateToSubCategory('Desks', 'Standing Desks')">Standing</a></li>
+                            <li><a onclick="navigateToSubCategory('Desks', 'Corner Desks')">Corner</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- OFFICE CHAIRS -->
+                    <div class="mega-category">
+                        <h4 onclick="navigateToCategory('Office Chairs')"><i class="fas fa-chair"></i> Office Chairs</h4>
+                        <ul>
+                            <li><a onclick="navigateToSubCategory('Office Chairs', 'Ergonomic Chairs')">Ergonomic</a></li>
+                            <li><a onclick="navigateToSubCategory('Office Chairs', 'Executive Chairs')">Executive</a></li>
+                            <li><a onclick="navigateToSubCategory('Office Chairs', 'Gaming Chairs')">Gaming</a></li>
                         </ul>
                     </div>
 
@@ -956,10 +803,16 @@
                     <div class="filters-left">
                         <select id="categoryFilter" onchange="filterProducts()">
                             <option value="all">All Categories</option>
-                            <option value="Kitchen">Kitchen</option>
-                            <option value="Home">Home</option>
+                            <option value="Kitchens">Kitchens</option>
                             <option value="Bedrooms">Bedrooms</option>
-                            <option value="Home Office">Home Office</option>
+                            <option value="Home Offices">Home Offices</option>
+                            <option value="Cabinets & Units">Cabinets & Units</option>
+                            <option value="Worktops">Worktops</option>
+                            <option value="Appliances">Appliances</option>
+                            <option value="Beds & Headboards">Beds & Headboards</option>
+                            <option value="Wardrobes">Wardrobes</option>
+                            <option value="Desks">Desks</option>
+                            <option value="Office Chairs">Office Chairs</option>
                         </select>
                         <div class="price-range">
                             <span>£</span>
@@ -1158,7 +1011,19 @@
                             <div class="form-row">
                                 <div class="form-group"><label>Product Name *</label><input type="text" id="prodName" placeholder="Product name" /></div>
                                 <div class="form-group"><label>Category *</label>
-                                    <select id="prodCategory"></select>
+                                    <select id="prodCategory">
+                                        <option value="">-- Select Category --</option>
+                                        <option value="1">Kitchens</option>
+                                        <option value="2">Bedrooms</option>
+                                        <option value="3">Home Offices</option>
+                                        <option value="4">Cabinets & Units</option>
+                                        <option value="5">Worktops</option>
+                                        <option value="6">Appliances</option>
+                                        <option value="7">Beds & Headboards</option>
+                                        <option value="8">Wardrobes</option>
+                                        <option value="9">Desks</option>
+                                        <option value="10">Office Chairs</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -1631,30 +1496,30 @@
 
         // ===== DEFAULT PRODUCTS =====
         const defaultProducts = [
-            { id: 1, name: 'Heavy Duty Pencil Hob', category: 'Kitchen', price: 895, old_price: 1095, image: 'https://i.ibb.co/nsF2ydLW/23-WREN-S114-HEAVY-DUTY-PENCIL-HOB-D01-0000.jpg' },
-            { id: 2, name: 'Luxury Pet Bed', category: 'Home', price: 495, old_price: null, image: 'https://i.ibb.co/21K6PTS7/23-WREN-S114-HEAVY-DUTY-PENCIL-PETBED-D01-0000.jpg' },
-            { id: 3, name: 'Built-in Dishwasher', category: 'Kitchen', price: 1495, old_price: null, image: 'https://i.ibb.co/CpB15hSt/23-WREN-S114-HEAVY-DUTY-PENCIL-DISHWASHER-D01-0000.jpg' },
-            { id: 4, name: '300mm Wine Cooler', category: 'Kitchen', price: 1695, old_price: 1895, image: 'https://i.ibb.co/CKSpgnck/UK-Easy-Fit-Autograph-Cashmere-Gloss-300mm-Wine-Cooler.jpg' },
-            { id: 5, name: 'EST Unit', category: 'Kitchen', price: 1095, old_price: null, image: 'https://i.ibb.co/4gRmmgnh/23-WREN-S114-HEAVY-DUTY-PENCIL-EST-D01-0000.jpg' },
-            { id: 6, name: 'Magic Corner', category: 'Kitchen', price: 1295, old_price: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
-            { id: 7, name: 'Premium Kitchen Tap', category: 'Kitchen', price: 695, old_price: null, image: 'https://i.ibb.co/TqMh7Qsm/23-WREN-S114-HEAVY-DUTY-PENCIL-TAP-D01-0000.jpg' },
-            { id: 8, name: 'Built-in Microwave', category: 'Kitchen', price: 1295, old_price: null, image: 'https://i.ibb.co/dwjHbsmt/UK-Easy-Fit-Autograph-Cashmere-Gloss-Microwave.jpg' },
-            { id: 9, name: 'Navy Blue Silk Finish', category: 'Kitchen', price: 2395, old_price: 2795, image: 'https://i.ibb.co/r2x5xM1Z/Easy-Fit-Autograph-Navy-Blue-Silk-JPG.jpg' },
-            { id: 10, name: 'Moss Green Slab', category: 'Kitchen', price: 2195, old_price: 2595, image: 'https://i.ibb.co/bRRRDYQx/Easy-Fit-Slab-Moss-Green-Hero.jpg' },
-            { id: 11, name: 'Cashmere Gloss Magic Corner', category: 'Kitchen', price: 1395, old_price: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
-            { id: 12, name: 'Shaker Chelsea Cashmere', category: 'Kitchen', price: 1895, old_price: 2195, image: 'https://i.ibb.co/G4h8d3kh/Easy-Fit-Shaker-Chelsea-Cashmere-Corner-Carousel-Unit.jpg' },
-            { id: 13, name: 'Luxury Bed Frame', category: 'Bedrooms', price: 1499, old_price: 1799, image: 'https://images.pexels.com/photos/271705/pexels-photo-271705.jpeg?w=500' },
-            { id: 14, name: 'Modern Wardrobe', category: 'Bedrooms', price: 1899, old_price: 2199, image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?w=500' },
+            { id: 1, name: 'Heavy Duty Pencil Hob', category: 'Kitchens', price: 895, old_price: 1095, image: 'https://i.ibb.co/nsF2ydLW/23-WREN-S114-HEAVY-DUTY-PENCIL-HOB-D01-0000.jpg' },
+            { id: 2, name: 'Luxury Pet Bed', category: 'Bedrooms', price: 495, old_price: null, image: 'https://i.ibb.co/21K6PTS7/23-WREN-S114-HEAVY-DUTY-PENCIL-PETBED-D01-0000.jpg' },
+            { id: 3, name: 'Built-in Dishwasher', category: 'Appliances', price: 1495, old_price: null, image: 'https://i.ibb.co/CpB15hSt/23-WREN-S114-HEAVY-DUTY-PENCIL-DISHWASHER-D01-0000.jpg' },
+            { id: 4, name: '300mm Wine Cooler', category: 'Appliances', price: 1695, old_price: 1895, image: 'https://i.ibb.co/CKSpgnck/UK-Easy-Fit-Autograph-Cashmere-Gloss-300mm-Wine-Cooler.jpg' },
+            { id: 5, name: 'EST Unit', category: 'Cabinets & Units', price: 1095, old_price: null, image: 'https://i.ibb.co/4gRmmgnh/23-WREN-S114-HEAVY-DUTY-PENCIL-EST-D01-0000.jpg' },
+            { id: 6, name: 'Magic Corner', category: 'Cabinets & Units', price: 1295, old_price: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
+            { id: 7, name: 'Premium Kitchen Tap', category: 'Worktops', price: 695, old_price: null, image: 'https://i.ibb.co/TqMh7Qsm/23-WREN-S114-HEAVY-DUTY-PENCIL-TAP-D01-0000.jpg' },
+            { id: 8, name: 'Built-in Microwave', category: 'Appliances', price: 1295, old_price: null, image: 'https://i.ibb.co/dwjHbsmt/UK-Easy-Fit-Autograph-Cashmere-Gloss-Microwave.jpg' },
+            { id: 9, name: 'Navy Blue Silk Finish', category: 'Kitchens', price: 2395, old_price: 2795, image: 'https://i.ibb.co/r2x5xM1Z/Easy-Fit-Autograph-Navy-Blue-Silk-JPG.jpg' },
+            { id: 10, name: 'Moss Green Slab', category: 'Kitchens', price: 2195, old_price: 2595, image: 'https://i.ibb.co/bRRRDYQx/Easy-Fit-Slab-Moss-Green-Hero.jpg' },
+            { id: 11, name: 'Cashmere Gloss Magic Corner', category: 'Cabinets & Units', price: 1395, old_price: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
+            { id: 12, name: 'Shaker Chelsea Cashmere', category: 'Kitchens', price: 1895, old_price: 2195, image: 'https://i.ibb.co/G4h8d3kh/Easy-Fit-Shaker-Chelsea-Cashmere-Corner-Carousel-Unit.jpg' },
+            { id: 13, name: 'Luxury Bed Frame', category: 'Beds & Headboards', price: 1499, old_price: 1799, image: 'https://images.pexels.com/photos/271705/pexels-photo-271705.jpeg?w=500' },
+            { id: 14, name: 'Modern Wardrobe', category: 'Wardrobes', price: 1899, old_price: 2199, image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?w=500' },
             { id: 15, name: 'Bedside Table', category: 'Bedrooms', price: 399, old_price: null, image: 'https://images.pexels.com/photos/271706/pexels-photo-271706.jpeg?w=500' },
             { id: 16, name: 'Dressing Table', category: 'Bedrooms', price: 899, old_price: null, image: 'https://images.pexels.com/photos/3861972/pexels-photo-3861972.jpeg?w=500' },
             { id: 17, name: 'Memory Foam Mattress', category: 'Bedrooms', price: 749, old_price: 999, image: 'https://images.pexels.com/photos/3772098/pexels-photo-3772098.jpeg?w=500' },
-            { id: 18, name: 'Luxury Headboard', category: 'Bedrooms', price: 599, old_price: null, image: 'https://images.pexels.com/photos/271707/pexels-photo-271707.jpeg?w=500' },
-            { id: 19, name: 'Executive Desk', category: 'Home Office', price: 1299, old_price: null, image: 'https://images.pexels.com/photos/276583/pexels-photo-276583.jpeg?w=500' },
-            { id: 20, name: 'Ergonomic Office Chair', category: 'Home Office', price: 699, old_price: null, image: 'https://images.pexels.com/photos/112466/pexels-photo-112466.jpeg?w=500' },
-            { id: 21, name: 'Bookcase', category: 'Home Office', price: 1099, old_price: null, image: 'https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg?w=500' },
-            { id: 22, name: 'Filing Cabinet', category: 'Home Office', price: 599, old_price: null, image: 'https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg?w=500' },
-            { id: 23, name: 'Standing Desk Converter', category: 'Home Office', price: 349, old_price: null, image: 'https://images.pexels.com/photos/1571461/pexels-photo-1571461.jpeg?w=500' },
-            { id: 24, name: 'Office Bookshelf Set', category: 'Home Office', price: 799, old_price: 999, image: 'https://images.pexels.com/photos/1571462/pexels-photo-1571462.jpeg?w=500' }
+            { id: 18, name: 'Luxury Headboard', category: 'Beds & Headboards', price: 599, old_price: null, image: 'https://images.pexels.com/photos/271707/pexels-photo-271707.jpeg?w=500' },
+            { id: 19, name: 'Executive Desk', category: 'Desks', price: 1299, old_price: null, image: 'https://images.pexels.com/photos/276583/pexels-photo-276583.jpeg?w=500' },
+            { id: 20, name: 'Ergonomic Office Chair', category: 'Office Chairs', price: 699, old_price: null, image: 'https://images.pexels.com/photos/112466/pexels-photo-112466.jpeg?w=500' },
+            { id: 21, name: 'Bookcase', category: 'Home Offices', price: 1099, old_price: null, image: 'https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg?w=500' },
+            { id: 22, name: 'Filing Cabinet', category: 'Home Offices', price: 599, old_price: null, image: 'https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg?w=500' },
+            { id: 23, name: 'Standing Desk Converter', category: 'Desks', price: 349, old_price: null, image: 'https://images.pexels.com/photos/1571461/pexels-photo-1571461.jpeg?w=500' },
+            { id: 24, name: 'Office Bookshelf Set', category: 'Home Offices', price: 799, old_price: 999, image: 'https://images.pexels.com/photos/1571462/pexels-photo-1571462.jpeg?w=500' }
         ];
 
         let cachedProducts = null;
@@ -1706,28 +1571,52 @@
             try {
                 const { data, error } = await supabaseClient.from('categories').select('*').order('id');
                 if (error) throw error;
-                if (data) {
+                if (data && data.length > 0) {
                     cachedCategories = data;
                     setLocalData('sk_categories', data);
                     return data;
                 }
             } catch (e) { console.warn('Supabase fetch failed:', e); }
+
             const local = getLocalData('sk_categories', []);
-            cachedCategories = local;
-            return local;
+            if (local && local.length > 0) {
+                cachedCategories = local;
+                return local;
+            }
+
+            // DEFAULT CATEGORIES - SAME AS DASHBOARD
+            const defaultCats = [
+                { id: 1, name: 'Kitchens' },
+                { id: 2, name: 'Bedrooms' },
+                { id: 3, name: 'Home Offices' },
+                { id: 4, name: 'Cabinets & Units' },
+                { id: 5, name: 'Worktops' },
+                { id: 6, name: 'Appliances' },
+                { id: 7, name: 'Beds & Headboards' },
+                { id: 8, name: 'Wardrobes' },
+                { id: 9, name: 'Desks' },
+                { id: 10, name: 'Office Chairs' }
+            ];
+            cachedCategories = defaultCats;
+            return defaultCats;
         }
 
-        // FIXED: Category dropdown with defaults
         function loadCategoryDropdown() {
             const select = document.getElementById('prodCategory');
             if (!select) return;
             select.innerHTML = '';
 
             const defaultCats = [
-                { id: 1, name: 'Kitchen' },
+                { id: 1, name: 'Kitchens' },
                 { id: 2, name: 'Bedrooms' },
-                { id: 3, name: 'Home' },
-                { id: 4, name: 'Home Office' }
+                { id: 3, name: 'Home Offices' },
+                { id: 4, name: 'Cabinets & Units' },
+                { id: 5, name: 'Worktops' },
+                { id: 6, name: 'Appliances' },
+                { id: 7, name: 'Beds & Headboards' },
+                { id: 8, name: 'Wardrobes' },
+                { id: 9, name: 'Desks' },
+                { id: 10, name: 'Office Chairs' }
             ];
 
             const cats = (cachedCategories && cachedCategories.length > 0) ? cachedCategories : defaultCats;
