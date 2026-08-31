@@ -2512,7 +2512,7 @@
             });
         }
 
-       async function saveProduct() {
+      async function saveProduct() {
     const id = document.getElementById('editProductId').value;
     const name = document.getElementById('prodName').value.trim();
     const categoryId = document.getElementById('prodCategory').value;
@@ -2552,7 +2552,6 @@
         let products = await getProducts();
 
         if (id) {
-            // Update existing product
             const index = products.findIndex(p => p.id === parseInt(id));
             if (index > -1) {
                 products[index] = {
@@ -2567,7 +2566,6 @@
             }
             showToast('Product updated!');
         } else {
-            // Add new product
             const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
             const newProduct = {
                 id: newId,
@@ -2583,7 +2581,6 @@
             showToast('Product added!');
         }
 
-        // Save to Supabase
         const result = await saveProducts(products);
         console.log('Save result:', result);
 
