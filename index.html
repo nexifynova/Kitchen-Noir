@@ -103,6 +103,15 @@
         .feature-card .icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(212,175,55,.12); display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--gold); margin: 0 auto 14px; }
         .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
         .feature-card p { color: var(--gray); font-size: 13px; line-height: 1.6; }
+        /* Category Tree Styles */
+        .category-tree-view { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; padding: 12px 16px; background: var(--light); border-radius: var(--radius); }
+        .category-tree-view .cat-item { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; background: var(--white); border: 1px solid #ddd; font-size: 13px; cursor: pointer; transition: var(--transition); }
+        .category-tree-view .cat-item:hover { border-color: var(--gold); background: var(--gold-light); }
+        .category-tree-view .cat-item.active { border-color: var(--gold); background: var(--gold); color: var(--primary); font-weight: 600; }
+        .category-tree-view .cat-item .sub-icon { font-size: 12px; color: var(--gray); }
+        .category-tree-view .cat-item.level-1 { margin-left: 16px; }
+        .category-tree-view .cat-item.level-2 { margin-left: 32px; }
+        .category-tree-view .cat-item.level-3 { margin-left: 48px; }
         .filter-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 24px; padding: 16px 20px; background: var(--light); border-radius: var(--radius); }
         .filter-bar .filters-left { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         .filter-bar select, .filter-bar input[type="number"] { padding: 8px 14px; border-radius: 50px; border: 1px solid #ddd; font-size: 13px; font-family: 'Inter', sans-serif; background: var(--white); transition: var(--transition); }
@@ -340,6 +349,13 @@
         .image-preview { margin-top: 10px; max-width: 150px; max-height: 150px; border-radius: 8px; overflow: hidden; border: 2px solid #ddd; display: none; }
         .image-preview img { width: 100%; height: auto; display: block; }
         .image-preview.show { display: block; }
+
+        /* Breadcrumb */
+        .breadcrumb { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--light); border-radius: var(--radius); margin-bottom: 20px; font-size: 14px; flex-wrap: wrap; }
+        .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; transition: var(--transition); }
+        .breadcrumb a:hover { color: var(--gold-dark); text-decoration: underline; }
+        .breadcrumb .separator { color: var(--gray); }
+        .breadcrumb .current { color: var(--primary); font-weight: 600; }
     </style>
 </head>
 <body>
@@ -486,21 +502,27 @@
             </div>
         </section>
 
-        <!-- PRODUCTS PAGE -->
+        <!-- PRODUCTS PAGE (WITH TREE VIEW) -->
         <section class="page" id="page-products">
             <div class="container section-padding">
                 <div class="section-heading">
                     <span class="sub">Our Collection</span>
                     <h2>All <span>Products</span></h2>
                 </div>
+
+                <!-- ===== CATEGORY TREE VIEW ===== -->
+                <div class="category-tree-view" id="categoryTreeView"></div>
+
+                <!-- ===== BREADCRUMB ===== -->
+                <div class="breadcrumb" id="breadcrumb">
+                    <a onclick="filterByCategory(null)">🏠 All Products</a>
+                </div>
+
+                <!-- ===== FILTER BAR ===== -->
                 <div class="filter-bar" id="filterBar">
                     <div class="filters-left">
                         <select id="categoryFilter" onchange="filterProducts()">
                             <option value="all">All Categories</option>
-                            <option value="Kitchen">Kitchen</option>
-                            <option value="Home">Home</option>
-                            <option value="Bedrooms">Bedrooms</option>
-                            <option value="Home Office">Home Office</option>
                         </select>
                         <div class="price-range">
                             <span>£</span>
@@ -519,6 +541,7 @@
                     </div>
                     <div id="filterTags" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
                 </div>
+
                 <div class="products-grid" id="allProducts"></div>
                 <div class="no-products" id="noProducts" style="display:none;">
                     <i class="fas fa-search"></i>
@@ -1245,7 +1268,7 @@
         // ===== CATEGORIES =====
         async function getCategories() {
             try {
-                const { data, error } = await supabaseClient.from('categories').select('*').order('id');
+                const { data, error } = await supabaseClient.from('categories').select('*').order('level', { ascending: true });
                 if (error) throw error;
                 if (data) {
                     cachedCategories = data;
@@ -1258,6 +1281,31 @@
             return local;
         }
 
+        function getCategoryTree(categories, parentId = null, level = 0) {
+            const result = [];
+            const children = categories.filter(c => c.parent_id === parentId);
+            children.forEach(c => {
+                c.level = level;
+                result.push(c);
+                const subChildren = getCategoryTree(categories, c.id, level + 1);
+                result.push(...subChildren);
+            });
+            return result;
+        }
+
+        function getCategoryNameById(id) {
+            const cat = cachedCategories.find(c => c.id === id);
+            return cat ? cat.name : 'Uncategorized';
+        }
+
+        function getCategoryPath(id) {
+            const cat = cachedCategories.find(c => c.id === id);
+            if (!cat) return '';
+            if (cat.parent_id === null) return cat.name;
+            const parentPath = getCategoryPath(cat.parent_id);
+            return parentPath ? `${parentPath} → ${cat.name}` : cat.name;
+        }
+
         function loadCategoryDropdown() {
             const select = document.getElementById('prodCategory');
             if (!select) return;
@@ -1267,13 +1315,35 @@
             defaultOpt.textContent = '-- Select Category --';
             select.appendChild(defaultOpt);
             if (cachedCategories && cachedCategories.length > 0) {
-                cachedCategories.forEach(cat => {
+                const tree = getCategoryTree(cachedCategories);
+                tree.forEach(cat => {
                     const opt = document.createElement('option');
                     opt.value = cat.id;
-                    opt.textContent = cat.name;
+                    const indent = '—'.repeat(cat.level);
+                    opt.textContent = indent + ' ' + cat.name;
                     select.appendChild(opt);
                 });
             }
+        }
+
+        function renderCategoryTreeView() {
+            const container = document.getElementById('categoryTreeView');
+            if (!container) return;
+            container.innerHTML = '';
+            if (cachedCategories.length === 0) {
+                container.innerHTML = '<span style="color:var(--gray);font-size:14px;">No categories available.</span>';
+                return;
+            }
+            const tree = getCategoryTree(cachedCategories);
+            tree.forEach(cat => {
+                const levelClass = 'level-' + cat.level;
+                const icon = cat.level === 0 ? '📁' : '📂';
+                const div = document.createElement('div');
+                div.className = `cat-item ${levelClass}`;
+                div.innerHTML = `<span class="sub-icon">${icon}</span> ${cat.name}`;
+                div.onclick = () => filterByCategory(cat.id);
+                container.appendChild(div);
+            });
         }
 
         // ===== USERS =====
@@ -1460,17 +1530,10 @@
         }
 
         // ================================================================
-        // 4. CATEGORY FUNCTIONS
-        // ================================================================
-        function getCategoryNameById(id) {
-            const cat = cachedCategories.find(c => c.id === id);
-            return cat ? cat.name : 'Uncategorized';
-        }
-
-        // ================================================================
-        // 5. PRODUCT RENDERING
+        // 4. PRODUCT RENDERING
         // ================================================================
         let filteredProducts = [];
+        let selectedCategoryId = null;
 
         function createProductCard(p) {
             const wishlist = JSON.parse(localStorage.getItem('sk_wishlist')) || [];
@@ -1518,10 +1581,37 @@
             filterProducts();
         }
 
+        function filterByCategory(categoryId) {
+            selectedCategoryId = categoryId;
+            // Update breadcrumb
+            const breadcrumb = document.getElementById('breadcrumb');
+            if (categoryId === null) {
+                breadcrumb.innerHTML = `<a onclick="filterByCategory(null)">🏠 All Products</a>`;
+            } else {
+                const cat = cachedCategories.find(c => c.id === categoryId);
+                if (cat) {
+                    const path = getCategoryPath(categoryId);
+                    breadcrumb.innerHTML = `<a onclick="filterByCategory(null)">🏠 All Products</a><span class="separator"> › </span><span class="current">${path}</span>`;
+                }
+            }
+            // Update tree view active state
+            document.querySelectorAll('.category-tree-view .cat-item').forEach(el => {
+                el.classList.remove('active');
+            });
+            if (categoryId) {
+                document.querySelectorAll('.category-tree-view .cat-item').forEach(el => {
+                    if (el.textContent.trim() === getCategoryNameById(categoryId)) {
+                        el.classList.add('active');
+                    }
+                });
+            }
+            filterProducts();
+        }
+
         async function filterProducts() {
             const products = await getProducts();
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-            const category = document.getElementById('categoryFilter').value;
+            const categoryId = selectedCategoryId || document.getElementById('categoryFilter').value;
             const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
             const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
             const sort = document.getElementById('sortFilter').value;
@@ -1529,7 +1619,23 @@
             let filtered = products.filter(p => {
                 const catName = p.category_id ? getCategoryNameById(p.category_id) : p.category || '';
                 const matchSearch = p.name.toLowerCase().includes(searchTerm) || catName.toLowerCase().includes(searchTerm);
-                const matchCategory = category === 'all' || catName === category;
+                // Category filter: if categoryId is a number, filter by category_id
+                let matchCategory = true;
+                if (categoryId && categoryId !== 'all') {
+                    const catId = parseInt(categoryId);
+                    // Check if product belongs to this category or any sub-category
+                    const allSubCategories = [];
+                    const findSubCategories = (id) => {
+                        const children = cachedCategories.filter(c => c.parent_id === id);
+                        children.forEach(child => {
+                            allSubCategories.push(child.id);
+                            findSubCategories(child.id);
+                        });
+                    };
+                    findSubCategories(catId);
+                    allSubCategories.push(catId);
+                    matchCategory = allSubCategories.includes(p.category_id);
+                }
                 const matchPrice = p.price >= minPrice && p.price <= maxPrice;
                 return matchSearch && matchCategory && matchPrice;
             });
@@ -1551,11 +1657,14 @@
             const container = document.getElementById('filterTags');
             const tags = [];
             const search = document.getElementById('searchInput').value.trim();
-            const category = document.getElementById('categoryFilter').value;
+            const categoryId = selectedCategoryId || document.getElementById('categoryFilter').value;
             const min = document.getElementById('minPrice').value;
             const max = document.getElementById('maxPrice').value;
             if (search) tags.push(`Search: "${search}"`);
-            if (category !== 'all') tags.push(`Category: ${category}`);
+            if (categoryId && categoryId !== 'all') {
+                const catName = getCategoryNameById(parseInt(categoryId));
+                if (catName) tags.push(`Category: ${catName}`);
+            }
             if (min) tags.push(`Min: £${min}`);
             if (max) tags.push(`Max: £${max}`);
             container.innerHTML = tags.map(t => `<span class="filter-tag">${t} <span class="remove" onclick="clearFilters()">×</span></span>`).join('');
@@ -1567,6 +1676,9 @@
             document.getElementById('minPrice').value = '';
             document.getElementById('maxPrice').value = '';
             document.getElementById('sortFilter').value = 'default';
+            selectedCategoryId = null;
+            document.getElementById('breadcrumb').innerHTML = `<a onclick="filterByCategory(null)">🏠 All Products</a>`;
+            document.querySelectorAll('.category-tree-view .cat-item').forEach(el => el.classList.remove('active'));
             filterProducts();
         }
 
@@ -1597,7 +1709,7 @@
         }
 
         // ================================================================
-        // 6. CART FUNCTIONS
+        // 5. CART FUNCTIONS
         // ================================================================
         function addToCart(productId) {
             if (event) event.stopPropagation();
@@ -1681,7 +1793,7 @@
         }
 
         // ================================================================
-        // 7. WISHLIST
+        // 6. WISHLIST
         // ================================================================
         async function toggleWishlist(productId, event) {
             if (event) event.stopPropagation();
@@ -1727,7 +1839,7 @@
         }
 
         // ================================================================
-        // 8. REVIEWS
+        // 7. REVIEWS
         // ================================================================
         function openReviewModal(productId) {
             if (event) event.stopPropagation();
@@ -1766,7 +1878,7 @@
         }
 
         // ================================================================
-        // 9. AUTHENTICATION
+        // 8. AUTHENTICATION
         // ================================================================
         function openAuthModal() { document.getElementById('authModal').classList.add('active'); document.body.style.overflow = 'hidden'; switchAuthTab('login'); }
         function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
@@ -1862,7 +1974,7 @@
         }
 
         // ================================================================
-        // 10. CHECKOUT
+        // 9. CHECKOUT
         // ================================================================
         function toggleCardDetails() {
             const method = document.getElementById('paymentMethod').value;
@@ -1967,7 +2079,7 @@
         }
 
         // ================================================================
-        // 11. CONTACT FORM
+        // 10. CONTACT FORM
         // ================================================================
         async function submitContact(event) {
             event.preventDefault();
@@ -2003,7 +2115,7 @@
         }
 
         // ================================================================
-        // 12. ORDER TRACKING
+        // 11. ORDER TRACKING
         // ================================================================
         function openTrackModal() { document.getElementById('trackOrderId').value = ''; document.getElementById('trackResult').classList.remove('show'); document.getElementById('trackModal').classList.add('active'); document.body.style.overflow = 'hidden'; }
         function closeTrackModal() { document.getElementById('trackModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
@@ -2026,7 +2138,7 @@
         }
 
         // ================================================================
-        // 13. ADMIN
+        // 12. ADMIN
         // ================================================================
         let adminChartInstance = null;
         let allOrdersData = [];
@@ -2043,7 +2155,9 @@
                 localStorage.setItem('sk_admin_logged', 'true');
                 document.getElementById('adminLogin').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'block';
-                await loadCategories();
+                await getCategories();
+                loadCategoryDropdown();
+                renderCategoryTreeView();
                 loadAdminDashboard();
                 showToast('Welcome Admin!');
                 document.getElementById('adminPassword').value = '';
@@ -2067,15 +2181,10 @@
             document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             if (tabId === 'tab-dashboard') loadAdminDashboard();
-            if (tabId === 'tab-products') { loadCategories(); loadAdminProducts(); }
+            if (tabId === 'tab-products') { loadCategoryDropdown(); loadAdminProducts(); }
             if (tabId === 'tab-customers') loadAdminCustomers();
             if (tabId === 'tab-inquiries') loadAdminInquiries();
             if (tabId === 'tab-messages') loadAdminMessages();
-        }
-
-        async function loadCategories() {
-            cachedCategories = await getCategories();
-            loadCategoryDropdown();
         }
 
         // ===== ADMIN: GLOBAL SEARCH =====
@@ -2312,7 +2421,7 @@
         }
 
         // ================================================================
-        // 14. ADMIN: PRODUCTS (WITH CATEGORY DROPDOWN)
+        // 13. ADMIN: PRODUCTS
         // ================================================================
         async function loadAdminProducts() {
             const products = await getProducts();
@@ -2395,96 +2504,95 @@
             });
         }
 
-        // ===== SAVE PRODUCT (FIXED) =====
-     async function saveProduct() {
-    const id = document.getElementById('editProductId').value;
-    const name = document.getElementById('prodName').value.trim();
-    const categoryId = document.getElementById('prodCategory').value;
-    const categoryName = document.getElementById('prodCategory').selectedOptions[0]?.text || '';
-    const price = parseFloat(document.getElementById('prodPrice').value);
-    const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
-    const description = document.getElementById('prodDesc').value.trim();
+        async function saveProduct() {
+            const id = document.getElementById('editProductId').value;
+            const name = document.getElementById('prodName').value.trim();
+            const categoryId = document.getElementById('prodCategory').value;
+            const categoryName = document.getElementById('prodCategory').selectedOptions[0]?.text || '';
+            const price = parseFloat(document.getElementById('prodPrice').value);
+            const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
+            const description = document.getElementById('prodDesc').value.trim();
 
-    const fileInput = document.getElementById('prodImageFile');
-    const existingImage = document.getElementById('prodImage').value;
-    let imageUrl = existingImage;
+            const fileInput = document.getElementById('prodImageFile');
+            const existingImage = document.getElementById('prodImage').value;
+            let imageUrl = existingImage;
 
-    if (fileInput.files && fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const uploadedUrl = await uploadImage(file);
-        if (uploadedUrl) {
-            imageUrl = uploadedUrl;
-        } else {
-            alert('Image upload failed. Please try again.');
-            return;
-        }
-    }
-
-    if (!name) { alert('Please enter Product Name.'); return; }
-    if (!price || isNaN(price)) { alert('Please enter a valid Price.'); return; }
-    if (!imageUrl) { alert('Please select an Image.'); return; }
-    if (!categoryId || categoryId === '' || categoryId === '-- Select Category --') {
-        alert('Please select a Category.');
-        return;
-    }
-
-    console.log('Saving product:', { name, categoryName, categoryId, price, oldPrice, imageUrl, description });
-
-    try {
-        let products = await getProducts();
-
-        if (id) {
-            const index = products.findIndex(p => p.id === parseInt(id));
-            if (index > -1) {
-                products[index] = {
-                    ...products[index],
-                    name,
-                    category: categoryName,
-                    category_id: parseInt(categoryId),
-                    price,
-                    old_price: oldPrice,
-                    image: imageUrl,
-                    description
-                };
+            if (fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const uploadedUrl = await uploadImage(file);
+                if (uploadedUrl) {
+                    imageUrl = uploadedUrl;
+                } else {
+                    alert('Image upload failed. Please try again.');
+                    return;
+                }
             }
-            showToast('Product updated!');
-        } else {
-            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-            const newProduct = {
-                id: newId,
-                name,
-                category: categoryName,
-                category_id: parseInt(categoryId),
-                price,
-                old_price: oldPrice,
-                image: imageUrl,
-                description
-            };
-            products.push(newProduct);
-            console.log('New product:', newProduct);
-            showToast('Product added!');
-        }
 
-        const result = await saveProducts(products);
-        console.log('Save result:', result);
+            if (!name) { alert('Please enter Product Name.'); return; }
+            if (!price || isNaN(price)) { alert('Please enter a valid Price.'); return; }
+            if (!imageUrl) { alert('Please select an Image.'); return; }
+            if (!categoryId || categoryId === '' || categoryId === '-- Select Category --') {
+                alert('Please select a Category.');
+                return;
+            }
 
-        if (result) {
-            toggleProductForm();
-            loadAdminProducts();
-            renderProducts();
-            filterProducts();
-            showToast('✅ Product saved successfully!');
-        } else {
-            alert('❌ Product save failed. Please check console for errors.');
+            console.log('Saving product:', { name, categoryName, categoryId, price, oldPrice, imageUrl, description });
+
+            try {
+                let products = await getProducts();
+
+                if (id) {
+                    const index = products.findIndex(p => p.id === parseInt(id));
+                    if (index > -1) {
+                        products[index] = {
+                            ...products[index],
+                            name,
+                            category: categoryName,
+                            category_id: parseInt(categoryId),
+                            price,
+                            old_price: oldPrice,
+                            image: imageUrl,
+                            description
+                        };
+                    }
+                    showToast('Product updated!');
+                } else {
+                    const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                    const newProduct = {
+                        id: newId,
+                        name,
+                        category: categoryName,
+                        category_id: parseInt(categoryId),
+                        price,
+                        old_price: oldPrice,
+                        image: imageUrl,
+                        description
+                    };
+                    products.push(newProduct);
+                    console.log('New product:', newProduct);
+                    showToast('Product added!');
+                }
+
+                const result = await saveProducts(products);
+                console.log('Save result:', result);
+
+                if (result) {
+                    toggleProductForm();
+                    loadAdminProducts();
+                    renderProducts();
+                    filterProducts();
+                    showToast('✅ Product saved successfully!');
+                } else {
+                    alert('❌ Product save failed. Please check console for errors.');
+                }
+            } catch (error) {
+                console.error('Error saving product:', error);
+                alert('❌ Error: ' + error.message);
+            }
         }
-    } catch (error) {
-        console.error('Error saving product:', error);
-        alert('❌ Error: ' + error.message);
-    }
-}
 
         // ================================================================
-        // 15. ADMIN: CUSTOMERS
+        // 14. ADMIN: CUSTOMERS
         // ================================================================
         async function loadAdminCustomers() {
             const users = await getUsers();
@@ -2544,7 +2652,7 @@
         }
 
         // ================================================================
-        // 16. ADMIN: INQUIRIES
+        // 15. ADMIN: INQUIRIES
         // ================================================================
         async function loadAdminInquiries() {
             const inquiries = await getInquiries();
@@ -2606,7 +2714,7 @@
         }
 
         // ================================================================
-        // 17. ADMIN: MESSAGES
+        // 16. ADMIN: MESSAGES
         // ================================================================
         async function loadAdminMessages() {
             const inquiries = await getInquiries();
@@ -2673,7 +2781,7 @@
         }
 
         // ================================================================
-        // 18. DELETE FUNCTIONS (FIXED - Direct Supabase Delete)
+        // 17. DELETE FUNCTIONS
         // ================================================================
 
         // ===== DELETE: PRODUCTS =====
@@ -2915,7 +3023,7 @@
         }
 
         // ================================================================
-        // 19. EXPORT FUNCTIONS
+        // 18. EXPORT FUNCTIONS
         // ================================================================
         function exportProductsCSV() {
             getProducts().then(products => {
@@ -2996,7 +3104,7 @@
         }
 
         // ================================================================
-        // 20. ADMIN: CHANGE PASSWORD
+        // 19. ADMIN: CHANGE PASSWORD
         // ================================================================
         function openAdminChangePassword() {
             const modal = document.createElement('div');
@@ -3052,7 +3160,7 @@
         }
 
         // ================================================================
-        // 21. LIGHTBOX
+        // 20. LIGHTBOX
         // ================================================================
         function openLightbox(src) { document.getElementById('lightboxImage').src = src; document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden'; }
         function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = 'auto'; }
@@ -3062,7 +3170,7 @@
         });
 
         // ================================================================
-        // 22. NAVIGATION
+        // 21. NAVIGATION
         // ================================================================
         function navigate(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -3080,7 +3188,10 @@
                 if (localStorage.getItem('sk_admin_logged') === 'true') {
                     document.getElementById('adminLogin').style.display = 'none';
                     document.getElementById('adminDashboard').style.display = 'block';
-                    loadCategories();
+                    getCategories().then(() => {
+                        loadCategoryDropdown();
+                        renderCategoryTreeView();
+                    });
                     loadAdminDashboard();
                 }
             }
@@ -3089,7 +3200,17 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function navigateToCategory(category) { navigate('products'); document.getElementById('categoryFilter').value = category; filterProducts(); }
+        function navigateToCategory(category) {
+            navigate('products');
+            const cat = cachedCategories.find(c => c.name === category);
+            if (cat) {
+                filterByCategory(cat.id);
+            } else {
+                document.getElementById('categoryFilter').value = category;
+                filterProducts();
+            }
+        }
+
         function toggleMobileMenu() { document.getElementById('navMenu').classList.toggle('open'); }
 
         document.addEventListener('click', function(e) {
@@ -3099,7 +3220,7 @@
         });
 
         // ================================================================
-        // 23. GALLERY
+        // 22. GALLERY
         // ================================================================
         const galleryImages = [
             'https://i.ibb.co/0RnBKXRf/Wren-Kitchens-Ad-Website-Images-111.jpg',
@@ -3123,7 +3244,7 @@
         }
 
         // ================================================================
-        // 24. TOAST
+        // 23. TOAST
         // ================================================================
         function showToast(message) {
             const existing = document.querySelector('.toast');
@@ -3136,11 +3257,13 @@
         }
 
         // ================================================================
-        // 25. INIT
+        // 24. INIT
         // ================================================================
         async function init() {
             await getProducts();
-            await loadCategories();
+            await getCategories();
+            renderCategoryTreeView();
+            loadCategoryDropdown();
             renderGallery();
             await renderProducts();
             updateCartCount();
