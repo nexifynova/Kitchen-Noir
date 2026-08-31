@@ -1465,7 +1465,7 @@
         function createProductCard(p) {
             const wishlist = JSON.parse(localStorage.getItem('sk_wishlist')) || [];
             const inWishlist = wishlist.includes(p.id);
-            const oldPriceHtml = p.oldPrice ? `<span class="old">£${p.oldPrice.toLocaleString()}</span>` : '';
+            const oldPriceHtml = p.old_price ? `<span class="old">£${p.old_price.toLocaleString()}</span>` : '';
             const reviews = getLocalData('sk_reviews_encrypted', {});
             const productReviews = reviews[p.id] || [];
             const avgRating = productReviews.length > 0 ? (productReviews.reduce((s, r) => s + r.rating, 0) / productReviews.length).toFixed(1) : null;
