@@ -424,20 +424,6 @@
         .image-preview { margin-top: 10px; max-width: 150px; max-height: 150px; border-radius: 8px; overflow: hidden; border: 2px solid #ddd; display: none; }
         .image-preview img { width: 100%; height: auto; display: block; }
         .image-preview.show { display: block; }
-
-        /* Category Management Styles */
-        .category-tree { margin: 10px 0; padding: 10px; background: var(--light); border-radius: 8px; max-height: 200px; overflow-y: auto; }
-        .category-tree .cat-item { padding: 5px 10px; cursor: pointer; border-radius: 4px; transition: var(--transition); display: flex; justify-content: space-between; align-items: center; }
-        .category-tree .cat-item:hover { background: var(--gold-light); }
-        .category-tree .cat-item .cat-name { flex: 1; }
-        .category-tree .cat-item .cat-delete { color: var(--danger); cursor: pointer; font-size: 12px; }
-        .category-tree .cat-item .cat-delete:hover { transform: scale(1.2); }
-        .category-tree .level-1 { padding-left: 20px; }
-        .category-tree .level-2 { padding-left: 40px; }
-        .category-tree .level-3 { padding-left: 60px; }
-        .category-tree .level-4 { padding-left: 80px; }
-        .category-tree .level-5 { padding-left: 100px; }
-        .category-tree .cat-item .sub-icon { color: var(--gray); font-size: 12px; margin-right: 6px; }
     </style>
 </head>
 <body>
@@ -778,7 +764,6 @@
                         <button data-tab="tab-customers" onclick="switchAdminTab('tab-customers')"><i class="fas fa-users"></i> Customers</button>
                         <button data-tab="tab-inquiries" onclick="switchAdminTab('tab-inquiries')"><i class="fas fa-question-circle"></i> Product Inquiries</button>
                         <button data-tab="tab-messages" onclick="switchAdminTab('tab-messages')"><i class="fas fa-envelope"></i> Customer Messages</button>
-                        <button data-tab="tab-categories" onclick="switchAdminTab('tab-categories')"><i class="fas fa-tags"></i> Categories</button>
                     </div>
 
                     <!-- ================================================================ -->
@@ -803,7 +788,7 @@
                     </div>
 
                     <!-- ================================================================ -->
-                    <!-- TAB 2: PRODUCTS (WITH IMAGE UPLOAD + CATEGORY) -->
+                    <!-- TAB 2: PRODUCTS (WITH IMAGE UPLOAD + CATEGORY FROM SUPABASE) -->
                     <!-- ================================================================ -->
                     <div class="admin-tab-content" id="tab-products">
                         <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
@@ -816,7 +801,6 @@
                                 <div class="form-group"><label>Product Name *</label><input type="text" id="prodName" placeholder="Product name" /></div>
                                 <div class="form-group"><label>Category *</label>
                                     <select id="prodCategory"></select>
-                                    <button type="button" class="btn-primary small" style="margin-top:6px;" onclick="openAddCategoryModal()"><i class="fas fa-plus"></i> Add New Category</button>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -956,47 +940,11 @@
                         <p id="noMessages" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No messages yet.</p>
                     </div>
 
-                    <!-- ================================================================ -->
-                    <!-- TAB 7: CATEGORIES -->
-                    <!-- ================================================================ -->
-                    <div class="admin-tab-content" id="tab-categories">
-                        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
-                            <h3 style="font-size:20px;">Manage Categories</h3>
-                            <button class="btn-primary small" onclick="openAddCategoryModal()"><i class="fas fa-plus"></i> Add Category</button>
-                        </div>
-                        <div class="admin-export-bar">
-                            <button class="btn-danger" onclick="clearAllCategories()"><i class="fas fa-trash-alt"></i> Clear All Categories</button>
-                            <button class="refresh-btn" onclick="loadAdminCategories()"><i class="fas fa-sync"></i> Refresh</button>
-                        </div>
-                        <div class="category-tree" id="categoryTree"></div>
-                    </div>
-
                 </div>
             </div>
         </section>
 
     </main>
-
-    <!-- ===== ADD CATEGORY MODAL ===== -->
-    <div class="modal" id="categoryModal" onclick="if(event.target===this)closeCategoryModal()">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-tag"></i> Add New Category</h3>
-                <button class="close-btn" onclick="closeCategoryModal()">&times;</button>
-            </div>
-            <form onsubmit="saveCategory(event)">
-                <div class="form-group">
-                    <label>Category Name *</label>
-                    <input type="text" id="catName" placeholder="Enter category name" required />
-                </div>
-                <div class="form-group">
-                    <label>Parent Category (Optional)</label>
-                    <select id="catParent"></select>
-                </div>
-                <button type="submit" class="btn-primary" style="width:100%;justify-content:center;"><i class="fas fa-save"></i> Save Category</button>
-            </form>
-        </div>
-    </div>
 
     <!-- AUTH MODAL -->
     <div class="modal" id="authModal" onclick="if(event.target===this)closeAuthModal()">
@@ -1417,20 +1365,6 @@
             return local;
         }
 
-        async function saveCategories(categories) {
-            try {
-                const { error } = await supabaseClient.from('categories').upsert(categories, { onConflict: 'id' });
-                if (error) throw error;
-                cachedCategories = categories;
-                setLocalData('sk_categories', categories);
-                return true;
-            } catch (e) {
-                console.warn('Supabase save failed:', e);
-                setLocalData('sk_categories', categories);
-                return false;
-            }
-        }
-
         // ===== USERS =====
         async function getUsers() {
             try {
@@ -1623,39 +1557,26 @@
         // ================================================================
         // 4. CATEGORY FUNCTIONS
         // ================================================================
-        function buildCategoryTree(categories, parentId = null, level = 0) {
-            const result = [];
-            const children = categories.filter(c => c.parent_id === parentId);
-            children.forEach(c => {
-                c.level = level;
-                result.push(c);
-                const subChildren = buildCategoryTree(categories, c.id, level + 1);
-                result.push(...subChildren);
-            });
-            return result;
-        }
-
         function getCategoryNameById(id) {
             const cat = cachedCategories.find(c => c.id === id);
             return cat ? cat.name : 'Uncategorized';
         }
 
-        function renderCategorySelect(selectId, selectedId = null, includeEmpty = true) {
+        function renderCategorySelect(selectId, selectedId = null) {
             const select = document.getElementById(selectId);
             if (!select) return;
             select.innerHTML = '';
-            if (includeEmpty) {
-                const opt = document.createElement('option');
-                opt.value = '';
-                opt.textContent = '-- Select Category --';
-                select.appendChild(opt);
-            }
-            const tree = buildCategoryTree(cachedCategories);
-            tree.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = '-- Select Category --';
+            select.appendChild(opt);
+
+            if (cachedCategories.length === 0) return;
+
+            cachedCategories.forEach(cat => {
                 const opt = document.createElement('option');
                 opt.value = cat.id;
-                const indent = '—'.repeat(cat.level);
-                opt.textContent = indent + ' ' + cat.name;
+                opt.textContent = cat.name;
                 if (selectedId && cat.id === selectedId) {
                     opt.selected = true;
                 }
@@ -1663,183 +1584,8 @@
             });
         }
 
-        function renderCategoryTree() {
-            const container = document.getElementById('categoryTree');
-            if (!container) return;
-            if (cachedCategories.length === 0) {
-                container.innerHTML = '<p style="color:var(--gray);text-align:center;padding:20px;">No categories yet. Add your first category!</p>';
-                return;
-            }
-            const tree = buildCategoryTree(cachedCategories);
-            let html = '';
-            tree.forEach(cat => {
-                const levelClass = 'level-' + cat.level;
-                const icon = cat.level === 0 ? '📁' : '📂';
-                html += `
-                    <div class="cat-item ${levelClass}">
-                        <span class="cat-name"><span class="sub-icon">${icon}</span> ${cat.name}</span>
-                        <span>
-                            <span style="font-size:11px;color:var(--gray);margin-right:10px;">ID: ${cat.id}</span>
-                            <span class="cat-delete" onclick="confirmDeleteCategory(${cat.id})" title="Delete Category"><i class="fas fa-trash"></i></span>
-                        </span>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        // ===== CATEGORY MODAL =====
-        function openAddCategoryModal() {
-            document.getElementById('catName').value = '';
-            renderCategorySelect('catParent', null, true);
-            document.getElementById('categoryModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeCategoryModal() {
-            document.getElementById('categoryModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        async function saveCategory(event) {
-            event.preventDefault();
-            const name = sanitizeInput(document.getElementById('catName').value.trim());
-            const parentId = document.getElementById('catParent').value;
-
-            if (!name) {
-                alert('Please enter category name.');
-                return;
-            }
-
-            if (cachedCategories.some(c => c.name.toLowerCase() === name.toLowerCase() && c.parent_id === (parentId || null))) {
-                alert('Category already exists!');
-                return;
-            }
-
-            const newCategory = {
-                id: Date.now(),
-                name: name,
-                parent_id: parentId || null,
-                level: 0,
-                created_at: new Date().toISOString()
-            };
-
-            if (parentId) {
-                const parent = cachedCategories.find(c => c.id === parseInt(parentId));
-                newCategory.level = parent ? parent.level + 1 : 0;
-            }
-
-            cachedCategories.push(newCategory);
-            await saveCategories(cachedCategories);
-            closeCategoryModal();
-            loadAdminCategories();
-            updateProductCategoryDropdown();
-            showToast('✅ Category added successfully!');
-        }
-
-        // ===== DELETE CATEGORY (FIXED - Direct Supabase Delete) =====
-        async function confirmDeleteCategory(categoryId) {
-            const pass1 = prompt('Enter admin password to delete this category:');
-            if (!pass1) return;
-            const hash1 = await sha256(pass1);
-            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-            const pass2 = prompt('Confirm password again to delete:');
-            if (!pass2) return;
-            const hash2 = await sha256(pass2);
-            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-            const hasChildren = cachedCategories.some(c => c.parent_id === categoryId);
-            if (hasChildren) {
-                if (!confirm('⚠️ This category has sub-categories. Deleting it will also delete all sub-categories. Are you sure?')) return;
-            }
-
-            const products = await getProducts();
-            const isUsed = products.some(p => p.category_id === categoryId);
-            if (isUsed) {
-                if (!confirm('⚠️ This category is used in products. Deleting it will remove category from those products. Continue?')) return;
-            }
-
-            if (confirm('⚠️ Warning: This category will be permanently deleted. Are you sure?')) {
-                const toDelete = [];
-                const findChildren = (id) => {
-                    const children = cachedCategories.filter(c => c.parent_id === id);
-                    children.forEach(child => {
-                        toDelete.push(child.id);
-                        findChildren(child.id);
-                    });
-                };
-                toDelete.push(categoryId);
-                findChildren(categoryId);
-
-                // Delete from Supabase
-                for (const id of toDelete) {
-                    const { error } = await supabaseClient.from('categories').delete().eq('id', id);
-                    if (error) console.error('Delete category error:', error);
-                }
-
-                // Update local cache
-                cachedCategories = cachedCategories.filter(c => !toDelete.includes(c.id));
-                setLocalData('sk_categories', cachedCategories);
-
-                // Update products - remove category_id
-                let products = await getProducts();
-                products = products.map(p => {
-                    if (toDelete.includes(p.category_id)) p.category_id = null;
-                    return p;
-                });
-                await saveProducts(products);
-
-                loadAdminCategories();
-                updateProductCategoryDropdown();
-                loadAdminProducts();
-                renderProducts();
-                filterProducts();
-                showToast('Category deleted successfully.');
-            }
-        }
-
-        // ===== CLEAR ALL CATEGORIES =====
-        async function clearAllCategories() {
-            const pass1 = prompt('Enter admin password to clear all categories:');
-            if (!pass1) return;
-            const hash1 = await sha256(pass1);
-            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-            const pass2 = prompt('Confirm password again to clear ALL categories:');
-            if (!pass2) return;
-            const hash2 = await sha256(pass2);
-            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
-
-            if (confirm('⚠️ FINAL WARNING: ALL categories will be permanently deleted. Press OK to continue.')) {
-                // Delete all from Supabase
-                const { error } = await supabaseClient.from('categories').delete().neq('id', 0);
-                if (error) console.error('Clear categories error:', error);
-
-                cachedCategories = [];
-                setLocalData('sk_categories', []);
-
-                let products = await getProducts();
-                products = products.map(p => { p.category_id = null; return p; });
-                await saveProducts(products);
-
-                loadAdminCategories();
-                updateProductCategoryDropdown();
-                loadAdminProducts();
-                renderProducts();
-                filterProducts();
-                showToast('All categories cleared.');
-            }
-        }
-
         function updateProductCategoryDropdown() {
-            renderCategorySelect('prodCategory', null, true);
-        }
-
-        async function loadAdminCategories() {
-            cachedCategories = await getCategories();
-            renderCategoryTree();
-            updateProductCategoryDropdown();
+            renderCategorySelect('prodCategory', null);
         }
 
         // ================================================================
@@ -2419,7 +2165,6 @@
                 document.getElementById('adminLogin').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'block';
                 loadAdminDashboard();
-                loadAdminCategories();
                 showToast('Welcome Admin!');
                 document.getElementById('adminPassword').value = '';
             } else {
@@ -2446,7 +2191,6 @@
             if (tabId === 'tab-customers') loadAdminCustomers();
             if (tabId === 'tab-inquiries') loadAdminInquiries();
             if (tabId === 'tab-messages') loadAdminMessages();
-            if (tabId === 'tab-categories') loadAdminCategories();
         }
 
         // ===== ADMIN: GLOBAL SEARCH =====
@@ -2815,7 +2559,7 @@
         }
 
         // ================================================================
-        // 15. ADMIN: CUSTOMERS (WITH DELETE + CLEAR ALL - FIXED)
+        // 15. ADMIN: CUSTOMERS (WITH DELETE + CLEAR ALL)
         // ================================================================
         async function loadAdminCustomers() {
             const users = await getUsers();
@@ -2875,7 +2619,7 @@
         }
 
         // ================================================================
-        // 16. ADMIN: INQUIRIES (WITH DELETE + CLEAR ALL - FIXED)
+        // 16. ADMIN: INQUIRIES (WITH DELETE + CLEAR ALL)
         // ================================================================
         async function loadAdminInquiries() {
             const inquiries = await getInquiries();
@@ -2937,7 +2681,7 @@
         }
 
         // ================================================================
-        // 17. ADMIN: MESSAGES (WITH DELETE + CLEAR ALL - FIXED)
+        // 17. ADMIN: MESSAGES (WITH DELETE + CLEAR ALL)
         // ================================================================
         async function loadAdminMessages() {
             const inquiries = await getInquiries();
@@ -3020,23 +2764,15 @@
             if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
 
             if (confirm('⚠️ Warning: This product will be permanently deleted. Are you sure?')) {
-                // Direct Supabase Delete
-                const { error } = await supabaseClient
-                    .from('products')
-                    .delete()
-                    .eq('id', parseInt(productId));
-
+                const { error } = await supabaseClient.from('products').delete().eq('id', parseInt(productId));
                 if (error) {
                     alert('Delete failed: ' + error.message);
                     return;
                 }
-
-                // Update local cache
                 let products = await getProducts();
                 products = products.filter(p => String(p.id) !== String(productId));
                 setLocalData('sk_products', products);
                 cachedProducts = products;
-
                 loadAdminProducts();
                 renderProducts();
                 filterProducts();
@@ -3058,7 +2794,6 @@
             if (confirm('⚠️ FINAL WARNING: ALL products will be permanently deleted. Press OK to continue.')) {
                 const { error } = await supabaseClient.from('products').delete().neq('id', 0);
                 if (error) console.error('Clear products error:', error);
-
                 await saveProducts([]);
                 loadAdminProducts();
                 renderProducts();
@@ -3085,7 +2820,6 @@
                     alert('Delete failed: ' + error.message);
                     return;
                 }
-
                 let users = await getUsers();
                 users = users.filter(u => String(u.id) !== String(userId));
                 setLocalData('sk_users_encrypted', users);
@@ -3108,7 +2842,6 @@
             if (confirm('⚠️ FINAL WARNING: ALL customers will be permanently deleted. Press OK to continue.')) {
                 const { error } = await supabaseClient.from('users').delete().neq('id', 0);
                 if (error) console.error('Clear customers error:', error);
-
                 await saveUsers([]);
                 loadAdminCustomers();
                 showToast('All customers cleared.');
@@ -3133,7 +2866,6 @@
                     alert('Delete failed: ' + error.message);
                     return;
                 }
-
                 const orders = await getOrders();
                 const filtered = orders.filter(o => String(o.id) !== String(orderId));
                 setLocalData('sk_orders_encrypted', filtered);
@@ -3156,7 +2888,6 @@
             if (confirm('⚠️ FINAL WARNING: ALL order history will be permanently deleted. Data recovery is extremely difficult. Press OK to continue.')) {
                 const { error } = await supabaseClient.from('orders').delete().neq('id', 0);
                 if (error) console.error('Clear orders error:', error);
-
                 await saveOrders([]);
                 loadAdminDashboard();
                 showToast('All order history cleared.');
@@ -3181,7 +2912,6 @@
                     alert('Delete failed: ' + error.message);
                     return;
                 }
-
                 let inquiries = await getInquiries();
                 inquiries = inquiries.filter(i => String(i.id) !== String(inquiryId));
                 setLocalData('sk_inquiries_encrypted', inquiries);
@@ -3204,7 +2934,6 @@
             if (confirm('⚠️ FINAL WARNING: ALL inquiries will be permanently deleted. Press OK to continue.')) {
                 const { error } = await supabaseClient.from('inquiries').delete().neq('id', 0);
                 if (error) console.error('Clear inquiries error:', error);
-
                 await saveInquiries([]);
                 loadAdminInquiries();
                 showToast('All inquiries cleared.');
@@ -3229,7 +2958,6 @@
                     alert('Delete failed: ' + error.message);
                     return;
                 }
-
                 let inquiries = await getInquiries();
                 inquiries = inquiries.filter(i => String(i.id) !== String(messageId));
                 setLocalData('sk_inquiries_encrypted', inquiries);
@@ -3428,7 +3156,6 @@
                     document.getElementById('adminLogin').style.display = 'none';
                     document.getElementById('adminDashboard').style.display = 'block';
                     loadAdminDashboard();
-                    loadAdminCategories();
                 }
             }
             if (page === 'wishlist') renderWishlist();
@@ -3498,7 +3225,6 @@
                 document.getElementById('adminLogin').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'block';
                 loadAdminDashboard();
-                loadAdminCategories();
             }
 
             if (document.getElementById('page-wishlist').classList.contains('active')) renderWishlist();
