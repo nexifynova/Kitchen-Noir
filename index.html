@@ -667,9 +667,9 @@
                     <div class="mega-category">
                         <h4 onclick="navigateToCategory('Wardrobes')"><i class="fas fa-door-open"></i> Wardrobes</h4>
                         <ul>
-                            <li><a onclick="navigateToSubCategory('Wardrobes', 'Sliding Wardrobes')">Sliding</a></li>
-                            <li><a onclick="navigateToSubCategory('Wardrobes', 'Hinged Wardrobes')">Hinged</a></li>
-                            <li><a onclick="navigateToSubCategory('Wardrobes', 'Fitted Wardrobes')">Fitted</a></li>
+                            <li><a onclick="navigateToSubCategory('Wardrobes', 'Sliding')">Sliding</a></li>
+                            <li><a onclick="navigateToSubCategory('Wardrobes', 'Hinged')">Hinged</a></li>
+                            <li><a onclick="navigateToSubCategory('Wardrobes', 'Fitted')">Fitted</a></li>
                         </ul>
                     </div>
 
@@ -677,9 +677,9 @@
                     <div class="mega-category">
                         <h4 onclick="navigateToCategory('Desks')"><i class="fas fa-desktop"></i> Desks</h4>
                         <ul>
-                            <li><a onclick="navigateToSubCategory('Desks', 'Executive Desks')">Executive</a></li>
-                            <li><a onclick="navigateToSubCategory('Desks', 'Standing Desks')">Standing</a></li>
-                            <li><a onclick="navigateToSubCategory('Desks', 'Corner Desks')">Corner</a></li>
+                            <li><a onclick="navigateToSubCategory('Desks', 'Executive')">Executive</a></li>
+                            <li><a onclick="navigateToSubCategory('Desks', 'Standing')">Standing</a></li>
+                            <li><a onclick="navigateToSubCategory('Desks', 'Corner')">Corner</a></li>
                         </ul>
                     </div>
 
@@ -687,9 +687,9 @@
                     <div class="mega-category">
                         <h4 onclick="navigateToCategory('Office Chairs')"><i class="fas fa-chair"></i> Office Chairs</h4>
                         <ul>
-                            <li><a onclick="navigateToSubCategory('Office Chairs', 'Ergonomic Chairs')">Ergonomic</a></li>
-                            <li><a onclick="navigateToSubCategory('Office Chairs', 'Executive Chairs')">Executive</a></li>
-                            <li><a onclick="navigateToSubCategory('Office Chairs', 'Gaming Chairs')">Gaming</a></li>
+                            <li><a onclick="navigateToSubCategory('Office Chairs', 'Ergonomic')">Ergonomic</a></li>
+                            <li><a onclick="navigateToSubCategory('Office Chairs', 'Executive')">Executive</a></li>
+                            <li><a onclick="navigateToSubCategory('Office Chairs', 'Gaming')">Gaming</a></li>
                         </ul>
                     </div>
 
@@ -1013,16 +1013,97 @@
                                 <div class="form-group"><label>Category *</label>
                                     <select id="prodCategory">
                                         <option value="">-- Select Category --</option>
-                                        <option value="1">Kitchens</option>
-                                        <option value="2">Bedrooms</option>
-                                        <option value="3">Home Offices</option>
-                                        <option value="4">Cabinets & Units</option>
-                                        <option value="5">Worktops</option>
-                                        <option value="6">Appliances</option>
-                                        <option value="7">Beds & Headboards</option>
-                                        <option value="8">Wardrobes</option>
-                                        <option value="9">Desks</option>
-                                        <option value="10">Office Chairs</option>
+
+                                        <!-- Kitchens -->
+                                        <optgroup label="Kitchens">
+                                            <option value="Kitchens - Plates">Plates</option>
+                                            <option value="Kitchens - Spoons">Spoons</option>
+                                            <option value="Kitchens - Mugs">Mugs</option>
+                                            <option value="Kitchens - Knives">Knives</option>
+                                            <option value="Kitchens - Cutting Boards">Cutting Boards</option>
+                                            <option value="Kitchens - Pots & Pans">Pots & Pans</option>
+                                            <option value="Kitchens - Appliances">Appliances</option>
+                                            <option value="Kitchens - Storage">Storage</option>
+                                        </optgroup>
+
+                                        <!-- Bedrooms -->
+                                        <optgroup label="Bedrooms">
+                                            <option value="Bedrooms - Beds">Beds</option>
+                                            <option value="Bedrooms - Wardrobes">Wardrobes</option>
+                                            <option value="Bedrooms - Nightstands">Nightstands</option>
+                                            <option value="Bedrooms - Dressers">Dressers</option>
+                                            <option value="Bedrooms - Mattresses">Mattresses</option>
+                                            <option value="Bedrooms - Headboards">Headboards</option>
+                                            <option value="Bedrooms - Bedding">Bedding</option>
+                                            <option value="Bedrooms - Pillows">Pillows</option>
+                                            <option value="Bedrooms - Mirrors">Mirrors</option>
+                                            <option value="Bedrooms - Lamps">Lamps</option>
+                                        </optgroup>
+
+                                        <!-- Home Offices -->
+                                        <optgroup label="Home Offices">
+                                            <option value="Home Offices - Desks">Desks</option>
+                                            <option value="Home Offices - Chairs">Chairs</option>
+                                            <option value="Home Offices - Bookshelves">Bookshelves</option>
+                                            <option value="Home Offices - Filing Cabinets">Filing Cabinets</option>
+                                            <option value="Home Offices - Accessories">Accessories</option>
+                                            <option value="Home Offices - Storage">Storage</option>
+                                        </optgroup>
+
+                                        <!-- Cabinets & Units -->
+                                        <optgroup label="Cabinets & Units">
+                                            <option value="Cabinets & Units - Base Units">Base Units</option>
+                                            <option value="Cabinets & Units - Wall Units">Wall Units</option>
+                                            <option value="Cabinets & Units - Tall Units">Tall Units</option>
+                                            <option value="Cabinets & Units - Island Units">Island Units</option>
+                                        </optgroup>
+
+                                        <!-- Worktops -->
+                                        <optgroup label="Worktops">
+                                            <option value="Worktops - Laminate">Laminate</option>
+                                            <option value="Worktops - Quartz">Quartz</option>
+                                            <option value="Worktops - Granite">Granite</option>
+                                            <option value="Worktops - Marble">Marble</option>
+                                            <option value="Worktops - Wood">Wood</option>
+                                        </optgroup>
+
+                                        <!-- Appliances -->
+                                        <optgroup label="Appliances">
+                                            <option value="Appliances - Hobs">Hobs</option>
+                                            <option value="Appliances - Ovens">Ovens</option>
+                                            <option value="Appliances - Dishwashers">Dishwashers</option>
+                                            <option value="Appliances - Microwaves">Microwaves</option>
+                                            <option value="Appliances - Fridges">Fridges</option>
+                                        </optgroup>
+
+                                        <!-- Beds & Headboards -->
+                                        <optgroup label="Beds & Headboards">
+                                            <option value="Beds & Headboards - King Beds">King Beds</option>
+                                            <option value="Beds & Headboards - Double Beds">Double Beds</option>
+                                            <option value="Beds & Headboards - Single Beds">Single Beds</option>
+                                            <option value="Beds & Headboards - Headboards">Headboards</option>
+                                        </optgroup>
+
+                                        <!-- Wardrobes -->
+                                        <optgroup label="Wardrobes">
+                                            <option value="Wardrobes - Sliding">Sliding</option>
+                                            <option value="Wardrobes - Hinged">Hinged</option>
+                                            <option value="Wardrobes - Fitted">Fitted</option>
+                                        </optgroup>
+
+                                        <!-- Desks -->
+                                        <optgroup label="Desks">
+                                            <option value="Desks - Executive">Executive</option>
+                                            <option value="Desks - Standing">Standing</option>
+                                            <option value="Desks - Corner">Corner</option>
+                                        </optgroup>
+
+                                        <!-- Office Chairs -->
+                                        <optgroup label="Office Chairs">
+                                            <option value="Office Chairs - Ergonomic">Ergonomic</option>
+                                            <option value="Office Chairs - Executive">Executive</option>
+                                            <option value="Office Chairs - Gaming">Gaming</option>
+                                        </optgroup>
                                     </select>
                                 </div>
                             </div>
@@ -1496,30 +1577,30 @@
 
         // ===== DEFAULT PRODUCTS =====
         const defaultProducts = [
-            { id: 1, name: 'Heavy Duty Pencil Hob', category: 'Kitchens', price: 895, old_price: 1095, image: 'https://i.ibb.co/nsF2ydLW/23-WREN-S114-HEAVY-DUTY-PENCIL-HOB-D01-0000.jpg' },
-            { id: 2, name: 'Luxury Pet Bed', category: 'Bedrooms', price: 495, old_price: null, image: 'https://i.ibb.co/21K6PTS7/23-WREN-S114-HEAVY-DUTY-PENCIL-PETBED-D01-0000.jpg' },
-            { id: 3, name: 'Built-in Dishwasher', category: 'Appliances', price: 1495, old_price: null, image: 'https://i.ibb.co/CpB15hSt/23-WREN-S114-HEAVY-DUTY-PENCIL-DISHWASHER-D01-0000.jpg' },
-            { id: 4, name: '300mm Wine Cooler', category: 'Appliances', price: 1695, old_price: 1895, image: 'https://i.ibb.co/CKSpgnck/UK-Easy-Fit-Autograph-Cashmere-Gloss-300mm-Wine-Cooler.jpg' },
-            { id: 5, name: 'EST Unit', category: 'Cabinets & Units', price: 1095, old_price: null, image: 'https://i.ibb.co/4gRmmgnh/23-WREN-S114-HEAVY-DUTY-PENCIL-EST-D01-0000.jpg' },
-            { id: 6, name: 'Magic Corner', category: 'Cabinets & Units', price: 1295, old_price: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
-            { id: 7, name: 'Premium Kitchen Tap', category: 'Worktops', price: 695, old_price: null, image: 'https://i.ibb.co/TqMh7Qsm/23-WREN-S114-HEAVY-DUTY-PENCIL-TAP-D01-0000.jpg' },
-            { id: 8, name: 'Built-in Microwave', category: 'Appliances', price: 1295, old_price: null, image: 'https://i.ibb.co/dwjHbsmt/UK-Easy-Fit-Autograph-Cashmere-Gloss-Microwave.jpg' },
-            { id: 9, name: 'Navy Blue Silk Finish', category: 'Kitchens', price: 2395, old_price: 2795, image: 'https://i.ibb.co/r2x5xM1Z/Easy-Fit-Autograph-Navy-Blue-Silk-JPG.jpg' },
-            { id: 10, name: 'Moss Green Slab', category: 'Kitchens', price: 2195, old_price: 2595, image: 'https://i.ibb.co/bRRRDYQx/Easy-Fit-Slab-Moss-Green-Hero.jpg' },
-            { id: 11, name: 'Cashmere Gloss Magic Corner', category: 'Cabinets & Units', price: 1395, old_price: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
-            { id: 12, name: 'Shaker Chelsea Cashmere', category: 'Kitchens', price: 1895, old_price: 2195, image: 'https://i.ibb.co/G4h8d3kh/Easy-Fit-Shaker-Chelsea-Cashmere-Corner-Carousel-Unit.jpg' },
-            { id: 13, name: 'Luxury Bed Frame', category: 'Beds & Headboards', price: 1499, old_price: 1799, image: 'https://images.pexels.com/photos/271705/pexels-photo-271705.jpeg?w=500' },
-            { id: 14, name: 'Modern Wardrobe', category: 'Wardrobes', price: 1899, old_price: 2199, image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?w=500' },
-            { id: 15, name: 'Bedside Table', category: 'Bedrooms', price: 399, old_price: null, image: 'https://images.pexels.com/photos/271706/pexels-photo-271706.jpeg?w=500' },
-            { id: 16, name: 'Dressing Table', category: 'Bedrooms', price: 899, old_price: null, image: 'https://images.pexels.com/photos/3861972/pexels-photo-3861972.jpeg?w=500' },
-            { id: 17, name: 'Memory Foam Mattress', category: 'Bedrooms', price: 749, old_price: 999, image: 'https://images.pexels.com/photos/3772098/pexels-photo-3772098.jpeg?w=500' },
-            { id: 18, name: 'Luxury Headboard', category: 'Beds & Headboards', price: 599, old_price: null, image: 'https://images.pexels.com/photos/271707/pexels-photo-271707.jpeg?w=500' },
-            { id: 19, name: 'Executive Desk', category: 'Desks', price: 1299, old_price: null, image: 'https://images.pexels.com/photos/276583/pexels-photo-276583.jpeg?w=500' },
-            { id: 20, name: 'Ergonomic Office Chair', category: 'Office Chairs', price: 699, old_price: null, image: 'https://images.pexels.com/photos/112466/pexels-photo-112466.jpeg?w=500' },
-            { id: 21, name: 'Bookcase', category: 'Home Offices', price: 1099, old_price: null, image: 'https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg?w=500' },
-            { id: 22, name: 'Filing Cabinet', category: 'Home Offices', price: 599, old_price: null, image: 'https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg?w=500' },
-            { id: 23, name: 'Standing Desk Converter', category: 'Desks', price: 349, old_price: null, image: 'https://images.pexels.com/photos/1571461/pexels-photo-1571461.jpeg?w=500' },
-            { id: 24, name: 'Office Bookshelf Set', category: 'Home Offices', price: 799, old_price: 999, image: 'https://images.pexels.com/photos/1571462/pexels-photo-1571462.jpeg?w=500' }
+            { id: 1, name: 'Heavy Duty Pencil Hob', category: 'Kitchens - Appliances', price: 895, old_price: 1095, image: 'https://i.ibb.co/nsF2ydLW/23-WREN-S114-HEAVY-DUTY-PENCIL-HOB-D01-0000.jpg' },
+            { id: 2, name: 'Luxury Pet Bed', category: 'Bedrooms - Beds', price: 495, old_price: null, image: 'https://i.ibb.co/21K6PTS7/23-WREN-S114-HEAVY-DUTY-PENCIL-PETBED-D01-0000.jpg' },
+            { id: 3, name: 'Built-in Dishwasher', category: 'Kitchens - Appliances', price: 1495, old_price: null, image: 'https://i.ibb.co/CpB15hSt/23-WREN-S114-HEAVY-DUTY-PENCIL-DISHWASHER-D01-0000.jpg' },
+            { id: 4, name: '300mm Wine Cooler', category: 'Kitchens - Appliances', price: 1695, old_price: 1895, image: 'https://i.ibb.co/CKSpgnck/UK-Easy-Fit-Autograph-Cashmere-Gloss-300mm-Wine-Cooler.jpg' },
+            { id: 5, name: 'EST Unit', category: 'Cabinets & Units - Base Units', price: 1095, old_price: null, image: 'https://i.ibb.co/4gRmmgnh/23-WREN-S114-HEAVY-DUTY-PENCIL-EST-D01-0000.jpg' },
+            { id: 6, name: 'Magic Corner', category: 'Cabinets & Units - Island Units', price: 1295, old_price: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
+            { id: 7, name: 'Premium Kitchen Tap', category: 'Worktops - Quartz', price: 695, old_price: null, image: 'https://i.ibb.co/TqMh7Qsm/23-WREN-S114-HEAVY-DUTY-PENCIL-TAP-D01-0000.jpg' },
+            { id: 8, name: 'Built-in Microwave', category: 'Kitchens - Appliances', price: 1295, old_price: null, image: 'https://i.ibb.co/dwjHbsmt/UK-Easy-Fit-Autograph-Cashmere-Gloss-Microwave.jpg' },
+            { id: 9, name: 'Navy Blue Silk Finish', category: 'Kitchens - Plates', price: 2395, old_price: 2795, image: 'https://i.ibb.co/r2x5xM1Z/Easy-Fit-Autograph-Navy-Blue-Silk-JPG.jpg' },
+            { id: 10, name: 'Moss Green Slab', category: 'Kitchens - Cutting Boards', price: 2195, old_price: 2595, image: 'https://i.ibb.co/bRRRDYQx/Easy-Fit-Slab-Moss-Green-Hero.jpg' },
+            { id: 11, name: 'Cashmere Gloss Magic Corner', category: 'Cabinets & Units - Wall Units', price: 1395, old_price: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
+            { id: 12, name: 'Shaker Chelsea Cashmere', category: 'Kitchens - Storage', price: 1895, old_price: 2195, image: 'https://i.ibb.co/G4h8d3kh/Easy-Fit-Shaker-Chelsea-Cashmere-Corner-Carousel-Unit.jpg' },
+            { id: 13, name: 'Luxury Bed Frame', category: 'Beds & Headboards - King Beds', price: 1499, old_price: 1799, image: 'https://images.pexels.com/photos/271705/pexels-photo-271705.jpeg?w=500' },
+            { id: 14, name: 'Modern Wardrobe', category: 'Wardrobes - Sliding', price: 1899, old_price: 2199, image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?w=500' },
+            { id: 15, name: 'Bedside Table', category: 'Bedrooms - Nightstands', price: 399, old_price: null, image: 'https://images.pexels.com/photos/271706/pexels-photo-271706.jpeg?w=500' },
+            { id: 16, name: 'Dressing Table', category: 'Bedrooms - Dressers', price: 899, old_price: null, image: 'https://images.pexels.com/photos/3861972/pexels-photo-3861972.jpeg?w=500' },
+            { id: 17, name: 'Memory Foam Mattress', category: 'Bedrooms - Mattresses', price: 749, old_price: 999, image: 'https://images.pexels.com/photos/3772098/pexels-photo-3772098.jpeg?w=500' },
+            { id: 18, name: 'Luxury Headboard', category: 'Beds & Headboards - Headboards', price: 599, old_price: null, image: 'https://images.pexels.com/photos/271707/pexels-photo-271707.jpeg?w=500' },
+            { id: 19, name: 'Executive Desk', category: 'Desks - Executive', price: 1299, old_price: null, image: 'https://images.pexels.com/photos/276583/pexels-photo-276583.jpeg?w=500' },
+            { id: 20, name: 'Ergonomic Office Chair', category: 'Office Chairs - Ergonomic', price: 699, old_price: null, image: 'https://images.pexels.com/photos/112466/pexels-photo-112466.jpeg?w=500' },
+            { id: 21, name: 'Bookcase', category: 'Home Offices - Bookshelves', price: 1099, old_price: null, image: 'https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg?w=500' },
+            { id: 22, name: 'Filing Cabinet', category: 'Home Offices - Filing Cabinets', price: 599, old_price: null, image: 'https://images.pexels.com/photos/1571459/pexels-photo-1571459.jpeg?w=500' },
+            { id: 23, name: 'Standing Desk Converter', category: 'Desks - Standing', price: 349, old_price: null, image: 'https://images.pexels.com/photos/1571461/pexels-photo-1571461.jpeg?w=500' },
+            { id: 24, name: 'Office Bookshelf Set', category: 'Home Offices - Bookshelves', price: 799, old_price: 999, image: 'https://images.pexels.com/photos/1571462/pexels-photo-1571462.jpeg?w=500' }
         ];
 
         let cachedProducts = null;
@@ -1584,7 +1665,7 @@
                 return local;
             }
 
-            // DEFAULT CATEGORIES - SAME AS DASHBOARD
+            // DEFAULT CATEGORIES
             const defaultCats = [
                 { id: 1, name: 'Kitchens' },
                 { id: 2, name: 'Bedrooms' },
@@ -1846,7 +1927,7 @@
             const reviews = getLocalData('sk_reviews_encrypted', {});
             const productReviews = reviews[p.id] || [];
             const avgRating = productReviews.length > 0 ? (productReviews.reduce((s, r) => s + r.rating, 0) / productReviews.length).toFixed(1) : null;
-            const categoryName = p.category_id ? getCategoryNameById(p.category_id) : p.category || 'Uncategorized';
+            const categoryName = p.category_id ? getCategoryNameById(p.category_id) : (p.category || 'Uncategorized');
 
             return `<div class="product-card" data-id="${p.id}">
                 <button class="wishlist-btn ${inWishlist ? 'active' : ''}" onclick="toggleWishlist(${p.id}, event)"><i class="fas fa-heart"></i></button>
@@ -1894,9 +1975,9 @@
             const sort = document.getElementById('sortFilter').value;
 
             let filtered = products.filter(p => {
-                const catName = p.category_id ? getCategoryNameById(p.category_id) : p.category || '';
+                const catName = p.category_id ? getCategoryNameById(p.category_id) : (p.category || '');
                 const matchSearch = p.name.toLowerCase().includes(searchTerm) || catName.toLowerCase().includes(searchTerm);
-                const matchCategory = category === 'all' || catName === category;
+                const matchCategory = category === 'all' || catName.includes(category);
                 const matchPrice = p.price >= minPrice && p.price <= maxPrice;
                 return matchSearch && matchCategory && matchPrice;
             });
@@ -1992,7 +2073,6 @@
         // ================================================================
         // 6. CART FUNCTIONS
         // ================================================================
-        // FIXED: Cart with product snapshot
         function addToCart(productId) {
             let cart = JSON.parse(localStorage.getItem('sk_cart')) || [];
             const existing = cart.find(item => item.id === productId);
@@ -2125,7 +2205,7 @@
                 const product = products.find(p => p.id === id);
                 if (!product) return;
                 const oldPriceHtml = product.old_price ? `<span class="old">£${product.old_price.toLocaleString()}</span>` : '';
-                const categoryName = product.category_id ? getCategoryNameById(product.category_id) : product.category || 'Uncategorized';
+                const categoryName = product.category_id ? getCategoryNameById(product.category_id) : (product.category || 'Uncategorized');
                 grid.innerHTML += `<div class="product-card" data-id="${product.id}"><button class="wishlist-btn active" onclick="toggleWishlist(${product.id}, event)"><i class="fas fa-heart"></i></button><img src="${product.image}" alt="${product.name}" onclick="openLightbox('${product.image}')" /><div class="info"><div class="product-top"><div class="name-group"><h3>${product.name}</h3><span class="category">${categoryName}</span></div></div><p>${product.description || 'Premium quality product.'}</p><div class="price">£${product.price.toLocaleString()} ${oldPriceHtml}</div><div class="action-row"><button class="btn-add-cart" onclick="addToCart(${product.id})"><i class="fas fa-cart-plus"></i> Add to Cart</button></div></div></div>`;
             });
         }
@@ -2332,7 +2412,6 @@
 
             const products = await getProducts();
 
-            // FIXED: Unique Order ID with random suffix
             const order = {
                 id: 'ORD-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase(),
                 customer_name: name,
@@ -2628,7 +2707,6 @@
             const labels = Object.keys(dateMap).slice(-7);
             const data = labels.map(d => dateMap[d].total);
 
-            // FIXED: Empty state handling
             if (labels.length === 0) {
                 labels.push('No Data');
                 data.push(0);
@@ -2733,7 +2811,7 @@
             if (products.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray);">No products yet.</td></tr>'; return; }
             let html = '';
             products.forEach(p => {
-                const catName = p.category_id ? getCategoryNameById(p.category_id) : p.category || 'Uncategorized';
+                const catName = p.category_id ? getCategoryNameById(p.category_id) : (p.category || 'Uncategorized');
                 html += `<tr>
                     <td>${p.id}</td>
                     <td>${p.name}</td>
@@ -2811,8 +2889,13 @@
         async function saveProduct() {
             const id = document.getElementById('editProductId').value;
             const name = document.getElementById('prodName').value.trim();
-            const categoryId = document.getElementById('prodCategory').value;
-            const categoryName = document.getElementById('prodCategory').selectedOptions[0]?.text || '';
+            const categoryValue = document.getElementById('prodCategory').value;
+
+            // Split "Kitchens - Plates" into category and subcategory
+            const parts = categoryValue.split(' - ');
+            const categoryName = parts[0]; // Kitchens
+            const subCategoryName = parts[1] || ''; // Plates
+
             const price = parseFloat(document.getElementById('prodPrice').value);
             const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
             const description = document.getElementById('prodDesc').value.trim();
@@ -2835,7 +2918,7 @@
             if (!name) { alert('Please enter Product Name.'); return; }
             if (!price || isNaN(price)) { alert('Please enter a valid Price.'); return; }
             if (!imageUrl) { alert('Please select an Image.'); return; }
-            if (!categoryId || categoryId === '' || categoryId === '-- Select Category --') {
+            if (!categoryValue || categoryValue === '') {
                 alert('Please select a Category.');
                 return;
             }
@@ -2844,14 +2927,13 @@
                 let products = await getProducts();
 
                 if (id) {
-                    // FIXED: String comparison
                     const index = products.findIndex(p => String(p.id) === String(id));
                     if (index > -1) {
                         products[index] = {
                             ...products[index],
                             name,
-                            category: categoryName,
-                            category_id: parseInt(categoryId),
+                            category: categoryValue,
+                            category_id: parseInt(categoryName) || null,
                             price,
                             old_price: oldPrice,
                             image: imageUrl,
@@ -2864,8 +2946,8 @@
                     const newProduct = {
                         id: newId,
                         name,
-                        category: categoryName,
-                        category_id: parseInt(categoryId),
+                        category: categoryValue,
+                        category_id: parseInt(categoryName) || null,
                         price,
                         old_price: oldPrice,
                         image: imageUrl,
@@ -2933,7 +3015,6 @@
             renderCustomersData(allUsersData);
         }
 
-        // FIXED: renderCustomersData async
         async function renderCustomersData(users) {
             const orders = await getOrders();
             const tbody = document.getElementById('adminCustomersTable');
@@ -3326,7 +3407,7 @@
                 if (products.length === 0) { alert('No products to export.'); return; }
                 let csv = 'ID,Name,Category,Price,Old Price,Image\n';
                 products.forEach(p => {
-                    const catName = p.category_id ? getCategoryNameById(p.category_id) : p.category || 'Uncategorized';
+                    const catName = p.category_id ? getCategoryNameById(p.category_id) : (p.category || 'Uncategorized');
                     csv += `${p.id},"${p.name}","${catName}",${p.price},${p.old_price || ''},"${p.image}"\n`;
                 });
                 downloadCSV(csv, 'products_export.csv');
