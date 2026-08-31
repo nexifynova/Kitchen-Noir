@@ -2511,52 +2511,77 @@
         }
 
         async function saveProduct() {
-            const id = document.getElementById('editProductId').value;
-            const name = document.getElementById('prodName').value.trim();
-            const categoryId = document.getElementById('prodCategory').value;
-            const price = parseFloat(document.getElementById('prodPrice').value);
-            const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
-            const description = document.getElementById('prodDesc').value.trim();
+    const id = document.getElementById('editProductId').value;
+    const name = document.getElementById('prodName').value.trim();
+    const categoryId = document.getElementById('prodCategory').value;
+    const price = parseFloat(document.getElementById('prodPrice').value);
+    const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
+    const description = document.getElementById('prodDesc').value.trim();
 
-            const fileInput = document.getElementById('prodImageFile');
-            const existingImage = document.getElementById('prodImage').value;
-            let imageUrl = existingImage;
+    const fileInput = document.getElementById('prodImageFile');
+    const existingImage = document.getElementById('prodImage').value;
+    let imageUrl = existingImage;
 
-            if (fileInput.files && fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const uploadedUrl = await uploadImage(file);
-                if (uploadedUrl) {
-                    imageUrl = uploadedUrl;
-                } else {
-                    alert('Image upload failed. Please try again.');
-                    return;
-                }
-            }
-
-            if (!name || !price || !imageUrl || !categoryId) {
-                alert('Please fill Name, Price, Category, and Image.');
-                return;
-            }
-
-            let products = await getProducts();
-            if (id) {
-                const index = products.findIndex(p => p.id === parseInt(id));
-                if (index > -1) {
-                    products[index] = { ...products[index], name, category_id: parseInt(categoryId), price, old_price: oldPrice, image: imageUrl, description };
-                }
-                showToast('Product updated!');
-            } else {
-                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-                products.push({ id: newId, name, category_id: parseInt(categoryId), price, old_price: oldPrice, image: imageUrl, description });
-                showToast('Product added!');
-            }
-
-            await saveProducts(products);
-            toggleProductForm();
-            loadAdminProducts();
-            renderProducts();
-            filterProducts();
+    // ===== IMAGE UPLOAD =====
+    if (fileInput.files && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const uploadedUrl = await uploadImage(file);
+        if (uploadedUrl) {
+            imageUrl = uploadedUrl;
+        } else {
+            alert('Image upload failed. Please try again.');
+            return;
         }
+    }
+
+    // ===== VALIDATION =====
+    if (!name || !price || !imageUrl) {
+        alert('Please fill Name, Price, and Image.');
+        return;
+    }
+
+    // ===== CATEGORY VALIDATION =====
+    if (!categoryId || categoryId === '') {
+        alert('Please select a Category.');
+        return;
+    }
+
+    // ===== SAVE PRODUCT =====
+    let products = await getProducts();
+    if (id) {
+        const index = products.findIndex(p => p.id === parseInt(id));
+        if (index > -1) {
+            products[index] = {
+                ...products[index],
+                name,
+                category_id: parseInt(categoryId),
+                price,
+                old_price: oldPrice,
+                image: imageUrl,
+                description
+            };
+        }
+        showToast('Product updated!');
+    } else {
+        const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+        products.push({
+            id: newId,
+            name,
+            category_id: parseInt(categoryId),
+            price,
+            old_price: oldPrice,
+            image: imageUrl,
+            description
+        });
+        showToast('Product added!');
+    }
+
+    await saveProducts(products);
+    toggleProductForm();
+    loadAdminProducts();
+    renderProducts();
+    filterProducts();
+}
 
         // ================================================================
         // 15. ADMIN: CUSTOMERS (WITH DELETE + CLEAR ALL)
