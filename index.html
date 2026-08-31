@@ -376,6 +376,13 @@
         @media (max-width:992px) { .about-content, .contact-wrapper { grid-template-columns: 1fr; } .footer-grid { grid-template-columns: 1fr 1fr; } .hero-content h1 { font-size: 40px; } .header-right .search-wrap input { width: 120px; } .header-right .search-wrap input:focus { width: 150px; } .admin-product-form .form-row { grid-template-columns: 1fr; } .checkout-form .card-details .row { grid-template-columns: 1fr; } }
         @media (max-width:768px) { .menu-toggle { display: block; } .nav-menu { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--white); padding: 20px; box-shadow: var(--shadow-hover); gap: 14px; border-top: 3px solid var(--gold); z-index: 100; } .nav-menu.open { display: flex; } .nav-menu>li { width: 100%; padding-bottom: 0; } .nav-menu>li::after { display: none; } .dropdown { position: static; display: none; box-shadow: none; padding: 4px 0 4px 16px; border-top: none; margin-top: 0; } .nav-menu>li:hover .dropdown { display: none; } .nav-menu>li .dropdown.open { display: block; } .footer-grid { grid-template-columns: 1fr; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); } .filter-bar { flex-direction: column; align-items: stretch; } .filter-bar .filters-left { flex-direction: column; align-items: stretch; } .filter-bar .price-range { flex-wrap: wrap; } .header-right .search-wrap input { width: 100px; } .header-right .search-wrap input:focus { width: 130px; } .hero-content h1 { font-size: 32px; } .top-bar .left span { font-size: 11px; } .profile-section .order-history .order-item { flex-direction: column; align-items: flex-start; } .admin-tabs { flex-wrap: wrap; } .admin-tabs button { padding: 6px 12px; font-size: 12px; } .modal-content.xlarge { padding: 16px; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } .product-card .info .action-row { flex-direction: column; } .product-card .info .action-row .btn-add-cart { min-width: unset; } }
         @media (max-width:480px) { .header-right .search-wrap input { width: 80px; font-size: 11px; padding: 6px 10px 6px 28px; } .header-right .search-wrap input:focus { width: 100px; } .btn-appointment { padding: 6px 14px; font-size: 11px; } .cart-icon-wrap { padding: 6px 8px; font-size: 18px; } .user-icon-wrap { padding: 6px 8px; font-size: 16px; } .hero-content { padding: 40px 5%; } .hero-content h1 { font-size: 28px; } .modal-content { padding: 16px; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); } }
+
+        /* Admin Header with Change Password Button */
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+        .admin-header h2 { font-size: 28px; font-family: 'Playfair Display', serif; }
+        .admin-header .admin-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .btn-change-password { background: var(--info); color: white; padding: 8px 18px; border: none; border-radius: 50px; font-weight: 600; font-size: 13px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-change-password:hover { background: #2980b9; transform: translateY(-2px); }
     </style>
 </head>
 <body>
@@ -659,7 +666,7 @@
                     <div class="contact-form">
                         <h3>Send a Message</h3>
 
-                        <!-- ===== CONTACT FORM (FIXED - DATA GOES TO INQUIRIES TABLE) ===== -->
+                        <!-- ===== CONTACT FORM ===== -->
                         <form id="contactForm" onsubmit="submitContact(event)">
                             <div class="form-group"><label>Name *</label><input type="text" id="contactName" placeholder="Your Name" required /></div>
                             <div class="form-group"><label>Email *</label><input type="email" id="contactEmail" placeholder="Your Email" required /></div>
@@ -692,9 +699,13 @@
                 </div>
 
                 <div id="adminDashboard" style="display:none;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
-                        <h2 style="font-size:28px;font-family:'Playfair Display',serif;"><i class="fas fa-chart-line"></i> Admin Dashboard</h2>
-                        <button class="admin-logout" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    <!-- ===== ADMIN HEADER WITH CHANGE PASSWORD BUTTON ===== -->
+                    <div class="admin-header">
+                        <h2><i class="fas fa-chart-line"></i> Admin Dashboard</h2>
+                        <div class="admin-actions">
+                            <button class="btn-change-password" onclick="openAdminChangePassword()"><i class="fas fa-key"></i> Change Password</button>
+                            <button class="admin-logout" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                        </div>
                     </div>
 
                     <!-- Admin Tabs -->
@@ -703,7 +714,7 @@
                         <button data-tab="tab-products" onclick="switchAdminTab('tab-products')"><i class="fas fa-box"></i> Products</button>
                         <button data-tab="tab-orders" onclick="switchAdminTab('tab-orders')"><i class="fas fa-shopping-cart"></i> Orders</button>
                         <button data-tab="tab-customers" onclick="switchAdminTab('tab-customers')"><i class="fas fa-users"></i> Customers</button>
-                        <button data-tab="tab-inquiries" onclick="switchAdminTab('tab-inquiries')"><i class="fas fa-question-circle"></i> Inquiries</button>
+                        <button data-tab="tab-inquiries" onclick="switchAdminTab('tab-inquiries')"><i class="fas fa-envelope"></i> Customer Messages</button>
                     </div>
 
                     <!-- Tab: Dashboard -->
@@ -758,7 +769,7 @@
                         </div>
                     </div>
 
-                    <!-- Tab: Orders (FIXED - Now shows customer_name correctly) -->
+                    <!-- Tab: Orders -->
                     <div class="admin-tab-content" id="tab-orders">
                         <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
                             <h3 style="font-size:20px;">All Orders</h3>
@@ -776,7 +787,7 @@
                         <p id="noOrders" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No orders yet.</p>
                     </div>
 
-                    <!-- Tab: Customers (FIXED - Now shows registered users from Supabase) -->
+                    <!-- Tab: Customers -->
                     <div class="admin-tab-content" id="tab-customers">
                         <h3 style="font-size:20px;margin-bottom:16px;">Registered Customers</h3>
                         <div class="admin-export-bar">
@@ -791,9 +802,9 @@
                         </div>
                     </div>
 
-                    <!-- Tab: Inquiries (NEW - Contact Form submissions will appear here) -->
+                    <!-- Tab: Customer Messages (Inquiries) -->
                     <div class="admin-tab-content" id="tab-inquiries">
-                        <h3 style="font-size:20px;margin-bottom:16px;">Contact Form Inquiries</h3>
+                        <h3 style="font-size:20px;margin-bottom:16px;">Customer Messages (Contact Form)</h3>
                         <div class="admin-export-bar">
                             <button class="csv-btn" onclick="exportInquiriesCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
                             <button class="refresh-btn" onclick="loadAdminInquiries()"><i class="fas fa-sync"></i> Refresh</button>
@@ -804,7 +815,7 @@
                                 <tbody id="inquiriesTableBody"></tbody>
                             </table>
                         </div>
-                        <p id="noInquiries" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No inquiries yet.</p>
+                        <p id="noInquiries" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No messages yet.</p>
                     </div>
                 </div>
             </div>
@@ -836,7 +847,7 @@
                     <div class="form-group"><label>Full Name</label><input type="text" id="regName" placeholder="John Doe" required /></div>
                     <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="your@email.com" required /></div>
                     <div class="form-group"><label>Password</label><input type="password" id="regPassword" placeholder="Min 6 characters" required minlength="6" /></div>
-                    <div class="auth-error" id="registerError">Registration failed</div>
+                    <div class="auth-error" id="registerError">Registration failed. Please try again.</div>
                     <button type="submit" class="btn-primary"><i class="fas fa-user-plus"></i> Create Account</button>
                 </form>
             </div>
@@ -1043,6 +1054,7 @@
         }
 
         const loginAttempts = {};
+
         function checkRateLimit(email) {
             const now = Date.now();
             if (!loginAttempts[email]) {
@@ -1122,7 +1134,7 @@
         }
 
         // ================================================================
-        // 2. DATABASE FUNCTIONS (FIXED - Using supabaseClient for all operations)
+        // 2. DATABASE FUNCTIONS
         // ================================================================
         function getLocalData(key, fallback) {
             const stored = localStorage.getItem(key);
@@ -1183,7 +1195,7 @@
             loadAdminProducts();
         }
 
-        // ===== USERS (FIXED - Using supabaseClient) =====
+        // ===== USERS =====
         async function getUsers() {
             try {
                 const { data, error } = await supabaseClient.from('users').select('*').order('created_at', { ascending: false });
@@ -1206,7 +1218,7 @@
             }
         }
 
-        // ===== ORDERS (FIXED - Using supabaseClient) =====
+        // ===== ORDERS =====
         async function getOrders() {
             try {
                 const { data, error } = await supabaseClient.from('orders').select('*').order('date', { ascending: false });
@@ -1268,7 +1280,7 @@
             }
         }
 
-        // ===== INQUIRIES (NEW - For Contact Form) =====
+        // ===== INQUIRIES (Contact Form Messages) =====
         async function getInquiries() {
             try {
                 const { data, error } = await supabaseClient.from('inquiries').select('*').order('date', { ascending: false });
@@ -1392,11 +1404,20 @@
             });
 
             switch (sort) {
-                case 'price-asc': filtered.sort((a, b) => a.price - b.price); break;
-                case 'price-desc': filtered.sort((a, b) => b.price - a.price); break;
-                case 'name-asc': filtered.sort((a, b) => a.name.localeCompare(b.name)); break;
-                case 'name-desc': filtered.sort((a, b) => b.name.localeCompare(a.name)); break;
-                default: break;
+                case 'price-asc':
+                    filtered.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    filtered.sort((a, b) => b.price - a.price);
+                    break;
+                case 'name-asc':
+                    filtered.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'name-desc':
+                    filtered.sort((a, b) => b.name.localeCompare(a.name));
+                    break;
+                default:
+                    break;
             }
 
             filteredProducts = filtered;
@@ -1435,7 +1456,8 @@
             setTimeout(async () => {
                 const noProducts = document.getElementById('noProducts');
                 if (noProducts.style.display !== 'none') {
-                    noProducts.innerHTML = `<i class="fas fa-search"></i><h3>Product is not available</h3><p>Your query has been despatched to our Product Collection and Management Team.</p><p style="font-weight:700;color:var(--gold);margin-top:8px;">Thank You.</p>`;
+                    noProducts.innerHTML =
+                        `<i class="fas fa-search"></i><h3>Product is not available</h3><p>Your query has been despatched to our Product Collection and Management Team.</p><p style="font-weight:700;color:var(--gold);margin-top:8px;">Thank You.</p>`;
                     const user = getCurrentUser();
                     await saveInquiries([{ customer_name: user ? user.name : 'Unknown', customer_email: user ? user.email : '', customer_phone: '', message: 'Search Query: ' + searchTerm, date: new Date().toISOString() }]);
                 }
@@ -1472,13 +1494,15 @@
                 cartTotal.textContent = '£0.00';
             } else {
                 getProducts().then(products => {
-                    let html = '', total = 0;
+                    let html = '',
+                        total = 0;
                     cart.forEach(item => {
                         const product = products.find(p => p.id === item.id);
                         if (!product) return;
                         const subtotal = product.price * item.qty;
                         total += subtotal;
-                        html += `<div class="cart-item"><img src="${product.image}" alt="${product.name}" /><div class="item-info"><h4>${product.name}</h4><div class="price">£${product.price.toLocaleString()}</div></div><div class="qty-control"><button onclick="decreaseQty(${item.id})">−</button><span>${item.qty}</span><button onclick="increaseQty(${item.id})">+</button></div><button class="remove-btn" onclick="removeFromCart(${item.id})"><i class="fas fa-trash"></i></button></div>`;
+                        html +=
+                            `<div class="cart-item"><img src="${product.image}" alt="${product.name}" /><div class="item-info"><h4>${product.name}</h4><div class="price">£${product.price.toLocaleString()}</div></div><div class="qty-control"><button onclick="decreaseQty(${item.id})">−</button><span>${item.qty}</span><button onclick="increaseQty(${item.id})">+</button></div><button class="remove-btn" onclick="removeFromCart(${item.id})"><i class="fas fa-trash"></i></button></div>`;
                     });
                     cartItems.innerHTML = html;
                     cartTotal.textContent = '£' + total.toLocaleString();
@@ -1488,12 +1512,15 @@
             }
         }
 
-        function closeCart() { document.getElementById('cartModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
+        function closeCart() { document.getElementById('cartModal').classList.remove('active');
+            document.body.style.overflow = 'auto'; }
 
         function increaseQty(productId) {
             let cart = JSON.parse(localStorage.getItem('sk_cart')) || [];
             const item = cart.find(i => i.id === productId);
-            if (item) { item.qty++; localStorage.setItem('sk_cart', JSON.stringify(cart)); openCart(); }
+            if (item) { item.qty++;
+                localStorage.setItem('sk_cart', JSON.stringify(cart));
+                openCart(); }
         }
 
         function decreaseQty(productId) {
@@ -1521,7 +1548,8 @@
                 if (!card) return;
                 const id = parseInt(card.dataset.id);
                 const inCart = cart.some(i => i.id === id);
-                if (inCart) { btn.innerHTML = '<i class="fas fa-check"></i> In Cart'; btn.classList.add('in-cart'); } else { btn.innerHTML = '<i class="fas fa-cart-plus"></i> Add to Cart';
+                if (inCart) { btn.innerHTML = '<i class="fas fa-check"></i> In Cart';
+                    btn.classList.add('in-cart'); } else { btn.innerHTML = '<i class="fas fa-cart-plus"></i> Add to Cart';
                     btn.classList.remove('in-cart'); }
             });
         }
@@ -1532,7 +1560,8 @@
         async function toggleWishlist(productId, event) {
             if (event) event.stopPropagation();
             const user = getCurrentUser();
-            if (!user) { openAuthModal(); showToast('Please sign in to save wishlist'); return; }
+            if (!user) { openAuthModal();
+                showToast('Please sign in to save wishlist'); return; }
             let wishlist = JSON.parse(localStorage.getItem('sk_wishlist')) || [];
             const index = wishlist.indexOf(productId);
             if (index > -1) { wishlist.splice(index, 1);
@@ -1548,7 +1577,8 @@
             if (!user) {
                 document.getElementById('wishlistGrid').style.display = 'none';
                 document.getElementById('wishlistEmpty').style.display = 'block';
-                document.getElementById('wishlistEmpty').innerHTML = `<i class="fas fa-heart"></i><h3>Please Sign In</h3><p>Sign in to view and manage your wishlist.</p><button class="btn-primary" style="margin-top:16px;" onclick="openAuthModal()"><i class="fas fa-sign-in-alt"></i> Sign In</button>`;
+                document.getElementById('wishlistEmpty').innerHTML =
+                    `<i class="fas fa-heart"></i><h3>Please Sign In</h3><p>Sign in to view and manage your wishlist.</p><button class="btn-primary" style="margin-top:16px;" onclick="openAuthModal()"><i class="fas fa-sign-in-alt"></i> Sign In</button>`;
                 return;
             }
             const wishlist = await getWishlist(user.id);
@@ -1558,7 +1588,8 @@
             if (wishlist.length === 0) {
                 grid.style.display = 'none';
                 empty.style.display = 'block';
-                empty.innerHTML = `<i class="fas fa-heart"></i><h3>Your wishlist is empty</h3><p>Start saving your favourite products by clicking the heart icon.</p><button class="btn-primary" style="margin-top:16px;" onclick="navigate('products')"><i class="fas fa-shopping-bag"></i> Browse Products</button>`;
+                empty.innerHTML =
+                    `<i class="fas fa-heart"></i><h3>Your wishlist is empty</h3><p>Start saving your favourite products by clicking the heart icon.</p><button class="btn-primary" style="margin-top:16px;" onclick="navigate('products')"><i class="fas fa-shopping-bag"></i> Browse Products</button>`;
                 return;
             }
             empty.style.display = 'none';
@@ -1568,7 +1599,8 @@
                 const product = products.find(p => p.id === id);
                 if (!product) return;
                 const oldPriceHtml = product.old_price ? `<span class="old">£${product.old_price.toLocaleString()}</span>` : '';
-                grid.innerHTML += `<div class="product-card" data-id="${product.id}"><button class="wishlist-btn active" onclick="toggleWishlist(${product.id}, event)"><i class="fas fa-heart"></i></button><img src="${product.image}" alt="${product.name}" onclick="openLightbox('${product.image}')" /><div class="info"><div class="product-top"><div class="name-group"><h3>${product.name}</h3><span class="category">${product.category}</span></div></div><p>Premium quality product.</p><div class="price">£${product.price.toLocaleString()} ${oldPriceHtml}</div><div class="action-row"><button class="btn-add-cart" onclick="addToCart(${product.id})"><i class="fas fa-cart-plus"></i> Add to Cart</button></div></div></div>`;
+                grid.innerHTML +=
+                    `<div class="product-card" data-id="${product.id}"><button class="wishlist-btn active" onclick="toggleWishlist(${product.id}, event)"><i class="fas fa-heart"></i></button><img src="${product.image}" alt="${product.name}" onclick="openLightbox('${product.image}')" /><div class="info"><div class="product-top"><div class="name-group"><h3>${product.name}</h3><span class="category">${product.category}</span></div></div><p>Premium quality product.</p><div class="price">£${product.price.toLocaleString()} ${oldPriceHtml}</div><div class="action-row"><button class="btn-add-cart" onclick="addToCart(${product.id})"><i class="fas fa-cart-plus"></i> Add to Cart</button></div></div></div>`;
             });
         }
 
@@ -1613,7 +1645,7 @@
         }
 
         // ================================================================
-        // 7. AUTHENTICATION (FIXED - Using supabaseClient)
+        // 7. AUTHENTICATION (FIXED - UUID id generation)
         // ================================================================
         function openAuthModal() { document.getElementById('authModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -1636,14 +1668,22 @@
             const name = sanitizeInput(document.getElementById('regName').value.trim());
             const email = sanitizeInput(document.getElementById('regEmail').value.trim());
             const password = document.getElementById('regPassword').value;
-            if (!name || !email || !password) { document.getElementById('registerError').textContent = 'Please fill all fields.';
-                document.getElementById('registerError').style.display = 'block'; return; }
+            if (!name || !email || !password) {
+                document.getElementById('registerError').textContent = 'Please fill all fields.';
+                document.getElementById('registerError').style.display = 'block';
+                return;
+            }
             try {
                 const { data: existingUser } = await supabaseClient.from('users').select('email').eq('email', email).maybeSingle();
-                if (existingUser) { document.getElementById('registerError').textContent = 'Email already registered.';
-                    document.getElementById('registerError').style.display = 'block'; return; }
+                if (existingUser) {
+                    document.getElementById('registerError').textContent = 'Email already registered.';
+                    document.getElementById('registerError').style.display = 'block';
+                    return;
+                }
                 const hashedPassword = await sha256(password);
-                const { data, error } = await supabaseClient.from('users').insert([{ id: Date.now().toString(36) + Math.random().toString(36).substr(2, 5), name, email, password_hash: hashedPassword }]).select().single();
+                // Generate UUID v4 style id
+                const userId = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).substr(2, 9);
+                const { data, error } = await supabaseClient.from('users').insert([{ id: userId, name, email, password_hash: hashedPassword }]).select().single();
                 if (error) throw error;
                 setCurrentUser({ id: data.id, name: data.name, email: data.email });
                 closeAuthModal();
@@ -1651,6 +1691,7 @@
                 renderProfile();
                 updateUserUI();
             } catch (error) {
+                console.error('Registration error:', error);
                 document.getElementById('registerError').textContent = 'Registration failed. Please try again.';
                 document.getElementById('registerError').style.display = 'block';
             }
@@ -1660,9 +1701,12 @@
             event.preventDefault();
             const email = sanitizeInput(document.getElementById('loginEmail').value.trim());
             const password = document.getElementById('loginPassword').value;
-            if (!checkRateLimit(email)) { document.getElementById('loginError').textContent = 'Too many failed attempts. Please wait 15 minutes.';
+            if (!checkRateLimit(email)) {
+                document.getElementById('loginError').textContent = 'Too many failed attempts. Please wait 15 minutes.';
                 document.getElementById('loginError').style.display = 'block';
-                document.getElementById('loginPassword').value = ''; return; }
+                document.getElementById('loginPassword').value = '';
+                return;
+            }
             try {
                 const hashedPassword = await sha256(password);
                 const { data, error } = await supabaseClient.from('users').select('id, name, email, password_hash').eq('email', email).maybeSingle();
@@ -1720,13 +1764,14 @@
                 userOrders.forEach(order => {
                     const statusClass = order.status || 'pending';
                     const itemsList = order.items ? order.items.map(item => `${item.name} x${item.qty}`).join(', ') : '';
-                    container.innerHTML += `<div class="order-item"><div><div class="order-id">${order.id}</div><div class="order-details">${itemsList}</div></div><div><span class="order-total">£${order.total.toLocaleString()}</span><span class="order-status ${statusClass}">${statusClass}</span><span style="font-size:12px;color:var(--gray);display:block;">${new Date(order.date).toLocaleDateString()}</span></div></div>`;
+                    container.innerHTML +=
+                        `<div class="order-item"><div><div class="order-id">${order.id}</div><div class="order-details">${itemsList}</div></div><div><span class="order-total">£${order.total.toLocaleString()}</span><span class="order-status ${statusClass}">${statusClass}</span><span style="font-size:12px;color:var(--gray);display:block;">${new Date(order.date).toLocaleDateString()}</span></div></div>`;
                 });
             });
         }
 
         // ================================================================
-        // 8. CHECKOUT (FIXED - Order data structure corrected)
+        // 8. CHECKOUT
         // ================================================================
         function toggleCardDetails() {
             const method = document.getElementById('paymentMethod').value;
@@ -1774,7 +1819,7 @@
         function closeCheckout() { document.getElementById('checkoutModal').classList.remove('active');
             document.body.style.overflow = 'auto'; }
 
-        // ===== PLACE ORDER (FIXED - Correct data structure) =====
+        // ===== PLACE ORDER =====
         async function placeOrder(event) {
             event.preventDefault();
             const name = document.getElementById('custName').value.trim();
@@ -1835,7 +1880,7 @@
         }
 
         // ================================================================
-        // 9. CONTACT FORM (FIXED - Data goes to inquiries table)
+        // 9. CONTACT FORM (Data goes to inquiries table)
         // ================================================================
         async function submitContact(event) {
             event.preventDefault();
@@ -1897,12 +1942,13 @@
             statusEl.textContent = statusMap[order.status] || order.status;
             statusEl.style.color = order.status === 'completed' ? 'var(--success)' : order.status === 'cancelled' ? 'var(--danger)' : 'var(--warning)';
             const itemsList = order.items ? order.items.map(item => `${item.name} x${item.qty}`).join(', ') : '';
-            detailsEl.innerHTML = `<strong>Customer:</strong> ${order.customer_name || 'N/A'}<br/><strong>Items:</strong> ${itemsList}<br/><strong>Total:</strong> £${(order.total || 0).toLocaleString()}<br/><strong>Date:</strong> ${new Date(order.date).toLocaleString()}<br/><strong>Payment:</strong> ${order.payment_method || 'N/A'}`;
+            detailsEl.innerHTML =
+                `<strong>Customer:</strong> ${order.customer_name || 'N/A'}<br/><strong>Items:</strong> ${itemsList}<br/><strong>Total:</strong> £${(order.total || 0).toLocaleString()}<br/><strong>Date:</strong> ${new Date(order.date).toLocaleString()}<br/><strong>Payment:</strong> ${order.payment_method || 'N/A'}`;
             result.classList.add('show');
         }
 
         // ================================================================
-        // 11. ADMIN (FIXED - All tabs working with Supabase)
+        // 11. ADMIN
         // ================================================================
         let adminChartInstance = null;
 
@@ -1942,7 +1988,7 @@
             if (tabId === 'tab-inquiries') loadAdminInquiries();
         }
 
-        // ===== ADMIN: DASHBOARD (FIXED - Shows customer_name correctly) =====
+        // ===== ADMIN: DASHBOARD =====
         async function loadAdminDashboard() {
             const orders = await getOrders();
 
@@ -1964,7 +2010,8 @@
                 let html = '';
                 orders.forEach(order => {
                     const itemsList = order.items ? order.items.map(item => `${item.name} x${item.qty}`).join(', ') : '';
-                    html += `<tr><td><strong>${order.id}</strong></td><td>${order.customer_name || 'N/A'}<br/><small style="color:var(--gray);">${order.customer_email || ''}</small></td><td>${itemsList}</td><td><strong>£${(order.total || 0).toLocaleString()}</strong></td><td>${new Date(order.date).toLocaleDateString()}</td><td><span class="status status-${order.status || 'pending'}">${order.status || 'pending'}</span></td><td><select onchange="updateOrderStatus('${order.id}', this.value)" style="padding:6px;border-radius:6px;border:1px solid #ddd;font-size:13px;"><option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option><option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option><option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option></select></td></tr>`;
+                    html +=
+                        `<tr><td><strong>${order.id}</strong></td><td>${order.customer_name || 'N/A'}<br/><small style="color:var(--gray);">${order.customer_email || ''}</small></td><td>${itemsList}</td><td><strong>£${(order.total || 0).toLocaleString()}</strong></td><td>${new Date(order.date).toLocaleDateString()}</td><td><span class="status status-${order.status || 'pending'}">${order.status || 'pending'}</span></td><td><select onchange="updateOrderStatus('${order.id}', this.value)" style="padding:6px;border-radius:6px;border:1px solid #ddd;font-size:13px;"><option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option><option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option><option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option></select></td></tr>`;
                 });
                 tbody.innerHTML = html;
             }
@@ -2003,7 +2050,8 @@
             const tbody = document.getElementById('adminProductsTable');
             if (products.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--gray);">No products yet.</td></tr>'; return; }
             let html = '';
-            products.forEach(p => { html += `<tr><td>${p.id}</td><td>${p.name}</td><td>${p.category}</td><td>£${p.price.toLocaleString()}</td><td><div class="actions"><button class="edit-btn" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button><button class="delete-btn" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button></div></td></tr>`; });
+            products.forEach(p => { html +=
+                    `<tr><td>${p.id}</td><td>${p.name}</td><td>${p.category}</td><td>£${p.price.toLocaleString()}</td><td><div class="actions"><button class="edit-btn" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button><button class="delete-btn" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button></div></td></tr>`; });
             tbody.innerHTML = html;
         }
 
@@ -2063,7 +2111,8 @@
             let products = await getProducts();
             if (id) {
                 const index = products.findIndex(p => p.id === parseInt(id));
-                if (index > -1) products[index] = { ...products[index], name, category, price, old_price: oldPrice, image, description };
+                if (index > -1) products[index] = { ...products[index], name, category, price, old_price: oldPrice, image,
+                    description };
                 showToast('Product updated!');
             } else {
                 const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
@@ -2097,7 +2146,7 @@
             });
         }
 
-        // ===== ADMIN: CUSTOMERS (FIXED - Shows registered users) =====
+        // ===== ADMIN: CUSTOMERS =====
         async function loadAdminCustomers() {
             const users = await getUsers();
             const orders = await getOrders();
@@ -2106,7 +2155,8 @@
             let html = '';
             users.forEach(u => {
                 const orderCount = orders.filter(o => o.customer_email === u.email).length;
-                html += `<tr><td>${u.id}</td><td>${u.name}</td><td>${u.email}</td><td>${new Date(u.created_at).toLocaleDateString()}</td><td>${orderCount}</td></tr>`;
+                html +=
+                    `<tr><td>${u.id}</td><td>${u.name}</td><td>${u.email}</td><td>${new Date(u.created_at).toLocaleDateString()}</td><td>${orderCount}</td></tr>`;
             });
             tbody.innerHTML = html;
         }
@@ -2118,14 +2168,15 @@
                     let csv = 'ID,Name,Email,Registered,Orders\n';
                     users.forEach(u => {
                         const orderCount = orders.filter(o => o.customer_email === u.email).length;
-                        csv += `${u.id},"${u.name}","${u.email}",${new Date(u.created_at).toLocaleDateString()},${orderCount}\n`;
+                        csv +=
+                            `${u.id},"${u.name}","${u.email}",${new Date(u.created_at).toLocaleDateString()},${orderCount}\n`;
                     });
                     downloadCSV(csv, 'customers_export.csv');
                 });
             });
         }
 
-        // ===== ADMIN: INQUIRIES (NEW - Shows contact form submissions) =====
+        // ===== ADMIN: INQUIRIES (Customer Messages) =====
         async function loadAdminInquiries() {
             const inquiries = await getInquiries();
             const tbody = document.getElementById('inquiriesTableBody');
@@ -2135,19 +2186,21 @@
             noInquiries.style.display = 'none';
             let html = '';
             inquiries.forEach((inq, idx) => {
-                html += `<tr><td>${idx + 1}</td><td>${new Date(inq.date).toLocaleString()}</td><td>${inq.customer_name || 'N/A'}</td><td>${inq.customer_email || 'N/A'}</td><td>${inq.customer_phone || 'N/A'}</td><td>${inq.message || ''}</td></tr>`;
+                html +=
+                    `<tr><td>${idx + 1}</td><td>${new Date(inq.date).toLocaleString()}</td><td>${inq.customer_name || 'N/A'}</td><td>${inq.customer_email || 'N/A'}</td><td>${inq.customer_phone || 'N/A'}</td><td>${inq.message || ''}</td></tr>`;
             });
             tbody.innerHTML = html;
         }
 
         function exportInquiriesCSV() {
             getInquiries().then(inquiries => {
-                if (inquiries.length === 0) { alert('No inquiries to export.'); return; }
+                if (inquiries.length === 0) { alert('No messages to export.'); return; }
                 let csv = 'Date,Customer Name,Email,Phone,Message\n';
                 inquiries.forEach(inq => {
-                    csv += `${new Date(inq.date).toLocaleString()},"${inq.customer_name || ''}","${inq.customer_email || ''}","${inq.customer_phone || ''}","${inq.message || ''}"\n`;
+                    csv +=
+                        `${new Date(inq.date).toLocaleString()},"${inq.customer_name || ''}","${inq.customer_email || ''}","${inq.customer_phone || ''}","${inq.message || ''}"\n`;
                 });
-                downloadCSV(csv, 'inquiries_export.csv');
+                downloadCSV(csv, 'customer_messages_export.csv');
             });
         }
 
@@ -2157,7 +2210,8 @@
                 let csv = 'Order ID,Customer,Email,Items,Total,Date,Status\n';
                 orders.forEach(o => {
                     const itemsList = o.items ? o.items.map(item => `${item.name} x${item.qty}`).join('; ') : '';
-                    csv += `${o.id},"${o.customer_name || 'N/A'}","${o.customer_email || ''}","${itemsList}",${o.total},${new Date(o.date).toLocaleDateString()},${o.status}\n`;
+                    csv +=
+                        `${o.id},"${o.customer_name || 'N/A'}","${o.customer_email || ''}","${itemsList}",${o.total},${new Date(o.date).toLocaleDateString()},${o.status}\n`;
                 });
                 downloadCSV(csv, 'orders_export.csv');
             });
@@ -2170,6 +2224,61 @@
             link.download = filename;
             link.click();
             URL.revokeObjectURL(link.href);
+        }
+
+        // ===== ADMIN: CHANGE PASSWORD =====
+        function openAdminChangePassword() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-key"></i> Change Admin Password</h3>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <form onsubmit="event.preventDefault(); submitAdminPasswordChange()">
+                        <div class="form-group">
+                            <label>Current Password *</label>
+                            <input type="password" id="adminCurrentPass" placeholder="Enter current password" required />
+                        </div>
+                        <div class="form-group">
+                            <label>New Password * (min 6 characters)</label>
+                            <input type="password" id="adminNewPass" placeholder="Enter new password" required minlength="6" />
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm New Password *</label>
+                            <input type="password" id="adminConfirmPass" placeholder="Confirm new password" required minlength="6" />
+                        </div>
+                        <div id="adminPassError" style="color:var(--danger);font-size:13px;display:none;margin-bottom:10px;"></div>
+                        <div class="form-actions" style="display:flex;gap:10px;">
+                            <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Update Password</button>
+                            <button type="button" class="btn-outline" onclick="this.closest('.modal').remove()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        async function submitAdminPasswordChange() {
+            const currentPass = document.getElementById('adminCurrentPass').value;
+            const newPass = document.getElementById('adminNewPass').value;
+            const confirmPass = document.getElementById('adminConfirmPass').value;
+            const errorEl = document.getElementById('adminPassError');
+            errorEl.style.display = 'none';
+            if (newPass !== confirmPass) { errorEl.textContent = '❌ New passwords do not match.';
+                errorEl.style.display = 'block'; return; }
+            try {
+                const result = await changeAdminPassword(currentPass, newPass);
+                showToast('✅ ' + result);
+                document.querySelector('.modal.active')?.remove();
+            } catch (err) {
+                errorEl.textContent = '❌ ' + err;
+                errorEl.style.display = 'block';
+                document.getElementById('adminCurrentPass').value = '';
+                document.getElementById('adminCurrentPass').focus();
+            }
         }
 
         // ================================================================
@@ -2201,7 +2310,12 @@
             document.querySelectorAll('.nav-menu > li > a').forEach(a => a.classList.remove('active'));
             document.querySelectorAll('.nav-menu > li > a').forEach(a => {
                 const txt = a.textContent.trim().toLowerCase();
-                if (txt === page.toLowerCase() || (txt === 'products' && page === 'products') || (txt === 'about' && page === 'about') || (txt === 'contact' && page === 'contact') || (txt === 'gallery' && page === 'gallery') || (txt === 'career' && page === 'career') || (txt === 'admin' && page === 'admin') || (txt === 'home' && page === 'home') || (txt === 'wishlist' && page === 'wishlist') || (txt === 'profile' && page === 'profile') || (txt.includes('track') && page === 'track')) a.classList.add('active');
+                if (txt === page.toLowerCase() || (txt === 'products' && page === 'products') || (txt === 'about' &&
+                        page === 'about') || (txt === 'contact' && page === 'contact') || (txt === 'gallery' &&
+                        page === 'gallery') || (txt === 'career' && page === 'career') || (txt === 'admin' &&
+                        page === 'admin') || (txt === 'home' && page === 'home') || (txt === 'wishlist' &&
+                        page === 'wishlist') || (txt === 'profile' && page === 'profile') || (txt.includes(
+                        'track') && page === 'track')) a.classList.add('active');
             });
             document.getElementById('navMenu').classList.remove('open');
             if (page === 'admin') {
@@ -2227,7 +2341,8 @@
         document.addEventListener('click', function(e) {
             const menu = document.getElementById('navMenu');
             const toggle = document.getElementById('menuToggle');
-            if (menu.classList.contains('open') && !menu.contains(e.target) && !toggle.contains(e.target)) menu.classList.remove('open');
+            if (menu.classList.contains('open') && !menu.contains(e.target) && !toggle.contains(e.target)) menu.classList
+                .remove('open');
         });
 
         // ================================================================
@@ -2251,7 +2366,8 @@
         function renderGallery() {
             const gallery = document.getElementById('galleryGrid');
             gallery.innerHTML = '';
-            galleryImages.forEach(img => { gallery.innerHTML += `<div class="gallery-item" onclick="openLightbox('${img}')"><img src="${img}" alt="Gallery" /><div class="overlay"><i class="fas fa-expand"></i></div></div>`; });
+            galleryImages.forEach(img => { gallery.innerHTML +=
+                    `<div class="gallery-item" onclick="openLightbox('${img}')"><img src="${img}" alt="Gallery" /><div class="overlay"><i class="fas fa-expand"></i></div></div>`; });
         }
 
         // ================================================================
