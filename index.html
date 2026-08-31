@@ -414,6 +414,16 @@
         .user-dropdown .divider { height: 1px; background: #eee; margin: 4px 12px; }
         .user-dropdown .user-name { padding: 8px 20px 4px; font-weight: 700; font-size: 14px; color: var(--primary); }
         .user-dropdown .user-email { padding: 0 20px 8px; font-size: 12px; color: var(--gray); }
+
+        /* File Input Styling for Image Upload */
+        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
+        .file-input-wrapper input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+        .file-input-wrapper .file-label { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--light); border: 2px dashed #ddd; border-radius: 8px; font-weight: 600; font-size: 13px; color: var(--gray); cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+        .file-input-wrapper .file-label:hover { border-color: var(--gold); color: var(--primary); }
+        .file-input-wrapper .file-label i { font-size: 18px; color: var(--gold); }
+        .image-preview { margin-top: 10px; max-width: 150px; max-height: 150px; border-radius: 8px; overflow: hidden; border: 2px solid #ddd; display: none; }
+        .image-preview img { width: 100%; height: auto; display: block; }
+        .image-preview.show { display: block; }
     </style>
 </head>
 <body>
@@ -778,7 +788,7 @@
                     </div>
 
                     <!-- ================================================================ -->
-                    <!-- TAB 2: PRODUCTS (WITH CLEAR ALL + DELETE) -->
+                    <!-- TAB 2: PRODUCTS (WITH IMAGE UPLOAD) -->
                     <!-- ================================================================ -->
                     <div class="admin-tab-content" id="tab-products">
                         <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
@@ -797,15 +807,24 @@
                                 <div class="form-group"><label>Price (£) *</label><input type="number" id="prodPrice" placeholder="199" step="0.01" /></div>
                                 <div class="form-group"><label>Old Price (£)</label><input type="number" id="prodOldPrice" placeholder="299" step="0.01" /></div>
                             </div>
-                            <div class="form-group"><label>Image URL *</label><input type="text" id="prodImage" placeholder="https://example.com/image.jpg" /></div>
+                            <div class="form-group">
+                                <label>Image *</label>
+                                <div class="file-input-wrapper">
+                                    <span class="file-label"><i class="fas fa-cloud-upload-alt"></i> Choose Image</span>
+                                    <input type="file" id="prodImageFile" accept="image/*" onchange="previewImage(event)" />
+                                </div>
+                                <div class="image-preview" id="imagePreview"><img id="previewImg" src="" alt="Preview" /></div>
+                                <input type="hidden" id="prodImage" value="" />
+                                <small style="color:var(--gray);display:block;margin-top:4px;">Supported: JPG, PNG, WEBP (Max 5MB)</small>
+                            </div>
                             <div class="form-group"><label>Description</label><textarea id="prodDesc" placeholder="Product description"></textarea></div>
                             <div class="form-actions">
-                                <button class="btn-primary small" onclick="saveProduct()"><i class="fas fa-save"></i> Save</button>
+                                <button class="btn-primary small" onclick="saveProduct()"><i class="fas fa-save"></i> Save Product</button>
                                 <button class="btn-outline small" onclick="toggleProductForm()">Cancel</button>
                                 <input type="hidden" id="editProductId" value="" />
                             </div>
                         </div>
-                        <!-- EXPORT BAR WITH CLEAR ALL (First) -->
+                        <!-- EXPORT BAR WITH CLEAR ALL -->
                         <div class="admin-export-bar">
                             <button class="btn-danger" onclick="clearAllProducts()"><i class="fas fa-trash-alt"></i> Clear All Products</button>
                             <button class="csv-btn" onclick="exportProductsCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
@@ -821,7 +840,7 @@
                     </div>
 
                     <!-- ================================================================ -->
-                    <!-- TAB 3: ORDERS (WITH CLEAR ALL + DELETE - Already Working) -->
+                    <!-- TAB 3: ORDERS -->
                     <!-- ================================================================ -->
                     <div class="admin-tab-content" id="tab-orders">
                         <h3 style="font-size:20px;margin-bottom:16px;">All Orders</h3>
@@ -846,7 +865,7 @@
                     </div>
 
                     <!-- ================================================================ -->
-                    <!-- TAB 4: CUSTOMERS (WITH CLEAR ALL + DELETE) -->
+                    <!-- TAB 4: CUSTOMERS (WITH DELETE + CLEAR ALL) -->
                     <!-- ================================================================ -->
                     <div class="admin-tab-content" id="tab-customers">
                         <h3 style="font-size:20px;margin-bottom:16px;">Registered Customers</h3>
@@ -870,7 +889,7 @@
                     </div>
 
                     <!-- ================================================================ -->
-                    <!-- TAB 5: PRODUCT INQUIRIES (WITH CLEAR ALL + DELETE) -->
+                    <!-- TAB 5: PRODUCT INQUIRIES (WITH DELETE + CLEAR ALL) -->
                     <!-- ================================================================ -->
                     <div class="admin-tab-content" id="tab-inquiries">
                         <h3 style="font-size:20px;margin-bottom:16px;">Product Inquiries (Unmatched Search Queries)</h3>
@@ -896,7 +915,7 @@
                     </div>
 
                     <!-- ================================================================ -->
-                    <!-- TAB 6: CUSTOMER MESSAGES (WITH CLEAR ALL + DELETE) -->
+                    <!-- TAB 6: CUSTOMER MESSAGES (WITH DELETE + CLEAR ALL) -->
                     <!-- ================================================================ -->
                     <div class="admin-tab-content" id="tab-messages">
                         <h3 style="font-size:20px;margin-bottom:16px;">Customer Messages (Contact Form)</h3>
@@ -1111,6 +1130,7 @@
 
         const supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
         const supabaseAdmin = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.serviceKey);
+        const STORAGE_BUCKET = 'product-images';
 
         // ================================================================
         // 1. SECURITY UTILITIES
@@ -1260,10 +1280,10 @@
             } catch { localStorage.setItem(key, JSON.stringify(data)); }
         }
 
-        // ===== WORKING PRODUCT IMAGES (Bedroom & Home Office Fixed) =====
+        // ===== DEFAULT PRODUCTS =====
         const defaultProducts = [
-            // Kitchen Products
             { id: 1, name: 'Heavy Duty Pencil Hob', category: 'Kitchen', price: 895, old_price: 1095, image: 'https://i.ibb.co/nsF2ydLW/23-WREN-S114-HEAVY-DUTY-PENCIL-HOB-D01-0000.jpg' },
+            { id: 2, name: 'Luxury Pet Bed', category: 'Home', price: 495, old_price: null, image: 'https://i.ibb.co/21K6PTS7/23-WREN-S114-HEAVY-DUTY-PENCIL-PETBED-D01-0000.jpg' },
             { id: 3, name: 'Built-in Dishwasher', category: 'Kitchen', price: 1495, old_price: null, image: 'https://i.ibb.co/CpB15hSt/23-WREN-S114-HEAVY-DUTY-PENCIL-DISHWASHER-D01-0000.jpg' },
             { id: 4, name: '300mm Wine Cooler', category: 'Kitchen', price: 1695, old_price: 1895, image: 'https://i.ibb.co/CKSpgnck/UK-Easy-Fit-Autograph-Cashmere-Gloss-300mm-Wine-Cooler.jpg' },
             { id: 5, name: 'EST Unit', category: 'Kitchen', price: 1095, old_price: null, image: 'https://i.ibb.co/4gRmmgnh/23-WREN-S114-HEAVY-DUTY-PENCIL-EST-D01-0000.jpg' },
@@ -1274,16 +1294,12 @@
             { id: 10, name: 'Moss Green Slab', category: 'Kitchen', price: 2195, old_price: 2595, image: 'https://i.ibb.co/bRRRDYQx/Easy-Fit-Slab-Moss-Green-Hero.jpg' },
             { id: 11, name: 'Cashmere Gloss Magic Corner', category: 'Kitchen', price: 1395, old_price: null, image: 'https://i.ibb.co/RFX9fS2/UK-Easy-Fit-Autograph-Cashmere-Gloss-Magic-Corner.jpg' },
             { id: 12, name: 'Shaker Chelsea Cashmere', category: 'Kitchen', price: 1895, old_price: 2195, image: 'https://i.ibb.co/G4h8d3kh/Easy-Fit-Shaker-Chelsea-Cashmere-Corner-Carousel-Unit.jpg' },
-            // Home Products
-            { id: 2, name: 'Luxury Pet Bed', category: 'Home', price: 495, old_price: null, image: 'https://i.ibb.co/21K6PTS7/23-WREN-S114-HEAVY-DUTY-PENCIL-PETBED-D01-0000.jpg' },
-            // Bedroom Products (Fixed Images)
             { id: 13, name: 'Luxury Bed Frame', category: 'Bedrooms', price: 1499, old_price: 1799, image: 'https://images.pexels.com/photos/271705/pexels-photo-271705.jpeg?w=500' },
             { id: 14, name: 'Modern Wardrobe', category: 'Bedrooms', price: 1899, old_price: 2199, image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?w=500' },
             { id: 15, name: 'Bedside Table', category: 'Bedrooms', price: 399, old_price: null, image: 'https://images.pexels.com/photos/271706/pexels-photo-271706.jpeg?w=500' },
             { id: 16, name: 'Dressing Table', category: 'Bedrooms', price: 899, old_price: null, image: 'https://images.pexels.com/photos/3861972/pexels-photo-3861972.jpeg?w=500' },
             { id: 17, name: 'Memory Foam Mattress', category: 'Bedrooms', price: 749, old_price: 999, image: 'https://images.pexels.com/photos/3772098/pexels-photo-3772098.jpeg?w=500' },
             { id: 18, name: 'Luxury Headboard', category: 'Bedrooms', price: 599, old_price: null, image: 'https://images.pexels.com/photos/271707/pexels-photo-271707.jpeg?w=500' },
-            // Home Office Products (Fixed Images)
             { id: 19, name: 'Executive Desk', category: 'Home Office', price: 1299, old_price: null, image: 'https://images.pexels.com/photos/276583/pexels-photo-276583.jpeg?w=500' },
             { id: 20, name: 'Ergonomic Office Chair', category: 'Home Office', price: 699, old_price: null, image: 'https://images.pexels.com/photos/112466/pexels-photo-112466.jpeg?w=500' },
             { id: 21, name: 'Bookcase', category: 'Home Office', price: 1099, old_price: null, image: 'https://images.pexels.com/photos/1571458/pexels-photo-1571458.jpeg?w=500' },
@@ -1416,7 +1432,7 @@
             }
         }
 
-        // ===== INQUIRIES (Search Queries ONLY) =====
+        // ===== INQUIRIES =====
         async function getInquiries() {
             try {
                 const { data, error } = await supabaseClient.from('inquiries').select('*').order('date', { ascending: false });
@@ -1475,14 +1491,60 @@
         }
 
         // ================================================================
-        // 3. PRODUCT RENDERING
+        // 3. IMAGE UPLOAD FUNCTIONS
+        // ================================================================
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('imagePreview');
+                const img = document.getElementById('previewImg');
+                img.src = e.target.result;
+                preview.classList.add('show');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function uploadImage(file) {
+            if (!file) return null;
+
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 10)}.${fileExt}`;
+            const filePath = `products/${fileName}`;
+
+            try {
+                const { data, error } = await supabaseClient.storage
+                    .from(STORAGE_BUCKET)
+                    .upload(filePath, file);
+
+                if (error) {
+                    console.error('Upload error:', error);
+                    throw error;
+                }
+
+                // Get public URL
+                const { data: urlData } = supabaseClient.storage
+                    .from(STORAGE_BUCKET)
+                    .getPublicUrl(filePath);
+
+                return urlData.publicUrl;
+            } catch (error) {
+                console.error('Image upload failed:', error);
+                showToast('❌ Image upload failed: ' + error.message);
+                return null;
+            }
+        }
+
+        // ================================================================
+        // 4. PRODUCT RENDERING
         // ================================================================
         let filteredProducts = [];
 
         function createProductCard(p) {
             const wishlist = JSON.parse(localStorage.getItem('sk_wishlist')) || [];
             const inWishlist = wishlist.includes(p.id);
-            // FIXED: Using old_price from database
             const oldPriceHtml = p.old_price ? `<span class="old">£${p.old_price.toLocaleString()}</span>` : '';
             const reviews = getLocalData('sk_reviews_encrypted', {});
             const productReviews = reviews[p.id] || [];
@@ -1603,7 +1665,7 @@
         }
 
         // ================================================================
-        // 4. CART FUNCTIONS
+        // 5. CART FUNCTIONS
         // ================================================================
         function addToCart(productId) {
             if (event) event.stopPropagation();
@@ -1687,7 +1749,7 @@
         }
 
         // ================================================================
-        // 5. WISHLIST
+        // 6. WISHLIST
         // ================================================================
         async function toggleWishlist(productId, event) {
             if (event) event.stopPropagation();
@@ -1732,7 +1794,7 @@
         }
 
         // ================================================================
-        // 6. REVIEWS
+        // 7. REVIEWS
         // ================================================================
         function openReviewModal(productId) {
             if (event) event.stopPropagation();
@@ -1771,7 +1833,7 @@
         }
 
         // ================================================================
-        // 7. AUTHENTICATION
+        // 8. AUTHENTICATION
         // ================================================================
         function openAuthModal() { document.getElementById('authModal').classList.add('active'); document.body.style.overflow = 'hidden'; switchAuthTab('login'); }
         function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
@@ -1867,7 +1929,7 @@
         }
 
         // ================================================================
-        // 8. CHECKOUT
+        // 9. CHECKOUT
         // ================================================================
         function toggleCardDetails() {
             const method = document.getElementById('paymentMethod').value;
@@ -1972,7 +2034,7 @@
         }
 
         // ================================================================
-        // 9. CONTACT FORM
+        // 10. CONTACT FORM
         // ================================================================
         async function submitContact(event) {
             event.preventDefault();
@@ -2008,7 +2070,7 @@
         }
 
         // ================================================================
-        // 10. ORDER TRACKING
+        // 11. ORDER TRACKING
         // ================================================================
         function openTrackModal() { document.getElementById('trackOrderId').value = ''; document.getElementById('trackResult').classList.remove('show'); document.getElementById('trackModal').classList.add('active'); document.body.style.overflow = 'hidden'; }
         function closeTrackModal() { document.getElementById('trackModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
@@ -2031,7 +2093,7 @@
         }
 
         // ================================================================
-        // 11. ADMIN
+        // 12. ADMIN
         // ================================================================
         let adminChartInstance = null;
         let allOrdersData = [];
@@ -2259,7 +2321,7 @@
             updateAdminChart(orders);
         }
 
-        // ===== ORDERS FILTER BY DATE =====
+        // ===== ORDERS FILTER =====
         function filterOrdersByDate() {
             const from = document.getElementById('ordersFromDate').value;
             const to = document.getElementById('ordersToDate').value;
@@ -2310,7 +2372,9 @@
             showToast('Order status updated to ' + newStatus);
         }
 
-        // ===== ADMIN: PRODUCTS (WITH DELETE) =====
+        // ================================================================
+        // 13. ADMIN: PRODUCTS (WITH IMAGE UPLOAD)
+        // ================================================================
         async function loadAdminProducts() {
             const products = await getProducts();
             allProductsData = products;
@@ -2330,7 +2394,129 @@
             tbody.innerHTML = html;
         }
 
-        // ===== ADMIN: CUSTOMERS (WITH DELETE) =====
+        function toggleProductForm(data) {
+            const form = document.getElementById('productForm');
+            form.classList.toggle('show');
+            if (!form.classList.contains('show')) {
+                document.getElementById('editProductId').value = '';
+                document.getElementById('prodName').value = '';
+                document.getElementById('prodCategory').value = 'Kitchen';
+                document.getElementById('prodPrice').value = '';
+                document.getElementById('prodOldPrice').value = '';
+                document.getElementById('prodImage').value = '';
+                document.getElementById('prodDesc').value = '';
+                document.getElementById('prodImageFile').value = '';
+                document.getElementById('imagePreview').classList.remove('show');
+                document.getElementById('productFormTitle').textContent = 'Add New Product';
+            }
+            if (data) {
+                document.getElementById('editProductId').value = data.id;
+                document.getElementById('prodName').value = data.name;
+                document.getElementById('prodCategory').value = data.category;
+                document.getElementById('prodPrice').value = data.price;
+                document.getElementById('prodOldPrice').value = data.old_price || '';
+                document.getElementById('prodImage').value = data.image;
+                document.getElementById('prodDesc').value = data.description || '';
+                document.getElementById('productFormTitle').textContent = 'Edit Product';
+                // Show image preview if exists
+                if (data.image) {
+                    const preview = document.getElementById('imagePreview');
+                    const img = document.getElementById('previewImg');
+                    img.src = data.image;
+                    preview.classList.add('show');
+                }
+            }
+        }
+
+        function editProduct(id) {
+            getProducts().then(products => {
+                const product = products.find(p => p.id === id);
+                if (product) {
+                    const form = document.getElementById('productForm');
+                    form.classList.add('show');
+                    document.getElementById('editProductId').value = product.id;
+                    document.getElementById('prodName').value = product.name;
+                    document.getElementById('prodCategory').value = product.category;
+                    document.getElementById('prodPrice').value = product.price;
+                    document.getElementById('prodOldPrice').value = product.old_price || '';
+                    document.getElementById('prodImage').value = product.image;
+                    document.getElementById('prodDesc').value = product.description || '';
+                    document.getElementById('productFormTitle').textContent = 'Edit Product';
+                    if (product.image) {
+                        const preview = document.getElementById('imagePreview');
+                        const img = document.getElementById('previewImg');
+                        img.src = product.image;
+                        preview.classList.add('show');
+                    }
+                    form.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+
+        async function saveProduct() {
+            const id = document.getElementById('editProductId').value;
+            const name = document.getElementById('prodName').value.trim();
+            const category = document.getElementById('prodCategory').value;
+            const price = parseFloat(document.getElementById('prodPrice').value);
+            const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
+            const description = document.getElementById('prodDesc').value.trim();
+
+            // Check if image file is selected or existing image URL
+            const fileInput = document.getElementById('prodImageFile');
+            const existingImage = document.getElementById('prodImage').value;
+            let imageUrl = existingImage;
+
+            // If new file selected, upload it
+            if (fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const uploadedUrl = await uploadImage(file);
+                if (uploadedUrl) {
+                    imageUrl = uploadedUrl;
+                } else {
+                    alert('Image upload failed. Please try again.');
+                    return;
+                }
+            }
+
+            if (!name || !price || !imageUrl) {
+                alert('Please fill Name, Price, and Image.');
+                return;
+            }
+
+            let products = await getProducts();
+            if (id) {
+                const index = products.findIndex(p => p.id === parseInt(id));
+                if (index > -1) {
+                    products[index] = { ...products[index], name, category, price, old_price: oldPrice, image: imageUrl, description };
+                }
+                showToast('Product updated!');
+            } else {
+                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                products.push({ id: newId, name, category, price, old_price: oldPrice, image: imageUrl, description });
+                showToast('Product added!');
+            }
+
+            await saveProducts(products);
+            toggleProductForm();
+            loadAdminProducts();
+            renderProducts();
+            filterProducts();
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm('Are you sure you want to delete this product?')) return;
+            let products = await getProducts();
+            products = products.filter(p => p.id !== id);
+            await saveProducts(products);
+            loadAdminProducts();
+            renderProducts();
+            filterProducts();
+            showToast('Product deleted.');
+        }
+
+        // ================================================================
+        // 14. ADMIN: CUSTOMERS (WITH DELETE + CLEAR ALL)
+        // ================================================================
         async function loadAdminCustomers() {
             const users = await getUsers();
             allUsersData = users;
@@ -2388,7 +2574,9 @@
             tbody.innerHTML = html;
         }
 
-        // ===== ADMIN: INQUIRIES (Search Queries ONLY - WITH DELETE) =====
+        // ================================================================
+        // 15. ADMIN: INQUIRIES (WITH DELETE + CLEAR ALL)
+        // ================================================================
         async function loadAdminInquiries() {
             const inquiries = await getInquiries();
             const searchQueries = inquiries.filter(i =>
@@ -2448,7 +2636,9 @@
             tbody.innerHTML = html;
         }
 
-        // ===== ADMIN: MESSAGES (Contact Form ONLY - WITH DELETE) =====
+        // ================================================================
+        // 16. ADMIN: MESSAGES (WITH DELETE + CLEAR ALL)
+        // ================================================================
         async function loadAdminMessages() {
             const inquiries = await getInquiries();
             const messages = inquiries.filter(i =>
@@ -2514,7 +2704,7 @@
         }
 
         // ================================================================
-        // 12. DELETE FUNCTIONS (All Tabs)
+        // 17. DELETE FUNCTIONS (All Tabs)
         // ================================================================
 
         // ===== DELETE: PRODUCTS =====
@@ -2682,7 +2872,7 @@
             }
         }
 
-        // ===== DELETE: ORDERS (Already Existing) =====
+        // ===== DELETE: ORDERS =====
         async function confirmDeleteOrder(orderId) {
             const pass1 = prompt('Enter admin password to delete this order:');
             if (!pass1) return;
@@ -2722,7 +2912,7 @@
         }
 
         // ================================================================
-        // 13. EXPORT FUNCTIONS
+        // 18. EXPORT FUNCTIONS
         // ================================================================
         function exportProductsCSV() {
             getProducts().then(products => {
@@ -2799,7 +2989,9 @@
             URL.revokeObjectURL(link.href);
         }
 
-        // ===== ADMIN: CHANGE PASSWORD =====
+        // ================================================================
+        // 19. ADMIN: CHANGE PASSWORD
+        // ================================================================
         function openAdminChangePassword() {
             const modal = document.createElement('div');
             modal.className = 'modal active';
@@ -2854,7 +3046,7 @@
         }
 
         // ================================================================
-        // 14. LIGHTBOX
+        // 20. LIGHTBOX
         // ================================================================
         function openLightbox(src) { document.getElementById('lightboxImage').src = src; document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden'; }
         function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = 'auto'; }
@@ -2864,7 +3056,7 @@
         });
 
         // ================================================================
-        // 15. NAVIGATION
+        // 21. NAVIGATION
         // ================================================================
         function navigate(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -2900,7 +3092,7 @@
         });
 
         // ================================================================
-        // 16. GALLERY
+        // 22. GALLERY
         // ================================================================
         const galleryImages = [
             'https://i.ibb.co/0RnBKXRf/Wren-Kitchens-Ad-Website-Images-111.jpg',
@@ -2924,7 +3116,7 @@
         }
 
         // ================================================================
-        // 17. TOAST
+        // 23. TOAST
         // ================================================================
         function showToast(message) {
             const existing = document.querySelector('.toast');
@@ -2937,7 +3129,7 @@
         }
 
         // ================================================================
-        // 18. INIT
+        // 24. INIT
         // ================================================================
         async function init() {
             await getProducts();
