@@ -1682,38 +1682,60 @@
             return defaultCats;
         }
 
-        function loadCategoryDropdown() {
-            const select = document.getElementById('prodCategory');
-            if (!select) return;
-            select.innerHTML = '';
+       // FIXED: Sub-categories ke saath complete dropdown
+function loadCategoryDropdown() {
+    const select = document.getElementById('prodCategory');
+    if (!select) return;
+    
+    // Sirf tabhi overwrite karein agar HTML mein optgroup NAHI hai
+    // Agar HTML mein already sub-categories hain, to JS unhe nahi hataega
+    const hasOptgroups = select.querySelector('optgroup');
+    if (hasOptgroups) return; // ✅ HTML wala dropdown already sahi hai, JS kuch mat karo
+    
+    select.innerHTML = '';
+    
+    // Sub-categories ke saath complete data
+    const allCategories = [
+        { id: 1, name: 'Kitchens', subs: ['Plates', 'Spoons', 'Mugs', 'Knives', 'Cutting Boards', 'Pots & Pans', 'Appliances', 'Storage'] },
+        { id: 2, name: 'Bedrooms', subs: ['Beds', 'Wardrobes', 'Nightstands', 'Dressers', 'Mattresses', 'Headboards', 'Bedding', 'Pillows', 'Mirrors', 'Lamps'] },
+        { id: 3, name: 'Home Offices', subs: ['Desks', 'Chairs', 'Bookshelves', 'Filing Cabinets', 'Accessories', 'Storage'] },
+        { id: 4, name: 'Cabinets & Units', subs: ['Base Units', 'Wall Units', 'Tall Units', 'Island Units'] },
+        { id: 5, name: 'Worktops', subs: ['Laminate', 'Quartz', 'Granite', 'Marble', 'Wood'] },
+        { id: 6, name: 'Appliances', subs: ['Hobs', 'Ovens', 'Dishwashers', 'Microwaves', 'Fridges'] },
+        { id: 7, name: 'Beds & Headboards', subs: ['King Beds', 'Double Beds', 'Single Beds', 'Headboards'] },
+        { id: 8, name: 'Wardrobes', subs: ['Sliding', 'Hinged', 'Fitted'] },
+        { id: 9, name: 'Desks', subs: ['Executive', 'Standing', 'Corner'] },
+        { id: 10, name: 'Office Chairs', subs: ['Ergonomic', 'Executive', 'Gaming'] }
+    ];
 
-            const defaultCats = [
-                { id: 1, name: 'Kitchens' },
-                { id: 2, name: 'Bedrooms' },
-                { id: 3, name: 'Home Offices' },
-                { id: 4, name: 'Cabinets & Units' },
-                { id: 5, name: 'Worktops' },
-                { id: 6, name: 'Appliances' },
-                { id: 7, name: 'Beds & Headboards' },
-                { id: 8, name: 'Wardrobes' },
-                { id: 9, name: 'Desks' },
-                { id: 10, name: 'Office Chairs' }
-            ];
+    // Default option
+    const defaultOpt = document.createElement('option');
+    defaultOpt.value = '';
+    defaultOpt.textContent = '-- Select Category --';
+    select.appendChild(defaultOpt);
 
-            const cats = (cachedCategories && cachedCategories.length > 0) ? cachedCategories : defaultCats;
-
-            const defaultOpt = document.createElement('option');
-            defaultOpt.value = '';
-            defaultOpt.textContent = '-- Select Category --';
-            select.appendChild(defaultOpt);
-
-            cats.forEach(cat => {
-                const opt = document.createElement('option');
-                opt.value = cat.id;
-                opt.textContent = cat.name;
-                select.appendChild(opt);
-            });
-        }
+    // Categories with optgroup
+    allCategories.forEach(cat => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = cat.name;
+        
+        // Pehle main category option
+        const mainOpt = document.createElement('option');
+        mainOpt.value = cat.name;
+        mainOpt.textContent = cat.name;
+        optgroup.appendChild(mainOpt);
+        
+        // Phir sub-categories
+        cat.subs.forEach(sub => {
+            const opt = document.createElement('option');
+            opt.value = `${cat.name} - ${sub}`;
+            opt.textContent = sub;
+            optgroup.appendChild(opt);
+        });
+        
+        select.appendChild(optgroup);
+    });
+}
 
         // ===== USERS =====
         async function getUsers() {
