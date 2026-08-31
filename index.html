@@ -103,15 +103,26 @@
         .feature-card .icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(212,175,55,.12); display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--gold); margin: 0 auto 14px; }
         .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
         .feature-card p { color: var(--gray); font-size: 13px; line-height: 1.6; }
-        /* Category Tree Styles */
-        .category-tree-view { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; padding: 12px 16px; background: var(--light); border-radius: var(--radius); }
-        .category-tree-view .cat-item { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; background: var(--white); border: 1px solid #ddd; font-size: 13px; cursor: pointer; transition: var(--transition); }
-        .category-tree-view .cat-item:hover { border-color: var(--gold); background: var(--gold-light); }
-        .category-tree-view .cat-item.active { border-color: var(--gold); background: var(--gold); color: var(--primary); font-weight: 600; }
-        .category-tree-view .cat-item .sub-icon { font-size: 12px; color: var(--gray); }
-        .category-tree-view .cat-item.level-1 { margin-left: 16px; }
-        .category-tree-view .cat-item.level-2 { margin-left: 32px; }
-        .category-tree-view .cat-item.level-3 { margin-left: 48px; }
+
+        /* ===== CATEGORY TREE - COLLAPSIBLE ===== */
+        .category-tree-container { background: var(--white); border: 1px solid #eee; border-radius: var(--radius); padding: 8px 0; margin-bottom: 20px; box-shadow: var(--shadow); max-height: 500px; overflow-y: auto; }
+        .category-tree-container .tree-item { display: flex; align-items: center; padding: 6px 12px; cursor: pointer; transition: var(--transition); border-left: 3px solid transparent; font-size: 14px; }
+        .category-tree-container .tree-item:hover { background: var(--gold-light); }
+        .category-tree-container .tree-item.active { border-left-color: var(--gold); background: rgba(212,175,55,.1); font-weight: 600; }
+        .category-tree-container .tree-item .toggle-icon { width: 20px; text-align: center; font-size: 12px; color: var(--gray); transition: var(--transition); margin-right: 4px; }
+        .category-tree-container .tree-item .toggle-icon.expanded { transform: rotate(90deg); }
+        .category-tree-container .tree-item .icon { margin-right: 8px; font-size: 16px; }
+        .category-tree-container .tree-item .name { flex: 1; }
+        .category-tree-container .tree-item .count { font-size: 11px; color: var(--gray); background: var(--light); padding: 0 8px; border-radius: 10px; }
+        .category-tree-container .tree-item.level-0 { padding-left: 12px; font-weight: 600; }
+        .category-tree-container .tree-item.level-1 { padding-left: 32px; }
+        .category-tree-container .tree-item.level-2 { padding-left: 52px; }
+        .category-tree-container .tree-item.level-3 { padding-left: 72px; }
+        .category-tree-container .tree-item.level-4 { padding-left: 92px; }
+        .category-tree-container .tree-item.level-5 { padding-left: 112px; }
+        .category-tree-container .tree-item .sub-items { display: none; }
+        .category-tree-container .tree-item .sub-items.open { display: block; }
+
         .filter-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 24px; padding: 16px 20px; background: var(--light); border-radius: var(--radius); }
         .filter-bar .filters-left { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         .filter-bar select, .filter-bar input[type="number"] { padding: 8px 14px; border-radius: 50px; border: 1px solid #ddd; font-size: 13px; font-family: 'Inter', sans-serif; background: var(--white); transition: var(--transition); }
@@ -122,6 +133,7 @@
         .filter-bar .clear-filters:hover { color: var(--danger); }
         .filter-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--gold); color: var(--primary); padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: 600; }
         .filter-tag .remove { cursor: pointer; font-weight: 900; }
+
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; padding: 10px 0; }
         .product-card { background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid rgba(0,0,0,.04); display: flex; flex-direction: column; position: relative; }
         .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); border-color: var(--gold); }
@@ -149,6 +161,12 @@
         .no-products { text-align: center; padding: 60px 20px; color: var(--gray); }
         .no-products i { font-size: 48px; color: var(--gold-light); margin-bottom: 16px; display: block; }
         .no-products h3 { font-size: 22px; color: var(--primary); margin-bottom: 8px; }
+        .breadcrumb { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--light); border-radius: var(--radius); margin-bottom: 20px; font-size: 14px; flex-wrap: wrap; }
+        .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; transition: var(--transition); }
+        .breadcrumb a:hover { color: var(--gold-dark); text-decoration: underline; }
+        .breadcrumb .separator { color: var(--gray); }
+        .breadcrumb .current { color: var(--primary); font-weight: 600; }
+
         .reviews-section { margin-top: 12px; border-top: 1px solid #f0f0f0; padding-top: 12px; }
         .reviews-section .review-item { background: var(--light); padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; }
         .reviews-section .review-item .review-header { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; }
@@ -349,17 +367,9 @@
         .image-preview { margin-top: 10px; max-width: 150px; max-height: 150px; border-radius: 8px; overflow: hidden; border: 2px solid #ddd; display: none; }
         .image-preview img { width: 100%; height: auto; display: block; }
         .image-preview.show { display: block; }
-
-        /* Breadcrumb */
-        .breadcrumb { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--light); border-radius: var(--radius); margin-bottom: 20px; font-size: 14px; flex-wrap: wrap; }
-        .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; transition: var(--transition); }
-        .breadcrumb a:hover { color: var(--gold-dark); text-decoration: underline; }
-        .breadcrumb .separator { color: var(--gray); }
-        .breadcrumb .current { color: var(--primary); font-weight: 600; }
     </style>
 </head>
 <body>
-
     <!-- TOP BAR -->
     <div class="top-bar">
         <div class="left">
@@ -444,7 +454,6 @@
 
     <!-- MAIN CONTENT -->
     <main>
-
         <!-- HOME PAGE -->
         <section class="page active" id="page-home">
             <div class="hero">
@@ -502,7 +511,7 @@
             </div>
         </section>
 
-        <!-- PRODUCTS PAGE (WITH TREE VIEW) -->
+        <!-- PRODUCTS PAGE (WITH COLLAPSIBLE TREE) -->
         <section class="page" id="page-products">
             <div class="container section-padding">
                 <div class="section-heading">
@@ -510,8 +519,8 @@
                     <h2>All <span>Products</span></h2>
                 </div>
 
-                <!-- ===== CATEGORY TREE VIEW ===== -->
-                <div class="category-tree-view" id="categoryTreeView"></div>
+                <!-- ===== COLLAPSIBLE CATEGORY TREE ===== -->
+                <div class="category-tree-container" id="categoryTreeContainer"></div>
 
                 <!-- ===== BREADCRUMB ===== -->
                 <div class="breadcrumb" id="breadcrumb">
@@ -852,11 +861,9 @@
                         </div>
                         <p id="noMessages" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No messages yet.</p>
                     </div>
-
                 </div>
             </div>
         </section>
-
     </main>
 
     <!-- AUTH MODAL -->
@@ -1281,18 +1288,6 @@
             return local;
         }
 
-        function getCategoryTree(categories, parentId = null, level = 0) {
-            const result = [];
-            const children = categories.filter(c => c.parent_id === parentId);
-            children.forEach(c => {
-                c.level = level;
-                result.push(c);
-                const subChildren = getCategoryTree(categories, c.id, level + 1);
-                result.push(...subChildren);
-            });
-            return result;
-        }
-
         function getCategoryNameById(id) {
             const cat = cachedCategories.find(c => c.id === id);
             return cat ? cat.name : 'Uncategorized';
@@ -1304,6 +1299,16 @@
             if (cat.parent_id === null) return cat.name;
             const parentPath = getCategoryPath(cat.parent_id);
             return parentPath ? `${parentPath} → ${cat.name}` : cat.name;
+        }
+
+        function getChildrenIds(parentId) {
+            const result = [];
+            const children = cachedCategories.filter(c => c.parent_id === parentId);
+            children.forEach(child => {
+                result.push(child.id);
+                result.push(...getChildrenIds(child.id));
+            });
+            return result;
         }
 
         function loadCategoryDropdown() {
@@ -1326,24 +1331,156 @@
             }
         }
 
-        function renderCategoryTreeView() {
-            const container = document.getElementById('categoryTreeView');
+        function getCategoryTree(categories, parentId = null, level = 0) {
+            const result = [];
+            const children = categories.filter(c => c.parent_id === parentId);
+            children.forEach(c => {
+                c.level = level;
+                result.push(c);
+                const subChildren = getCategoryTree(categories, c.id, level + 1);
+                result.push(...subChildren);
+            });
+            return result;
+        }
+
+        // ===== COLLAPSIBLE TREE RENDER =====
+        function renderCollapsibleTree() {
+            const container = document.getElementById('categoryTreeContainer');
             if (!container) return;
             container.innerHTML = '';
-            if (cachedCategories.length === 0) {
-                container.innerHTML = '<span style="color:var(--gray);font-size:14px;">No categories available.</span>';
+
+            if (!cachedCategories || cachedCategories.length === 0) {
+                container.innerHTML = '<div style="padding:16px;text-align:center;color:var(--gray);">No categories available.</div>';
                 return;
             }
-            const tree = getCategoryTree(cachedCategories);
-            tree.forEach(cat => {
-                const levelClass = 'level-' + cat.level;
-                const icon = cat.level === 0 ? '📁' : '📂';
-                const div = document.createElement('div');
-                div.className = `cat-item ${levelClass}`;
-                div.innerHTML = `<span class="sub-icon">${icon}</span> ${cat.name}`;
-                div.onclick = () => filterByCategory(cat.id);
-                container.appendChild(div);
+
+            const rootCategories = cachedCategories.filter(c => c.parent_id === null);
+
+            if (rootCategories.length === 0) {
+                // If no root categories, show all as flat list
+                cachedCategories.forEach(cat => {
+                    const item = createTreeItem(cat, 0);
+                    container.appendChild(item);
+                });
+                return;
+            }
+
+            rootCategories.forEach(cat => {
+                const item = createTreeItem(cat, 0);
+                container.appendChild(item);
             });
+        }
+
+        function createTreeItem(category, level) {
+            const children = cachedCategories.filter(c => c.parent_id === category.id);
+            const hasChildren = children.length > 0;
+            const isLeaf = !hasChildren;
+
+            const div = document.createElement('div');
+            div.className = `tree-item level-${level}`;
+            div.dataset.id = category.id;
+            div.dataset.level = level;
+
+            // Toggle icon
+            const toggleSpan = document.createElement('span');
+            toggleSpan.className = 'toggle-icon';
+            if (hasChildren) {
+                toggleSpan.textContent = '▶';
+                toggleSpan.style.cursor = 'pointer';
+            } else {
+                toggleSpan.textContent = '•';
+                toggleSpan.style.color = 'transparent';
+            }
+            div.appendChild(toggleSpan);
+
+            // Icon
+            const iconSpan = document.createElement('span');
+            iconSpan.className = 'icon';
+            const icons = {
+                'Kitchen': '🍳',
+                'Bedrooms': '🛏️',
+                'Home Office': '🪑',
+                'Home': '🏠',
+                'Plates': '🍽️',
+                'Spoons': '🥄',
+                'Mugs': '☕',
+                'Beds': '🛏️',
+                'Wardrobes': '🚪',
+                'Accessories': '🎀',
+                'Desks': '🪑',
+                'Chairs': '💺',
+                'Storage': '📦',
+                'Big Plates': '🍽️',
+                'Small Plates': '🍽️',
+                'Colored Black': '⚫'
+            };
+            iconSpan.textContent = icons[category.name] || '📂';
+            div.appendChild(iconSpan);
+
+            // Name
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'name';
+            nameSpan.textContent = category.name;
+            div.appendChild(nameSpan);
+
+            // Click handler
+            div.addEventListener('click', function(e) {
+                e.stopPropagation();
+
+                // If leaf node, filter products
+                if (isLeaf) {
+                    filterByCategory(category.id);
+                    return;
+                }
+
+                // Toggle children
+                const subItems = div.querySelector('.sub-items');
+                if (subItems) {
+                    const isOpen = subItems.classList.contains('open');
+                    if (isOpen) {
+                        subItems.classList.remove('open');
+                        toggleSpan.textContent = '▶';
+                        toggleSpan.classList.remove('expanded');
+                    } else {
+                        subItems.classList.add('open');
+                        toggleSpan.textContent = '▼';
+                        toggleSpan.classList.add('expanded');
+                    }
+                    return;
+                }
+
+                // Build children
+                if (hasChildren) {
+                    const subContainer = document.createElement('div');
+                    subContainer.className = 'sub-items open';
+                    toggleSpan.textContent = '▼';
+                    toggleSpan.classList.add('expanded');
+
+                    children.forEach(child => {
+                        const childItem = createTreeItem(child, level + 1);
+                        subContainer.appendChild(childItem);
+                    });
+
+                    div.appendChild(subContainer);
+                }
+            });
+
+            // If category is expanded by default (for root), show children
+            if (level === 0 && hasChildren) {
+                const subContainer = document.createElement('div');
+                subContainer.className = 'sub-items open';
+                toggleSpan.textContent = '▼';
+                toggleSpan.classList.add('expanded');
+
+                children.forEach(child => {
+                    const childItem = createTreeItem(child, level + 1);
+                    subContainer.appendChild(childItem);
+                });
+
+                div.appendChild(subContainer);
+            }
+
+            return div;
         }
 
         // ===== USERS =====
@@ -1583,6 +1720,7 @@
 
         function filterByCategory(categoryId) {
             selectedCategoryId = categoryId;
+
             // Update breadcrumb
             const breadcrumb = document.getElementById('breadcrumb');
             if (categoryId === null) {
@@ -1594,17 +1732,15 @@
                     breadcrumb.innerHTML = `<a onclick="filterByCategory(null)">🏠 All Products</a><span class="separator"> › </span><span class="current">${path}</span>`;
                 }
             }
+
             // Update tree view active state
-            document.querySelectorAll('.category-tree-view .cat-item').forEach(el => {
+            document.querySelectorAll('.category-tree-container .tree-item').forEach(el => {
                 el.classList.remove('active');
+                if (parseInt(el.dataset.id) === categoryId) {
+                    el.classList.add('active');
+                }
             });
-            if (categoryId) {
-                document.querySelectorAll('.category-tree-view .cat-item').forEach(el => {
-                    if (el.textContent.trim() === getCategoryNameById(categoryId)) {
-                        el.classList.add('active');
-                    }
-                });
-            }
+
             filterProducts();
         }
 
@@ -1619,23 +1755,14 @@
             let filtered = products.filter(p => {
                 const catName = p.category_id ? getCategoryNameById(p.category_id) : p.category || '';
                 const matchSearch = p.name.toLowerCase().includes(searchTerm) || catName.toLowerCase().includes(searchTerm);
-                // Category filter: if categoryId is a number, filter by category_id
+
                 let matchCategory = true;
                 if (categoryId && categoryId !== 'all') {
                     const catId = parseInt(categoryId);
-                    // Check if product belongs to this category or any sub-category
-                    const allSubCategories = [];
-                    const findSubCategories = (id) => {
-                        const children = cachedCategories.filter(c => c.parent_id === id);
-                        children.forEach(child => {
-                            allSubCategories.push(child.id);
-                            findSubCategories(child.id);
-                        });
-                    };
-                    findSubCategories(catId);
-                    allSubCategories.push(catId);
-                    matchCategory = allSubCategories.includes(p.category_id);
+                    const allIds = [catId, ...getChildrenIds(catId)];
+                    matchCategory = allIds.includes(p.category_id);
                 }
+
                 const matchPrice = p.price >= minPrice && p.price <= maxPrice;
                 return matchSearch && matchCategory && matchPrice;
             });
@@ -1678,7 +1805,7 @@
             document.getElementById('sortFilter').value = 'default';
             selectedCategoryId = null;
             document.getElementById('breadcrumb').innerHTML = `<a onclick="filterByCategory(null)">🏠 All Products</a>`;
-            document.querySelectorAll('.category-tree-view .cat-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.category-tree-container .tree-item').forEach(el => el.classList.remove('active'));
             filterProducts();
         }
 
@@ -2156,8 +2283,8 @@
                 document.getElementById('adminLogin').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'block';
                 await getCategories();
+                renderCollapsibleTree();
                 loadCategoryDropdown();
-                renderCategoryTreeView();
                 loadAdminDashboard();
                 showToast('Welcome Admin!');
                 document.getElementById('adminPassword').value = '';
@@ -3189,8 +3316,8 @@
                     document.getElementById('adminLogin').style.display = 'none';
                     document.getElementById('adminDashboard').style.display = 'block';
                     getCategories().then(() => {
+                        renderCollapsibleTree();
                         loadCategoryDropdown();
-                        renderCategoryTreeView();
                     });
                     loadAdminDashboard();
                 }
@@ -3262,7 +3389,7 @@
         async function init() {
             await getProducts();
             await getCategories();
-            renderCategoryTreeView();
+            renderCollapsibleTree();
             loadCategoryDropdown();
             renderGallery();
             await renderProducts();
