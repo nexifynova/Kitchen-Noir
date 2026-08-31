@@ -10,39 +10,17 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* ===== RESET ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --primary: #0d0d0d;
-            --gold: #d4af37;
-            --gold-dark: #a8884e;
-            --gold-light: #e8d5a8;
-            --white: #fff;
-            --light: #f5f5f5;
-            --gray: #888;
-            --dark: #333;
-            --shadow: 0 4px 30px rgba(0,0,0,.1);
-            --shadow-hover: 0 8px 40px rgba(0,0,0,.2);
-            --radius: 12px;
-            --transition: all .3s ease;
-            --danger: #e74c3c;
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --info: #3498db;
-        }
+        :root { --primary: #0d0d0d; --gold: #d4af37; --gold-dark: #a8884e; --gold-light: #e8d5a8; --white: #fff; --light: #f5f5f5; --gray: #888; --dark: #333; --shadow: 0 4px 30px rgba(0,0,0,.1); --shadow-hover: 0 8px 40px rgba(0,0,0,.2); --radius: 12px; --transition: all .3s ease; --danger: #e74c3c; --success: #2ecc71; --warning: #f39c12; --info: #3498db; }
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--primary); overflow-x: hidden; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--primary); }
         ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
-
-        /* ===== ANIMATIONS ===== */
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes zoomIn { from { transform: scale(.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        /* ===== TOP BAR ===== */
         .top-bar { background: var(--primary); color: var(--white); padding: 8px 5%; display: flex; justify-content: space-between; align-items: center; font-size: 13px; border-bottom: 2px solid var(--gold); flex-wrap: wrap; gap: 8px; }
         .top-bar .left { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
         .top-bar .left span { display: flex; align-items: center; gap: 6px; color: var(--gold-light); }
@@ -50,88 +28,48 @@
         .top-bar .right { display: flex; align-items: center; gap: 16px; }
         .top-bar .right a { color: var(--white); text-decoration: none; font-size: 13px; transition: var(--transition); }
         .top-bar .right a:hover { color: var(--gold); }
-
-        /* ===== SALE BANNER ===== */
         .sale-banner { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: var(--primary); padding: 14px 5%; text-align: center; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; letter-spacing: .5px; }
         .sale-banner a { color: var(--primary); background: var(--white); padding: 6px 24px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 14px; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; }
         .sale-banner a:hover { transform: scale(1.05); }
-
-        /* ===== HEADER ===== */
-        header { background: var(--white); padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 999; box-shadow: 0 2px 20px rgba(0,0,0,.06); border-bottom: 1px solid rgba(0,0,0,.04); flex-wrap: wrap; gap: 10px; }
+        header { background: var(--white); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 999; box-shadow: 0 2px 20px rgba(0,0,0,.06); border-bottom: 1px solid rgba(0,0,0,.04); flex-wrap: wrap; gap: 10px; }
         .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; cursor: pointer; }
-        .logo .logo-icon { height: 50px; display: flex; align-items: center; justify-content: center; }
+        .logo .logo-icon { width: auto; height: 60px; display: flex; align-items: center; justify-content: center; background: transparent; border-radius: 8px; overflow: hidden; }
         .logo .logo-icon img { height: 100%; width: auto; object-fit: contain; }
-        .logo-text .brand { font-size: 22px; font-weight: 800; font-family: 'Playfair Display', serif; color: var(--primary); line-height: 1.2; }
+        .logo-text .brand { font-size: 24px; font-weight: 800; font-family: 'Playfair Display', serif; color: var(--primary); line-height: 1.2; }
         .logo-text .brand span { color: var(--gold); }
         .logo-text .tagline { font-size: 10px; color: var(--gold); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; display: block; }
-
-        /* ===== NAVIGATION ===== */
-        .nav-menu { display: flex; align-items: center; gap: 0; list-style: none; flex-wrap: wrap; }
-        .nav-menu > li { position: relative; padding: 0; }
-        .nav-menu > li > a { text-decoration: none; color: var(--primary); font-weight: 600; font-size: 14px; padding: 14px 18px; transition: var(--transition); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 6px; border-bottom: 3px solid transparent; }
-        .nav-menu > li > a:hover, .nav-menu > li > a.active { color: var(--gold); border-bottom-color: var(--gold); }
-        .nav-menu > li > a i.fa-chevron-down { font-size: 10px; transition: var(--transition); }
-
-        /* ===== MEGA DROPDOWN (VERTICAL) ===== */
-        .mega-dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: var(--white);
-            width: 280px;
-            border-radius: 0 0 var(--radius) var(--radius);
-            box-shadow: var(--shadow-hover);
-            border-top: 3px solid var(--gold);
-            z-index: 1000;
-            padding: 20px;
-            margin-top: -1px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .nav-menu > li:hover .mega-dropdown { display: block; animation: fadeDown .25s ease; }
-
-        .mega-dropdown .mega-col { padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
-        .mega-dropdown .mega-col:last-child { border-bottom: none; }
-
-        .mega-dropdown .mega-col h4 { font-size: 15px; font-weight: 700; color: var(--primary); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: var(--transition); }
-        .mega-dropdown .mega-col h4 i { color: var(--gold); font-size: 16px; }
-        .mega-dropdown .mega-col h4:hover { color: var(--gold); }
-
-        .mega-dropdown .mega-col ul { list-style: none; display: none; padding-left: 10px; margin-bottom: 5px; }
-        .mega-dropdown .mega-col.open ul { display: block; animation: fadeDown .3s ease; }
-
-        .mega-dropdown .mega-col ul li { margin-bottom: 4px; }
-        .mega-dropdown .mega-col ul li a { color: var(--dark); text-decoration: none; font-size: 13px; transition: var(--transition); display: flex; align-items: center; gap: 6px; padding: 4px 0; border-radius: 4px; cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; width: 100%; text-align: left; }
-        .mega-dropdown .mega-col ul li a:hover { color: var(--gold); padding-left: 8px; background: rgba(212,175,55,.06); }
-        .mega-dropdown .mega-col ul li a .sub-icon { color: var(--gold); font-size: 12px; }
-        .mega-dropdown .mega-col .view-all { display: inline-block; margin-top: 6px; color: var(--gold); font-weight: 600; font-size: 13px; text-decoration: none; transition: var(--transition); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; }
-        .mega-dropdown .mega-col .view-all:hover { color: var(--gold-dark); text-decoration: underline; }
-
-        /* ===== HEADER RIGHT ===== */
+        .nav-menu { display: flex; align-items: center; gap: 24px; list-style: none; flex-wrap: wrap; }
+        .nav-menu > li { position: relative; padding-bottom: 8px; }
+        .nav-menu > li::after { content: ''; position: absolute; top: 100%; left: 0; width: 100%; height: 20px; background: transparent; }
+        .nav-menu > li > a { text-decoration: none; color: var(--primary); font-weight: 600; font-size: 14px; padding: 8px 0; transition: var(--transition); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 6px; }
+        .nav-menu > li > a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--gold); transition: var(--transition); }
+        .nav-menu > li > a:hover::after, .nav-menu > li > a.active::after { width: 100%; }
+        .nav-menu > li > a:hover { color: var(--gold); }
+        .dropdown { display: none; position: absolute; top: 100%; left: 0; background: var(--white); min-width: 220px; border-radius: var(--radius); box-shadow: var(--shadow-hover); padding: 12px 0; border-top: 3px solid var(--gold); z-index: 1000; padding-top: 15px; margin-top: -8px; }
+        .nav-menu > li:hover .dropdown { display: block; animation: fadeDown .2s ease; }
+        .dropdown li a { display: block; padding: 10px 20px; color: var(--primary); text-decoration: none; font-size: 14px; transition: var(--transition); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; width: 100%; text-align: left; border-bottom: 1px solid #f5f5f5; }
+        .dropdown li:last-child a { border-bottom: none; }
+        .dropdown li a:hover { background: var(--gold-light); color: var(--primary); padding-left: 30px; }
         .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .header-right .search-wrap { position: relative; display: flex; align-items: center; }
         .header-right .search-wrap input { padding: 8px 16px 8px 36px; border-radius: 50px; border: 1px solid #ddd; font-size: 13px; width: 180px; transition: var(--transition); font-family: 'Inter', sans-serif; background: var(--light); }
         .header-right .search-wrap input:focus { outline: none; border-color: var(--gold); width: 220px; box-shadow: 0 0 0 3px rgba(212,175,55,.15); }
         .header-right .search-wrap .search-icon { position: absolute; left: 12px; color: var(--gray); font-size: 14px; cursor: pointer; transition: var(--transition); }
         .header-right .search-wrap .search-icon:hover { color: var(--gold); }
-        .btn-appointment { background: var(--gold); color: var(--primary); padding: 8px 18px; border-radius: 50px; font-weight: 700; font-size: 12px; text-decoration: none; transition: var(--transition); border: none; cursor: pointer; font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .btn-appointment { background: var(--gold); color: var(--primary); padding: 10px 24px; border-radius: 50px; font-weight: 700; font-size: 13px; text-decoration: none; transition: var(--transition); border: none; cursor: pointer; font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
         .btn-appointment:hover { background: var(--gold-dark); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,175,55,.3); }
-        .cart-icon-wrap { position: relative; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; color: var(--primary); font-size: 20px; padding: 6px 10px; border-radius: 50px; transition: var(--transition); background: rgba(212,175,55,.08); }
+        .cart-icon-wrap { position: relative; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; color: var(--primary); font-size: 22px; padding: 8px 12px; border-radius: 50px; transition: var(--transition); background: rgba(212,175,55,.08); }
         .cart-icon-wrap:hover { background: rgba(212,175,55,.2); transform: scale(1.05); }
-        .cart-count { position: absolute; top: -2px; right: -2px; background: var(--gold); color: var(--primary); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; border: 2px solid var(--white); }
-        .user-icon-wrap { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; color: var(--primary); font-size: 18px; padding: 6px 10px; border-radius: 50px; transition: var(--transition); background: rgba(212,175,55,.08); position: relative; }
+        .cart-count { position: absolute; top: -2px; right: -2px; background: var(--gold); color: var(--primary); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; border: 2px solid var(--white); }
+        .user-icon-wrap { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; text-decoration: none; color: var(--primary); font-size: 20px; padding: 8px 10px; border-radius: 50px; transition: var(--transition); background: rgba(212,175,55,.08); position: relative; }
         .user-icon-wrap:hover { background: rgba(212,175,55,.2); transform: scale(1.05); }
-        .user-dropdown { display: none; position: absolute; top: 42px; right: 0; background: var(--white); min-width: 200px; border-radius: var(--radius); box-shadow: var(--shadow-hover); padding: 8px 0; border-top: 3px solid var(--gold); z-index: 100; }
+        .user-dropdown { display: none; position: absolute; top: 48px; right: 0; background: var(--white); min-width: 200px; border-radius: var(--radius); box-shadow: var(--shadow-hover); padding: 8px 0; border-top: 3px solid var(--gold); z-index: 100; }
         .user-icon-wrap:hover .user-dropdown, .user-dropdown:hover { display: block; animation: fadeDown .3s ease; }
         .user-dropdown a { display: block; padding: 10px 20px; color: var(--primary); text-decoration: none; font-size: 13px; transition: var(--transition); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; width: 100%; text-align: left; }
         .user-dropdown a:hover { background: var(--light); color: var(--gold); }
         .user-dropdown .divider { height: 1px; background: #eee; margin: 4px 12px; }
         .user-dropdown .user-name { padding: 8px 20px 4px; font-weight: 700; font-size: 14px; color: var(--primary); }
         .user-dropdown .user-email { padding: 0 20px 8px; font-size: 12px; color: var(--gray); }
-        .menu-toggle { display: none; background: none; border: none; font-size: 28px; color: var(--primary); cursor: pointer; padding: 4px 10px; }
-
-        /* ===== BUTTONS ===== */
         .btn-primary { background: var(--gold); color: var(--primary); padding: 14px 30px; border-radius: 50px; font-weight: 700; font-size: 14px; text-decoration: none; transition: var(--transition); border: none; cursor: pointer; font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 10px; }
         .btn-primary:hover { background: var(--gold-dark); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,175,55,.35); }
         .btn-primary.small { padding: 8px 18px; font-size: 12px; }
@@ -139,13 +77,12 @@
         .btn-outline:hover { background: var(--primary); color: var(--white); }
         .btn-danger { background: var(--danger); color: white; padding: 8px 20px; border-radius: 50px; font-weight: 600; font-size: 12px; border: none; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
         .btn-danger:hover { background: #c0392b; transform: scale(1.02); }
-
-        /* ===== PAGES ===== */
+        .btn-success { background: var(--success); color: white; padding: 8px 20px; border-radius: 50px; font-weight: 600; font-size: 12px; border: none; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+        .btn-success:hover { background: #27ae60; transform: scale(1.02); }
+        .menu-toggle { display: none; background: none; border: none; font-size: 28px; color: var(--primary); cursor: pointer; padding: 4px 10px; }
         .page { display: none; animation: fadeIn .5s ease; }
         .page.active { display: block; }
-
-        /* ===== HERO ===== */
-        .hero { position: relative; min-height: 60vh; background: var(--primary); display: flex; align-items: center; overflow: hidden; }
+        .hero { position: relative; min-height: 75vh; background: var(--primary); display: flex; align-items: center; overflow: hidden; }
         .hero-bg { position: absolute; inset: 0; background: url('https://i.ibb.co/0RnBKXRf/Wren-Kitchens-Ad-Website-Images-111.jpg') center/cover no-repeat; opacity: .5; }
         .hero-content { position: relative; z-index: 2; padding: 60px 8%; max-width: 700px; color: var(--white); }
         .hero-content .badge { display: inline-block; background: var(--gold); color: var(--primary); padding: 4px 18px; border-radius: 50px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
@@ -153,8 +90,6 @@
         .hero-content h1 span { color: var(--gold); }
         .hero-content p { font-size: 17px; color: rgba(255,255,255,.8); line-height: 1.7; margin-bottom: 24px; max-width: 500px; }
         .hero-content .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
-
-        /* ===== CONTAINER ===== */
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .section-padding { padding: 60px 0; }
         .section-heading { text-align: center; margin-bottom: 36px; }
@@ -162,16 +97,12 @@
         .section-heading h2 { font-size: 34px; font-weight: 800; font-family: 'Playfair Display', serif; color: var(--primary); }
         .section-heading h2 span { color: var(--gold); }
         .section-heading p { color: var(--gray); max-width: 600px; margin: 10px auto 0; font-size: 15px; }
-
-        /* ===== FEATURES ===== */
         .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; padding: 20px 0; }
         .feature-card { background: var(--white); padding: 28px 22px; border-radius: var(--radius); text-align: center; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid rgba(0,0,0,.04); }
         .feature-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); border-color: var(--gold); }
         .feature-card .icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(212,175,55,.12); display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--gold); margin: 0 auto 14px; }
         .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
         .feature-card p { color: var(--gray); font-size: 13px; line-height: 1.6; }
-
-        /* ===== FILTER BAR ===== */
         .filter-bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 24px; padding: 16px 20px; background: var(--light); border-radius: var(--radius); }
         .filter-bar .filters-left { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         .filter-bar select, .filter-bar input[type="number"] { padding: 8px 14px; border-radius: 50px; border: 1px solid #ddd; font-size: 13px; font-family: 'Inter', sans-serif; background: var(--white); transition: var(--transition); }
@@ -182,8 +113,6 @@
         .filter-bar .clear-filters:hover { color: var(--danger); }
         .filter-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--gold); color: var(--primary); padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: 600; }
         .filter-tag .remove { cursor: pointer; font-weight: 900; }
-
-        /* ===== PRODUCTS GRID ===== */
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; padding: 10px 0; }
         .product-card { background: var(--white); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid rgba(0,0,0,.04); display: flex; flex-direction: column; position: relative; }
         .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); border-color: var(--gold); }
@@ -211,15 +140,6 @@
         .no-products { text-align: center; padding: 60px 20px; color: var(--gray); }
         .no-products i { font-size: 48px; color: var(--gold-light); margin-bottom: 16px; display: block; }
         .no-products h3 { font-size: 22px; color: var(--primary); margin-bottom: 8px; }
-
-        /* ===== BREADCRUMB ===== */
-        .breadcrumb { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--light); border-radius: var(--radius); margin-bottom: 20px; font-size: 14px; flex-wrap: wrap; }
-        .breadcrumb a { color: var(--gold); text-decoration: none; cursor: pointer; transition: var(--transition); }
-        .breadcrumb a:hover { color: var(--gold-dark); text-decoration: underline; }
-        .breadcrumb .separator { color: var(--gray); }
-        .breadcrumb .current { color: var(--primary); font-weight: 600; }
-
-        /* ===== REVIEWS ===== */
         .reviews-section { margin-top: 12px; border-top: 1px solid #f0f0f0; padding-top: 12px; }
         .reviews-section .review-item { background: var(--light); padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; }
         .reviews-section .review-item .review-header { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 600; }
@@ -227,8 +147,6 @@
         .reviews-section .review-item .review-comment { font-size: 13px; color: var(--dark); margin-top: 2px; }
         .reviews-section .review-item .review-date { font-size: 11px; color: var(--gray); }
         .reviews-section .no-reviews { color: var(--gray); font-size: 13px; font-style: italic; }
-
-        /* ===== MODALS ===== */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
         .modal.active { display: flex; }
         .modal-content { background: var(--white); border-radius: 16px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,.3); animation: zoomIn .3s ease; }
@@ -251,8 +169,6 @@
         .cart-total { display: flex; justify-content: space-between; padding: 16px 0; border-top: 2px solid var(--light); font-size: 18px; font-weight: 700; }
         .cart-total span { color: var(--gray); }
         .cart-total strong { color: var(--primary); }
-
-        /* ===== CHECKOUT ===== */
         .checkout-form .form-group { margin-bottom: 14px; }
         .checkout-form .form-group label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 4px; color: var(--dark); }
         .checkout-form .form-group input, .checkout-form .form-group textarea, .checkout-form .form-group select { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-family: 'Inter', sans-serif; transition: var(--transition); }
@@ -260,8 +176,6 @@
         .checkout-form .card-details { background: var(--light); padding: 16px; border-radius: 8px; margin-top: 8px; display: none; }
         .checkout-form .card-details.show { display: block; animation: fadeIn .3s ease; }
         .checkout-form .card-details .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-        /* ===== GALLERY ===== */
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
         .gallery-grid .gallery-item { border-radius: var(--radius); overflow: hidden; position: relative; cursor: pointer; aspect-ratio: 1/1; box-shadow: var(--shadow); transition: var(--transition); }
         .gallery-grid .gallery-item:hover { transform: scale(1.02); box-shadow: var(--shadow-hover); }
@@ -272,8 +186,6 @@
         .lightbox.active { display: flex; }
         .lightbox img { max-width: 100%; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
         .lightbox .close-btn { position: absolute; top: 20px; right: 30px; font-size: 40px; color: var(--white); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; }
-
-        /* ===== ABOUT ===== */
         .about-content { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; padding: 20px 0; }
         .about-content .about-image img { width: 100%; border-radius: var(--radius); box-shadow: var(--shadow-hover); height: 400px; object-fit: cover; }
         .about-content .about-text h2 { font-size: 32px; font-family: 'Playfair Display', serif; font-weight: 800; margin-bottom: 12px; }
@@ -281,8 +193,6 @@
         .about-content .about-text .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
         .about-content .about-text .stats .stat { text-align: center; padding: 14px; background: var(--light); border-radius: var(--radius); }
         .about-content .about-text .stats .stat .num { font-size: 24px; font-weight: 800; color: var(--gold); }
-
-        /* ===== CONTACT ===== */
         .contact-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; padding: 10px 0; }
         .contact-form { background: var(--light); padding: 30px; border-radius: var(--radius); }
         .contact-form h3 { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
@@ -292,14 +202,10 @@
         .contact-info { display: flex; flex-direction: column; gap: 20px; }
         .contact-info .info-card { background: var(--light); padding: 20px; border-radius: var(--radius); display: flex; align-items: center; gap: 14px; }
         .contact-info .info-card .icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(212,175,55,.12); display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--gold); flex-shrink: 0; }
-
-        /* ===== CAREER ===== */
         .career-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 10px 0; }
         .career-card { background: var(--light); padding: 22px; border-radius: var(--radius); border-left: 4px solid var(--gold); transition: var(--transition); }
         .career-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
         .career-card .location { color: var(--gold); font-weight: 600; font-size: 13px; margin: 4px 0 8px; }
-
-        /* ===== AUTH ===== */
         .auth-tabs { display: flex; gap: 0; margin-bottom: 20px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; }
         .auth-tabs button { flex: 1; padding: 10px; border: none; background: var(--light); font-weight: 600; font-size: 14px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
         .auth-tabs button.active { background: var(--gold); color: var(--primary); }
@@ -312,14 +218,10 @@
         .auth-form .form-group input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.15); }
         .auth-form .btn-primary { width: 100%; justify-content: center; }
         .auth-error { color: var(--danger); font-size: 13px; margin-top: 8px; display: none; }
-
-        /* ===== WISHLIST ===== */
         .wishlist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px; padding: 10px 0; }
         .wishlist-empty { text-align: center; padding: 60px 20px; color: var(--gray); }
         .wishlist-empty i { font-size: 48px; color: var(--gold-light); margin-bottom: 16px; display: block; }
         .wishlist-empty h3 { font-size: 22px; color: var(--primary); margin-bottom: 8px; }
-
-        /* ===== PROFILE ===== */
         .profile-section { background: var(--light); border-radius: var(--radius); padding: 30px; margin-bottom: 30px; }
         .profile-section .profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
         .profile-section .profile-header .avatar { width: 64px; height: 64px; border-radius: 50%; background: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--primary); font-weight: 700; font-family: 'Playfair Display', serif; }
@@ -334,8 +236,6 @@
         .profile-section .order-history .order-item .order-status.pending { background: #ffecb3; color: #ff8f00; }
         .profile-section .order-history .order-item .order-status.completed { background: #c8e6c9; color: #2e7d32; }
         .profile-section .order-history .order-item .order-status.cancelled { background: #ffcdd2; color: #c62828; }
-
-        /* ===== ADMIN ===== */
         .admin-login { max-width: 400px; margin: 60px auto; padding: 30px; background: var(--light); border-radius: 16px; text-align: center; }
         .admin-login h2 { font-size: 24px; margin-bottom: 20px; }
         .admin-dashboard { padding: 20px 0; }
@@ -380,35 +280,13 @@
         .admin-product-form .form-group { margin-bottom: 12px; }
         .admin-product-form .form-group label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 4px; }
         .admin-product-form .form-group input, .admin-product-form .form-group select, .admin-product-form .form-group textarea { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; font-family: 'Inter', sans-serif; }
+        .admin-product-form .form-group input:focus, .admin-product-form .form-group select:focus, .admin-product-form .form-group textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.15); }
         .admin-product-form .form-actions { display: flex; gap: 10px; margin-top: 8px; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
-        .admin-header h2 { font-size: 28px; font-family: 'Playfair Display', serif; }
-        .admin-header .admin-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .btn-change-password { background: var(--info); color: white; padding: 8px 18px; border: none; border-radius: 50px; font-weight: 600; font-size: 13px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 8px; }
-        .btn-change-password:hover { background: #2980b9; transform: translateY(-2px); }
-        .date-filter-bar { background: var(--light); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-        .date-filter-bar label { font-weight: 600; font-size: 14px; }
-        .date-filter-bar input[type="date"] { padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
-        .date-filter-bar .btn-outline { padding: 8px 15px; font-size: 12px; }
-        .admin-global-search { background: var(--white); padding: 15px 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
-        .admin-global-search input { flex: 1; min-width: 200px; padding: 10px 16px; border: 2px solid #ddd; border-radius: 50px; font-size: 14px; font-family: 'Inter', sans-serif; transition: var(--transition); }
-        .admin-global-search input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.15); }
-        .admin-global-search .search-btn { background: var(--gold); color: var(--primary); border: none; padding: 10px 24px; border-radius: 50px; font-weight: 600; font-size: 14px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 8px; }
-        .admin-global-search .search-btn:hover { background: var(--gold-dark); transform: scale(1.02); }
+        .admin-logout { background: var(--danger); color: white; border: none; padding: 8px 20px; border-radius: 50px; cursor: pointer; font-weight: 600; font-size: 13px; margin-top: 16px; }
         .track-result { background: var(--light); padding: 16px; border-radius: 8px; margin-top: 12px; display: none; }
         .track-result.show { display: block; animation: fadeIn .3s ease; }
         .track-result .track-status { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
         .track-result .track-details { color: var(--gray); font-size: 14px; }
-        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
-        .file-input-wrapper input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
-        .file-input-wrapper .file-label { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--light); border: 2px dashed #ddd; border-radius: 8px; font-weight: 600; font-size: 13px; color: var(--gray); cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
-        .file-input-wrapper .file-label:hover { border-color: var(--gold); color: var(--primary); }
-        .file-input-wrapper .file-label i { font-size: 18px; color: var(--gold); }
-        .image-preview { margin-top: 10px; max-width: 150px; max-height: 150px; border-radius: 8px; overflow: hidden; border: 2px solid #ddd; display: none; }
-        .image-preview img { width: 100%; height: auto; display: block; }
-        .image-preview.show { display: block; }
-
-        /* ===== FOOTER ===== */
         footer { background: var(--primary); color: var(--white); padding: 50px 5% 25px; margin-top: 60px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 30px; padding-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,.06); }
         .footer-grid .brand h3 { font-size: 24px; font-family: 'Playfair Display', serif; font-weight: 800; margin-bottom: 6px; }
@@ -424,64 +302,49 @@
         .footer-grid .col ul li a:hover { color: var(--gold); padding-left: 4px; }
         .footer-bottom { padding-top: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 13px; color: rgba(255,255,255,.4); }
         .footer-bottom a { color: var(--gold); text-decoration: none; }
-
-        /* ===== TOAST ===== */
         .toast { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 14px 24px; border-radius: 50px; font-size: 14px; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,.3); z-index: 10000; display: flex; align-items: center; gap: 8px; animation: slideUp .3s ease; transition: opacity .3s; }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width:992px) {
-            .about-content, .contact-wrapper { grid-template-columns: 1fr; }
-            .footer-grid { grid-template-columns: 1fr 1fr; }
-            .hero-content h1 { font-size: 40px; }
-            .header-right .search-wrap input { width: 120px; }
-            .header-right .search-wrap input:focus { width: 150px; }
-            .admin-product-form .form-row { grid-template-columns: 1fr; }
-            .checkout-form .card-details .row { grid-template-columns: 1fr; }
-            .mega-dropdown { min-width: 100%; padding: 20px; }
-            .mega-dropdown .mega-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        }
-        @media (max-width:768px) {
-            .menu-toggle { display: block; }
-            .nav-menu { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--white); padding: 20px; box-shadow: var(--shadow-hover); gap: 14px; border-top: 3px solid var(--gold); z-index: 100; }
-            .nav-menu.open { display: flex; }
-            .nav-menu>li { width: 100%; padding-bottom: 0; }
-            .nav-menu>li>a { padding: 10px 0; border-bottom: none; }
-            .nav-menu>li>a::after { display: none; }
-            .mega-dropdown { position: static; transform: none; min-width: 100%; border-radius: 8px; padding: 16px; margin-top: 8px; box-shadow: var(--shadow); width: 100%; }
-            .mega-dropdown .mega-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
-            .footer-grid { grid-template-columns: 1fr; }
-            .products-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
-            .filter-bar { flex-direction: column; align-items: stretch; }
-            .filter-bar .filters-left { flex-direction: column; align-items: stretch; }
-            .filter-bar .price-range { flex-wrap: wrap; }
-            .header-right .search-wrap input { width: 100px; }
-            .header-right .search-wrap input:focus { width: 130px; }
-            .hero-content h1 { font-size: 32px; }
-            .top-bar .left span { font-size: 11px; }
-            .profile-section .order-history .order-item { flex-direction: column; align-items: flex-start; }
-            .admin-tabs { flex-wrap: wrap; }
-            .admin-tabs button { padding: 6px 12px; font-size: 12px; }
-            .modal-content.xlarge { padding: 16px; }
-            .product-card .info .action-row { flex-direction: column; }
-            .product-card .info .action-row .btn-add-cart { min-width: unset; }
-            .mega-dropdown .mega-grid { grid-template-columns: 1fr; gap: 12px; }
-            .mega-dropdown .mega-col h4 { font-size: 14px; }
-        }
-        @media (max-width:480px) {
-            .header-right .search-wrap input { width: 80px; font-size: 11px; padding: 6px 10px 6px 28px; }
-            .header-right .search-wrap input:focus { width: 100px; }
-            .btn-appointment { padding: 6px 14px; font-size: 11px; }
-            .cart-icon-wrap { padding: 6px 8px; font-size: 18px; }
-            .user-icon-wrap { padding: 6px 8px; font-size: 16px; }
-            .hero-content { padding: 40px 5%; }
-            .hero-content h1 { font-size: 28px; }
-            .modal-content { padding: 16px; }
-            .products-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-        }
+        @media (max-width:992px) { .about-content, .contact-wrapper { grid-template-columns: 1fr; } .footer-grid { grid-template-columns: 1fr 1fr; } .hero-content h1 { font-size: 40px; } .header-right .search-wrap input { width: 120px; } .header-right .search-wrap input:focus { width: 150px; } .admin-product-form .form-row { grid-template-columns: 1fr; } .checkout-form .card-details .row { grid-template-columns: 1fr; } }
+        @media (max-width:768px) { .menu-toggle { display: block; } .nav-menu { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--white); padding: 20px; box-shadow: var(--shadow-hover); gap: 14px; border-top: 3px solid var(--gold); z-index: 100; } .nav-menu.open { display: flex; } .nav-menu>li { width: 100%; padding-bottom: 0; } .nav-menu>li::after { display: none; } .dropdown { position: static; display: none; box-shadow: none; padding: 4px 0 4px 16px; border-top: none; margin-top: 0; } .nav-menu>li:hover .dropdown { display: none; } .nav-menu>li .dropdown.open { display: block; } .footer-grid { grid-template-columns: 1fr; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); } .filter-bar { flex-direction: column; align-items: stretch; } .filter-bar .filters-left { flex-direction: column; align-items: stretch; } .filter-bar .price-range { flex-wrap: wrap; } .header-right .search-wrap input { width: 100px; } .header-right .search-wrap input:focus { width: 130px; } .hero-content h1 { font-size: 32px; } .top-bar .left span { font-size: 11px; } .profile-section .order-history .order-item { flex-direction: column; align-items: flex-start; } .admin-tabs { flex-wrap: wrap; } .admin-tabs button { padding: 6px 12px; font-size: 12px; } .modal-content.xlarge { padding: 16px; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } .product-card .info .action-row { flex-direction: column; } .product-card .info .action-row .btn-add-cart { min-width: unset; } }
+        @media (max-width:480px) { .header-right .search-wrap input { width: 80px; font-size: 11px; padding: 6px 10px 6px 28px; } .header-right .search-wrap input:focus { width: 100px; } .btn-appointment { padding: 6px 14px; font-size: 11px; } .cart-icon-wrap { padding: 6px 8px; font-size: 18px; } .user-icon-wrap { padding: 6px 8px; font-size: 16px; } .hero-content { padding: 40px 5%; } .hero-content h1 { font-size: 28px; } .modal-content { padding: 16px; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); } }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+        .admin-header h2 { font-size: 28px; font-family: 'Playfair Display', serif; }
+        .admin-header .admin-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .btn-change-password { background: var(--info); color: white; padding: 8px 18px; border: none; border-radius: 50px; font-weight: 600; font-size: 13px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-change-password:hover { background: #2980b9; transform: translateY(-2px); }
+        .date-filter-bar { background: var(--light); padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .date-filter-bar label { font-weight: 600; font-size: 14px; }
+        .date-filter-bar input[type="date"] { padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
+        .date-filter-bar .btn-outline { padding: 8px 15px; font-size: 12px; }
+        .admin-global-search { background: var(--white); padding: 15px 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .admin-global-search input { flex: 1; min-width: 200px; padding: 10px 16px; border: 2px solid #ddd; border-radius: 50px; font-size: 14px; font-family: 'Inter', sans-serif; transition: var(--transition); }
+        .admin-global-search input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,175,55,.15); }
+        .admin-global-search .search-btn { background: var(--gold); color: var(--primary); border: none; padding: 10px 24px; border-radius: 50px; font-weight: 600; font-size: 14px; cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 8px; }
+        .admin-global-search .search-btn:hover { background: var(--gold-dark); transform: scale(1.02); }
+        .auth-tabs button { cursor: pointer; padding: 12px 20px; }
+        .auth-tabs button:hover { background: var(--gold-light); }
+        .auth-form { padding: 10px 0; }
+        .auth-form .form-group input { padding: 12px 14px; }
+        .user-icon-wrap { position: relative; }
+        .user-dropdown { display: none; position: absolute; top: 100%; right: 0; background: var(--white); min-width: 220px; border-radius: var(--radius); box-shadow: var(--shadow-hover); padding: 8px 0; border-top: 3px solid var(--gold); z-index: 100; margin-top: 5px; }
+        .user-icon-wrap:hover .user-dropdown, .user-dropdown:hover { display: block; animation: fadeDown .3s ease; }
+        .user-dropdown a { display: block; padding: 10px 20px; color: var(--primary); text-decoration: none; font-size: 13px; transition: var(--transition); cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; width: 100%; text-align: left; }
+        .user-dropdown a:hover { background: var(--light); color: var(--gold); }
+        .user-dropdown .divider { height: 1px; background: #eee; margin: 4px 12px; }
+        .user-dropdown .user-name { padding: 8px 20px 4px; font-weight: 700; font-size: 14px; color: var(--primary); }
+        .user-dropdown .user-email { padding: 0 20px 8px; font-size: 12px; color: var(--gray); }
+        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
+        .file-input-wrapper input[type="file"] { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+        .file-input-wrapper .file-label { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--light); border: 2px dashed #ddd; border-radius: 8px; font-weight: 600; font-size: 13px; color: var(--gray); cursor: pointer; transition: var(--transition); font-family: 'Inter', sans-serif; }
+        .file-input-wrapper .file-label:hover { border-color: var(--gold); color: var(--primary); }
+        .file-input-wrapper .file-label i { font-size: 18px; color: var(--gold); }
+        .image-preview { margin-top: 10px; max-width: 150px; max-height: 150px; border-radius: 8px; overflow: hidden; border: 2px solid #ddd; display: none; }
+        .image-preview img { width: 100%; height: auto; display: block; }
+        .image-preview.show { display: block; }
     </style>
 </head>
 <body>
-    <!-- ===== TOP BAR ===== -->
+
+    <!-- TOP BAR -->
     <div class="top-bar">
         <div class="left">
             <span><i class="fas fa-phone"></i> +44 20 1234 5678</span>
@@ -496,13 +359,13 @@
         </div>
     </div>
 
-    <!-- ===== SALE BANNER ===== -->
+    <!-- SALE BANNER -->
     <div class="sale-banner">
         <span><i class="fas fa-fire"></i> Summer Sale - Selected Offers End Soon</span>
         <a href="#" onclick="navigate('products')">SHOP NOW →</a>
     </div>
 
-    <!-- ===== HEADER ===== -->
+    <!-- HEADER -->
     <header>
         <a class="logo" onclick="navigate('home')">
             <div class="logo-icon">
@@ -516,18 +379,16 @@
         <button class="menu-toggle" id="menuToggle" onclick="toggleMobileMenu()">
             <i class="fas fa-bars"></i>
         </button>
-
-        <!-- ===== NAVIGATION ===== -->
         <ul class="nav-menu" id="navMenu">
             <li><a class="active" onclick="navigate('home')">Home</a></li>
             <li><a onclick="navigate('about')">About</a></li>
             <li>
                 <a onclick="navigate('products')">Products <i class="fas fa-chevron-down"></i></a>
-                <div class="mega-dropdown" id="megaDropdown">
-                    <div class="mega-grid" id="megaGrid">
-                        <!-- Categories injected -->
-                    </div>
-                </div>
+                <ul class="dropdown">
+                    <li><a onclick="navigateToCategory('Kitchen')"><i class="fas fa-utensils"></i> Kitchens</a></li>
+                    <li><a onclick="navigateToCategory('Bedrooms')"><i class="fas fa-bed"></i> Bedrooms</a></li>
+                    <li><a onclick="navigateToCategory('Home Office')"><i class="fas fa-laptop"></i> Home Offices</a></li>
+                </ul>
             </li>
             <li><a onclick="navigate('gallery')">Gallery</a></li>
             <li><a onclick="navigate('career')">Career</a></li>
@@ -536,7 +397,6 @@
             <li><a onclick="openTrackModal()"><i class="fas fa-truck"></i> Track Order</a></li>
             <li><a onclick="navigate('admin')"><i class="fas fa-user-shield"></i> Admin</a></li>
         </ul>
-
         <div class="header-right">
             <div class="search-wrap">
                 <i class="fas fa-search search-icon" onclick="doSearch()"></i>
@@ -566,9 +426,10 @@
         </div>
     </header>
 
-    <!-- ===== MAIN CONTENT ===== -->
+    <!-- MAIN CONTENT -->
     <main>
-        <!-- ===== HOME PAGE ===== -->
+
+        <!-- HOME PAGE -->
         <section class="page active" id="page-home">
             <div class="hero">
                 <div class="hero-bg"></div>
@@ -603,7 +464,7 @@
             </div>
         </section>
 
-        <!-- ===== ABOUT PAGE ===== -->
+        <!-- ABOUT PAGE -->
         <section class="page" id="page-about">
             <div class="container section-padding">
                 <div class="section-heading">
@@ -625,20 +486,21 @@
             </div>
         </section>
 
-        <!-- ===== PRODUCTS PAGE ===== -->
+        <!-- PRODUCTS PAGE -->
         <section class="page" id="page-products">
             <div class="container section-padding">
                 <div class="section-heading">
                     <span class="sub">Our Collection</span>
                     <h2>All <span>Products</span></h2>
                 </div>
-                <div class="breadcrumb" id="breadcrumb">
-                    <a onclick="filterByCategory(null)">🏠 All Products</a>
-                </div>
                 <div class="filter-bar" id="filterBar">
                     <div class="filters-left">
                         <select id="categoryFilter" onchange="filterProducts()">
                             <option value="all">All Categories</option>
+                            <option value="Kitchen">Kitchen</option>
+                            <option value="Home">Home</option>
+                            <option value="Bedrooms">Bedrooms</option>
+                            <option value="Home Office">Home Office</option>
                         </select>
                         <div class="price-range">
                             <span>£</span>
@@ -657,7 +519,6 @@
                     </div>
                     <div id="filterTags" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
                 </div>
-
                 <div class="products-grid" id="allProducts"></div>
                 <div class="no-products" id="noProducts" style="display:none;">
                     <i class="fas fa-search"></i>
@@ -667,7 +528,7 @@
             </div>
         </section>
 
-        <!-- ===== GALLERY PAGE ===== -->
+        <!-- GALLERY PAGE -->
         <section class="page" id="page-gallery">
             <div class="container section-padding">
                 <div class="section-heading">
@@ -678,7 +539,7 @@
             </div>
         </section>
 
-        <!-- ===== WISHLIST PAGE ===== -->
+        <!-- WISHLIST PAGE -->
         <section class="page" id="page-wishlist">
             <div class="container section-padding">
                 <div class="section-heading">
@@ -697,7 +558,7 @@
             </div>
         </section>
 
-        <!-- ===== PROFILE PAGE ===== -->
+        <!-- PROFILE PAGE -->
         <section class="page" id="page-profile">
             <div class="container section-padding">
                 <div class="section-heading">
@@ -728,7 +589,7 @@
             </div>
         </section>
 
-        <!-- ===== CAREER PAGE ===== -->
+        <!-- CAREER PAGE -->
         <section class="page" id="page-career">
             <div class="container section-padding">
                 <div class="section-heading">
@@ -743,7 +604,7 @@
             </div>
         </section>
 
-        <!-- ===== CONTACT PAGE ===== -->
+        <!-- CONTACT PAGE -->
         <section class="page" id="page-contact">
             <div class="container section-padding">
                 <div class="section-heading">
@@ -770,7 +631,7 @@
             </div>
         </section>
 
-        <!-- ===== ADMIN PAGE ===== -->
+        <!-- ADMIN PAGE -->
         <section class="page" id="page-admin">
             <div class="container section-padding">
                 <div id="adminLogin" class="admin-login">
@@ -794,7 +655,7 @@
 
                     <div class="admin-global-search">
                         <i class="fas fa-search" style="color:var(--gray);font-size:18px;"></i>
-                        <input type="text" id="adminGlobalSearch" placeholder="Search across all tables..." />
+                        <input type="text" id="adminGlobalSearch" placeholder="Search across all tables... (Orders, Customers, Products, Messages, Inquiries)" />
                         <button class="search-btn" onclick="adminGlobalSearch()"><i class="fas fa-search"></i> Search</button>
                         <button class="btn-outline small" onclick="clearAdminSearch()" style="padding:8px 16px;">Clear</button>
                     </div>
@@ -804,13 +665,14 @@
                         <button data-tab="tab-products" onclick="switchAdminTab('tab-products')"><i class="fas fa-box"></i> Products</button>
                         <button data-tab="tab-orders" onclick="switchAdminTab('tab-orders')"><i class="fas fa-shopping-cart"></i> Orders</button>
                         <button data-tab="tab-customers" onclick="switchAdminTab('tab-customers')"><i class="fas fa-users"></i> Customers</button>
-                        <button data-tab="tab-inquiries" onclick="switchAdminTab('tab-inquiries')"><i class="fas fa-question-circle"></i> Inquiries</button>
-                        <button data-tab="tab-messages" onclick="switchAdminTab('tab-messages')"><i class="fas fa-envelope"></i> Messages</button>
+                        <button data-tab="tab-inquiries" onclick="switchAdminTab('tab-inquiries')"><i class="fas fa-question-circle"></i> Product Inquiries</button>
+                        <button data-tab="tab-messages" onclick="switchAdminTab('tab-messages')"><i class="fas fa-envelope"></i> Customer Messages</button>
                     </div>
 
+                    <!-- TAB 1: DASHBOARD -->
                     <div class="admin-tab-content active" id="tab-dashboard">
                         <div class="date-filter-bar">
-                            <label>From: <input type="date" id="dashFromDate"></label>
+                            <label>Select Date: <input type="date" id="dashFromDate"></label>
                             <label>To: <input type="date" id="dashToDate"></label>
                             <button class="btn-primary small" onclick="filterDashboardByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetDashboardDate()">Full History</button>
@@ -826,6 +688,7 @@
                         </div>
                     </div>
 
+                    <!-- TAB 2: PRODUCTS -->
                     <div class="admin-tab-content" id="tab-products">
                         <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
                             <h3 style="font-size:20px;">Manage Products</h3>
@@ -874,10 +737,11 @@
                         </div>
                     </div>
 
+                    <!-- TAB 3: ORDERS -->
                     <div class="admin-tab-content" id="tab-orders">
                         <h3 style="font-size:20px;margin-bottom:16px;">All Orders</h3>
                         <div class="date-filter-bar">
-                            <label>From: <input type="date" id="ordersFromDate"></label>
+                            <label>Select Date: <input type="date" id="ordersFromDate"></label>
                             <label>To: <input type="date" id="ordersToDate"></label>
                             <button class="btn-primary small" onclick="filterOrdersByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetOrdersDate()">Show All</button>
@@ -885,7 +749,7 @@
                         <div class="admin-export-bar">
                             <button class="btn-danger" onclick="clearAllOrders()"><i class="fas fa-trash-alt"></i> Clear History</button>
                             <button class="csv-btn" onclick="exportOrdersCSV()"><i class="fas fa-file-csv"></i> Export CSV</button>
-                            <button class="refresh-btn" onclick="loadAdminOrders()"><i class="fas fa-sync"></i> Refresh</button>
+                            <button class="refresh-btn" onclick="loadAdminDashboard()"><i class="fas fa-sync"></i> Refresh</button>
                         </div>
                         <div class="admin-table-wrap">
                             <table class="admin-table">
@@ -896,10 +760,11 @@
                         <p id="noOrders" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No orders yet.</p>
                     </div>
 
+                    <!-- TAB 4: CUSTOMERS -->
                     <div class="admin-tab-content" id="tab-customers">
                         <h3 style="font-size:20px;margin-bottom:16px;">Registered Customers</h3>
                         <div class="date-filter-bar">
-                            <label>From: <input type="date" id="custFromDate"></label>
+                            <label>Select Date: <input type="date" id="custFromDate"></label>
                             <label>To: <input type="date" id="custToDate"></label>
                             <button class="btn-primary small" onclick="filterCustomersByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetCustomersDate()">Show All</button>
@@ -917,11 +782,12 @@
                         </div>
                     </div>
 
+                    <!-- TAB 5: INQUIRIES -->
                     <div class="admin-tab-content" id="tab-inquiries">
-                        <h3 style="font-size:20px;margin-bottom:16px;">Product Inquiries</h3>
+                        <h3 style="font-size:20px;margin-bottom:16px;">Product Inquiries (Unmatched Search Queries)</h3>
                         <p style="color:var(--gray);font-size:13px;margin-bottom:12px;">⚠️ Only search queries that did NOT match any product appear here.</p>
                         <div class="date-filter-bar">
-                            <label>From: <input type="date" id="inqFromDate"></label>
+                            <label>Select Date: <input type="date" id="inqFromDate"></label>
                             <label>To: <input type="date" id="inqToDate"></label>
                             <button class="btn-primary small" onclick="filterInquiriesByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetInquiriesDate()">Show All</button>
@@ -940,11 +806,12 @@
                         <p id="noInquiries" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No inquiries yet.</p>
                     </div>
 
+                    <!-- TAB 6: MESSAGES -->
                     <div class="admin-tab-content" id="tab-messages">
-                        <h3 style="font-size:20px;margin-bottom:16px;">Customer Messages</h3>
+                        <h3 style="font-size:20px;margin-bottom:16px;">Customer Messages (Contact Form)</h3>
                         <p style="color:var(--gray);font-size:13px;margin-bottom:12px;">💬 Messages sent through the Contact Us form appear here.</p>
                         <div class="date-filter-bar">
-                            <label>From: <input type="date" id="msgFromDate"></label>
+                            <label>Select Date: <input type="date" id="msgFromDate"></label>
                             <label>To: <input type="date" id="msgToDate"></label>
                             <button class="btn-primary small" onclick="filterMessagesByDate()">Filter</button>
                             <button class="btn-outline small" onclick="resetMessagesDate()">Show All</button>
@@ -962,12 +829,14 @@
                         </div>
                         <p id="noMessages" style="text-align:center;color:var(--gray);margin-top:20px;display:none;">No messages yet.</p>
                     </div>
+
                 </div>
             </div>
         </section>
+
     </main>
 
-    <!-- ===== MODALS ===== -->
+    <!-- AUTH MODAL -->
     <div class="modal" id="authModal" onclick="if(event.target===this)closeAuthModal()">
         <div class="modal-content">
             <div class="modal-header">
@@ -998,6 +867,7 @@
         </div>
     </div>
 
+    <!-- CART MODAL -->
     <div class="modal" id="cartModal" onclick="if(event.target===this)closeCart()">
         <div class="modal-content">
             <div class="modal-header">
@@ -1010,6 +880,7 @@
         </div>
     </div>
 
+    <!-- CHECKOUT MODAL -->
     <div class="modal" id="checkoutModal" onclick="if(event.target===this)closeCheckout()">
         <div class="modal-content large">
             <div class="modal-header">
@@ -1045,6 +916,7 @@
         </div>
     </div>
 
+    <!-- REVIEW MODAL -->
     <div class="modal" id="reviewModal" onclick="if(event.target===this)closeReviewModal()">
         <div class="modal-content">
             <div class="modal-header">
@@ -1071,6 +943,7 @@
         </div>
     </div>
 
+    <!-- TRACK ORDER MODAL -->
     <div class="modal" id="trackModal" onclick="if(event.target===this)closeTrackModal()">
         <div class="modal-content">
             <div class="modal-header">
@@ -1089,12 +962,13 @@
         </div>
     </div>
 
+    <!-- LIGHTBOX -->
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
         <button class="close-btn" onclick="closeLightbox()">&times;</button>
         <img id="lightboxImage" src="" alt="Zoom" />
     </div>
 
-    <!-- ===== FOOTER ===== -->
+    <!-- FOOTER -->
     <footer>
         <div class="container">
             <div class="footer-grid">
@@ -1133,9 +1007,7 @@
         </div>
     </footer>
 
-    <!-- ================================================================ -->
     <!-- ===== JAVASCRIPT ===== -->
-    <!-- ================================================================ -->
     <script>
         // ================================================================
         // 0. SUPABASE CONFIGURATION
@@ -1373,193 +1245,183 @@
         // ===== CATEGORIES =====
         async function getCategories() {
             try {
-                const { data, error } = await supabaseClient.from('categories').select('*').order('level', { ascending: true });
+                const { data, error } = await supabaseClient.from('categories').select('*').order('id');
                 if (error) throw error;
                 if (data) {
                     cachedCategories = data;
                     setLocalData('sk_categories', data);
-                    renderMegaDropdown();
-                    loadCategoryDropdown();
-                    loadCategoryFilter();
                     return data;
                 }
             } catch (e) { console.warn('Supabase fetch failed:', e); }
             const local = getLocalData('sk_categories', []);
             cachedCategories = local;
-            renderMegaDropdown();
-            loadCategoryDropdown();
-            loadCategoryFilter();
             return local;
-        }
-
-        function renderMegaDropdown() {
-            const megaGrid = document.getElementById('megaGrid');
-            if (!megaGrid) return;
-
-            if (!cachedCategories || cachedCategories.length === 0) {
-                megaGrid.innerHTML = `<div class="mega-col"><p style="color:var(--gray);">Loading categories...</p></div>`;
-                return;
-            }
-
-            const rootCategories = cachedCategories.filter(c => c.parent_id === null);
-
-            if (rootCategories.length === 0) {
-                let html = ``;
-                cachedCategories.forEach(cat => {
-                    html += `<div class="mega-col"><h4>${cat.name}</h4><ul><li><a onclick="navigateToCategory('${cat.name}')"><span class="sub-icon">›</span> View All</a></li></ul></div>`;
-                });
-                megaGrid.innerHTML = html;
-                return;
-            }
-
-            const iconMap = {
-                'Kitchens': 'fa-utensils',
-                'Bedrooms': 'fa-bed',
-                'Home Office': 'fa-laptop',
-                'Kitchen': 'fa-utensils',
-                'Home': 'fa-home'
-            };
-
-            let gridHtml = ``;
-
-            rootCategories.forEach((root) => {
-                const children = cachedCategories.filter(c => c.parent_id === root.id);
-                const icon = iconMap[root.name] || 'fa-tag';
-                const targetName = root.name.replace(/'/g, "\\'");
-
-                gridHtml += `<div class="mega-col" id="mega-${root.id}">
-                    <h4 onclick="toggleMegaSubmenu(${root.id})">
-                        <i class="fas ${icon}"></i> ${root.name} <i class="fas fa-chevron-right" style="margin-left:auto;font-size:12px;color:var(--gold);transition:var(--transition);" id="icon-${root.id}"></i>
-                    </h4>
-                    <ul id="submenu-${root.id}">
-                        <li><a onclick="navigateToCategory('${targetName}')"><span class="sub-icon">›</span> All ${root.name}</a></li>`;
-
-                children.forEach(child => {
-                    const childName = child.name.replace(/'/g, "\\'");
-                    gridHtml += `<li><a onclick="navigateToCategory('${childName}')"><span class="sub-icon">›</span> ${child.name}</a></li>`;
-                });
-
-                gridHtml += `</ul>
-                    <button class="view-all" onclick="navigateToCategory('${targetName}')">View All ${root.name} →</button>
-                </div>`;
-            });
-
-            gridHtml += `
-                <div class="mega-col">
-                    <h4><i class="fas fa-tags"></i> Popular</h4>
-                    <ul>
-                        <li><a onclick="navigateToCategory('Kitchen')"><span class="sub-icon">›</span> Luxury Kitchens</a></li>
-                        <li><a onclick="navigateToCategory('Bedrooms')"><span class="sub-icon">›</span> Modern Bedrooms</a></li>
-                        <li><a onclick="navigateToCategory('Home Office')"><span class="sub-icon">›</span> Ergonomic Offices</a></li>
-                        <li><a onclick="navigate('gallery')"><span class="sub-icon">›</span> View Gallery</a></li>
-                    </ul>
-                    <button class="view-all" onclick="navigate('products')">All Products →</button>
-                </div>
-            `;
-
-            megaGrid.innerHTML = gridHtml;
-        }
-
-        function toggleMegaSubmenu(catId) {
-            const submenu = document.getElementById(`submenu-${catId}`);
-            const col = document.getElementById(`mega-${catId}`);
-            const icon = document.getElementById(`icon-${catId}`);
-
-            if (submenu) {
-                submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
-                if (submenu.style.display === 'block') {
-                    col.classList.add('open');
-                    icon.style.transform = 'rotate(90deg)';
-                } else {
-                    col.classList.remove('open');
-                    icon.style.transform = 'rotate(0deg)';
-                }
-            }
         }
 
         function loadCategoryDropdown() {
             const select = document.getElementById('prodCategory');
             if (!select) return;
             select.innerHTML = '';
-
             const defaultOpt = document.createElement('option');
             defaultOpt.value = '';
             defaultOpt.textContent = '-- Select Category --';
             select.appendChild(defaultOpt);
-
             if (cachedCategories && cachedCategories.length > 0) {
-                const tree = getCategoryTree(cachedCategories);
-                tree.forEach(cat => {
+                cachedCategories.forEach(cat => {
                     const opt = document.createElement('option');
                     opt.value = cat.id;
-                    const indent = '—'.repeat(cat.level);
-                    opt.textContent = (indent ? indent + ' ' : '') + cat.name;
+                    opt.textContent = cat.name;
                     select.appendChild(opt);
                 });
             }
         }
 
-        function loadCategoryFilter() {
-            const select = document.getElementById('categoryFilter');
-            if (!select) return;
+        // ===== USERS =====
+        async function getUsers() {
+            try {
+                const { data, error } = await supabaseClient.from('users').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                if (data) { setLocalData('sk_users_encrypted', data); return data; }
+            } catch (e) { console.warn('Supabase fetch failed:', e); }
+            return getLocalData('sk_users_encrypted', []);
+        }
 
-            select.innerHTML = '';
-            const all = document.createElement('option');
-            all.value = 'all';
-            all.textContent = 'All Categories';
-            select.appendChild(all);
-
-            if (cachedCategories && cachedCategories.length > 0) {
-                const tree = getCategoryTree(cachedCategories);
-                tree.forEach(cat => {
-                    const hasChildren = cachedCategories.some(c => c.parent_id === cat.id);
-                    if (!hasChildren || cat.parent_id === null) {
-                        const opt = document.createElement('option');
-                        opt.value = cat.id;
-                        const indent = '—'.repeat(cat.level);
-                        opt.textContent = (indent ? indent + ' ' : '') + cat.name;
-                        select.appendChild(opt);
-                    }
-                });
+        async function saveUsers(users) {
+            try {
+                const { error } = await supabaseClient.from('users').upsert(users, { onConflict: 'email' });
+                if (error) throw error;
+                setLocalData('sk_users_encrypted', users);
+                return true;
+            } catch (e) {
+                console.warn('Supabase save failed:', e);
+                setLocalData('sk_users_encrypted', users);
+                return false;
             }
         }
 
-        function getCategoryNameById(id) {
-            const cat = cachedCategories.find(c => c.id === id);
-            return cat ? cat.name : 'Uncategorized';
+        // ===== ORDERS =====
+        async function getOrders() {
+            try {
+                const { data, error } = await supabaseClient.from('orders').select('*').order('date', { ascending: false });
+                if (error) throw error;
+                if (data) { setLocalData('sk_orders_encrypted', data); return data; }
+            } catch (e) { console.warn('Supabase fetch failed:', e); }
+            return getLocalData('sk_orders_encrypted', []);
         }
 
-        function getCategoryPath(id) {
-            const cat = cachedCategories.find(c => c.id === id);
-            if (!cat) return '';
-            if (cat.parent_id === null) return cat.name;
-            const parentPath = getCategoryPath(cat.parent_id);
-            return parentPath ? `${parentPath} → ${cat.name}` : cat.name;
+        async function saveOrders(orders) {
+            try {
+                const { error } = await supabaseClient.from('orders').upsert(orders, { onConflict: 'id' });
+                if (error) throw error;
+                setLocalData('sk_orders_encrypted', orders);
+                return true;
+            } catch (e) {
+                console.warn('Supabase save failed:', e);
+                setLocalData('sk_orders_encrypted', orders);
+                return false;
+            }
         }
 
-        function getChildrenIds(parentId) {
-            const result = [];
-            const children = cachedCategories.filter(c => c.parent_id === parentId);
-            children.forEach(child => {
-                result.push(child.id);
-                result.push(...getChildrenIds(child.id));
-            });
-            return result;
+        // ===== REVIEWS =====
+        async function getReviews() {
+            try {
+                const { data, error } = await supabaseClient.from('reviews').select('*').order('date', { ascending: false });
+                if (error) throw error;
+                if (data) {
+                    const reviewsObject = {};
+                    data.forEach(review => {
+                        if (!reviewsObject[review.product_id]) reviewsObject[review.product_id] = [];
+                        reviewsObject[review.product_id].push({ name: review.user_name, rating: review.rating, comment: review.comment, date: review.date });
+                    });
+                    setLocalData('sk_reviews_encrypted', reviewsObject);
+                    return reviewsObject;
+                }
+            } catch (e) { console.warn('Supabase fetch failed:', e); }
+            return getLocalData('sk_reviews_encrypted', {});
         }
 
-        function getCategoryTree(categories, parentId = null, level = 0) {
-            const result = [];
-            const children = categories.filter(c => c.parent_id === parentId);
-            children.forEach(c => {
-                c.level = level;
-                result.push(c);
-                const subChildren = getCategoryTree(categories, c.id, level + 1);
-                result.push(...subChildren);
-            });
-            return result;
+        async function saveReviews(reviewsObject) {
+            try {
+                const reviewsArray = [];
+                for (const [productId, reviews] of Object.entries(reviewsObject)) {
+                    reviews.forEach(review => {
+                        reviewsArray.push({ product_id: parseInt(productId), user_name: review.name, rating: review.rating, comment: review.comment, date: review.date || new Date().toISOString() });
+                    });
+                }
+                if (reviewsArray.length > 0) {
+                    const { error } = await supabaseClient.from('reviews').insert(reviewsArray);
+                    if (error) throw error;
+                }
+                setLocalData('sk_reviews_encrypted', reviewsObject);
+                return true;
+            } catch (e) {
+                console.warn('Supabase save failed:', e);
+                setLocalData('sk_reviews_encrypted', reviewsObject);
+                return false;
+            }
         }
 
-        // ===== IMAGE UPLOAD =====
+        // ===== INQUIRIES =====
+        async function getInquiries() {
+            try {
+                const { data, error } = await supabaseClient.from('inquiries').select('*').order('date', { ascending: false });
+                if (error) throw error;
+                if (data) { setLocalData('sk_inquiries_encrypted', data); return data; }
+            } catch (e) { console.warn('Supabase fetch failed:', e); }
+            return getLocalData('sk_inquiries_encrypted', []);
+        }
+
+        async function saveInquiries(inquiries) {
+            try {
+                if (inquiries.length > 0) {
+                    const { error } = await supabaseClient.from('inquiries').insert(inquiries);
+                    if (error) throw error;
+                }
+                setLocalData('sk_inquiries_encrypted', inquiries);
+                return true;
+            } catch (e) {
+                console.warn('Supabase save failed:', e);
+                setLocalData('sk_inquiries_encrypted', inquiries);
+                return false;
+            }
+        }
+
+        // ===== WISHLIST =====
+        async function getWishlist(userId) {
+            if (!userId) return [];
+            try {
+                const { data, error } = await supabaseClient.from('wishlist').select('product_id').eq('user_id', userId);
+                if (error) throw error;
+                if (data) {
+                    const wishlist = data.map(item => item.product_id);
+                    localStorage.setItem('sk_wishlist', JSON.stringify(wishlist));
+                    return wishlist;
+                }
+            } catch (e) { console.warn('Supabase fetch failed:', e); }
+            return JSON.parse(localStorage.getItem('sk_wishlist')) || [];
+        }
+
+        async function saveWishlist(userId, wishlist) {
+            if (!userId) return;
+            try {
+                await supabaseClient.from('wishlist').delete().eq('user_id', userId);
+                if (wishlist.length > 0) {
+                    const items = wishlist.map(productId => ({ user_id: userId, product_id: productId }));
+                    const { error } = await supabaseClient.from('wishlist').insert(items);
+                    if (error) throw error;
+                }
+                localStorage.setItem('sk_wishlist', JSON.stringify(wishlist));
+                return true;
+            } catch (e) {
+                console.warn('Supabase save failed:', e);
+                localStorage.setItem('sk_wishlist', JSON.stringify(wishlist));
+                return false;
+            }
+        }
+
+        // ================================================================
+        // 3. IMAGE UPLOAD FUNCTIONS
+        // ================================================================
         function previewImage(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1597,9 +1459,18 @@
             }
         }
 
-        // ===== PRODUCT RENDERING =====
+        // ================================================================
+        // 4. CATEGORY FUNCTIONS
+        // ================================================================
+        function getCategoryNameById(id) {
+            const cat = cachedCategories.find(c => c.id === id);
+            return cat ? cat.name : 'Uncategorized';
+        }
+
+        // ================================================================
+        // 5. PRODUCT RENDERING
+        // ================================================================
         let filteredProducts = [];
-        let selectedCategoryId = null;
 
         function createProductCard(p) {
             const wishlist = JSON.parse(localStorage.getItem('sk_wishlist')) || [];
@@ -1647,27 +1518,10 @@
             filterProducts();
         }
 
-        function filterByCategory(categoryId) {
-            selectedCategoryId = categoryId;
-
-            const breadcrumb = document.getElementById('breadcrumb');
-            if (categoryId === null) {
-                breadcrumb.innerHTML = `<a onclick="filterByCategory(null)">🏠 All Products</a>`;
-            } else {
-                const cat = cachedCategories.find(c => c.id === categoryId);
-                if (cat) {
-                    const path = getCategoryPath(categoryId);
-                    breadcrumb.innerHTML = `<a onclick="filterByCategory(null)">🏠 All Products</a><span class="separator"> › </span><span class="current">${path}</span>`;
-                }
-            }
-
-            filterProducts();
-        }
-
         async function filterProducts() {
             const products = await getProducts();
             const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-            const categoryId = selectedCategoryId || document.getElementById('categoryFilter').value;
+            const category = document.getElementById('categoryFilter').value;
             const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
             const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
             const sort = document.getElementById('sortFilter').value;
@@ -1675,14 +1529,7 @@
             let filtered = products.filter(p => {
                 const catName = p.category_id ? getCategoryNameById(p.category_id) : p.category || '';
                 const matchSearch = p.name.toLowerCase().includes(searchTerm) || catName.toLowerCase().includes(searchTerm);
-
-                let matchCategory = true;
-                if (categoryId && categoryId !== 'all') {
-                    const catId = parseInt(categoryId);
-                    const allIds = [catId, ...getChildrenIds(catId)];
-                    matchCategory = allIds.includes(p.category_id);
-                }
-
+                const matchCategory = category === 'all' || catName === category;
                 const matchPrice = p.price >= minPrice && p.price <= maxPrice;
                 return matchSearch && matchCategory && matchPrice;
             });
@@ -1704,14 +1551,11 @@
             const container = document.getElementById('filterTags');
             const tags = [];
             const search = document.getElementById('searchInput').value.trim();
-            const categoryId = selectedCategoryId || document.getElementById('categoryFilter').value;
+            const category = document.getElementById('categoryFilter').value;
             const min = document.getElementById('minPrice').value;
             const max = document.getElementById('maxPrice').value;
             if (search) tags.push(`Search: "${search}"`);
-            if (categoryId && categoryId !== 'all') {
-                const catName = getCategoryNameById(parseInt(categoryId));
-                if (catName) tags.push(`Category: ${catName}`);
-            }
+            if (category !== 'all') tags.push(`Category: ${category}`);
             if (min) tags.push(`Min: £${min}`);
             if (max) tags.push(`Max: £${max}`);
             container.innerHTML = tags.map(t => `<span class="filter-tag">${t} <span class="remove" onclick="clearFilters()">×</span></span>`).join('');
@@ -1723,8 +1567,6 @@
             document.getElementById('minPrice').value = '';
             document.getElementById('maxPrice').value = '';
             document.getElementById('sortFilter').value = 'default';
-            selectedCategoryId = null;
-            document.getElementById('breadcrumb').innerHTML = `<a onclick="filterByCategory(null)">🏠 All Products</a>`;
             filterProducts();
         }
 
@@ -1754,7 +1596,9 @@
             }, 100);
         }
 
-        // ===== CART =====
+        // ================================================================
+        // 6. CART FUNCTIONS
+        // ================================================================
         function addToCart(productId) {
             if (event) event.stopPropagation();
             let cart = JSON.parse(localStorage.getItem('sk_cart')) || [];
@@ -1836,7 +1680,9 @@
             });
         }
 
-        // ===== WISHLIST =====
+        // ================================================================
+        // 7. WISHLIST
+        // ================================================================
         async function toggleWishlist(productId, event) {
             if (event) event.stopPropagation();
             const user = getCurrentUser();
@@ -1880,7 +1726,9 @@
             });
         }
 
-        // ===== REVIEWS =====
+        // ================================================================
+        // 8. REVIEWS
+        // ================================================================
         function openReviewModal(productId) {
             if (event) event.stopPropagation();
             document.getElementById('reviewProductId').value = productId;
@@ -1917,7 +1765,9 @@
             renderProducts();
         }
 
-        // ===== AUTH =====
+        // ================================================================
+        // 9. AUTHENTICATION
+        // ================================================================
         function openAuthModal() { document.getElementById('authModal').classList.add('active'); document.body.style.overflow = 'hidden'; switchAuthTab('login'); }
         function closeAuthModal() { document.getElementById('authModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
         function switchAuthTab(tab) {
@@ -2011,7 +1861,9 @@
             });
         }
 
-        // ===== CHECKOUT =====
+        // ================================================================
+        // 10. CHECKOUT
+        // ================================================================
         function toggleCardDetails() {
             const method = document.getElementById('paymentMethod').value;
             const cardDetails = document.getElementById('cardDetails');
@@ -2114,7 +1966,9 @@
             updateAddToCartButtons();
         }
 
-        // ===== CONTACT =====
+        // ================================================================
+        // 11. CONTACT FORM
+        // ================================================================
         async function submitContact(event) {
             event.preventDefault();
 
@@ -2148,7 +2002,9 @@
             document.getElementById('contactForm').reset();
         }
 
-        // ===== TRACKING =====
+        // ================================================================
+        // 12. ORDER TRACKING
+        // ================================================================
         function openTrackModal() { document.getElementById('trackOrderId').value = ''; document.getElementById('trackResult').classList.remove('show'); document.getElementById('trackModal').classList.add('active'); document.body.style.overflow = 'hidden'; }
         function closeTrackModal() { document.getElementById('trackModal').classList.remove('active'); document.body.style.overflow = 'auto'; }
 
@@ -2170,416 +2026,149 @@
         }
 
         // ================================================================
-        // 12. ADMIN FUNCTIONS (COMPLETE & RESTORED)
+        // 13. ADMIN
         // ================================================================
+        let adminChartInstance = null;
+        let allOrdersData = [];
+        let allUsersData = [];
+        let allInquiriesData = [];
+        let allMessagesData = [];
+        let allProductsData = [];
 
-        // ===== ADMIN LOGIN =====
         async function adminLogin() {
             const password = document.getElementById('adminPassword').value;
-            const hash = await sha256(password);
-            if (hash === getAdminPasswordHash()) {
+            const passwordHash = await sha256(password);
+            const storedHash = getAdminPasswordHash();
+            if (passwordHash === storedHash) {
                 localStorage.setItem('sk_admin_logged', 'true');
                 document.getElementById('adminLogin').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'block';
-                showToast('Welcome Admin!');
+                await loadCategories();
                 loadAdminDashboard();
+                showToast('Welcome Admin!');
+                document.getElementById('adminPassword').value = '';
             } else {
-                alert('Incorrect Password!');
+                alert('❌ Invalid password. Please try again.');
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminPassword').focus();
             }
         }
 
         function adminLogout() {
-            localStorage.removeItem('sk_admin_logged');
-            document.getElementById('adminDashboard').style.display = 'none';
+            localStorage.setItem('sk_admin_logged', 'false');
             document.getElementById('adminLogin').style.display = 'block';
-            showToast('Admin Logged Out');
+            document.getElementById('adminDashboard').style.display = 'none';
+            showToast('Logged out successfully');
         }
 
-        function openAdminChangePassword() {
-            const oldPass = prompt('Enter current password:');
-            if (!oldPass) return;
-            const newPass = prompt('Enter new password (min 6 chars):');
-            if (!newPass) return;
-            changeAdminPassword(oldPass, newPass).then(msg => showToast('✅ ' + msg)).catch(err => showToast('❌ ' + err.message));
-        }
-
-        // ===== ADMIN TABS =====
         function switchAdminTab(tabId) {
-            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.admin-tabs button').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.remove('active'));
             document.querySelector(`.admin-tabs button[data-tab="${tabId}"]`).classList.add('active');
-
-            if (tabId === 'tab-products') loadAdminProducts();
-            if (tabId === 'tab-orders') loadAdminOrders();
+            document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if (tabId === 'tab-dashboard') loadAdminDashboard();
+            if (tabId === 'tab-products') { loadCategories(); loadAdminProducts(); }
             if (tabId === 'tab-customers') loadAdminCustomers();
             if (tabId === 'tab-inquiries') loadAdminInquiries();
             if (tabId === 'tab-messages') loadAdminMessages();
         }
 
-        // ===== ADMIN DASHBOARD =====
-        async function loadAdminDashboard() {
-            try {
-                const orders = await getOrders();
-                document.getElementById('totalOrders').textContent = orders.length;
-                document.getElementById('totalRevenue').textContent = '£' + orders.reduce((s, o) => s + (o.total || 0), 0).toLocaleString();
-                document.getElementById('pendingOrders').textContent = orders.filter(o => o.status === 'pending').length;
-                document.getElementById('completedOrders').textContent = orders.filter(o => o.status === 'completed').length;
+        async function loadCategories() {
+            cachedCategories = await getCategories();
+            loadCategoryDropdown();
+        }
 
-                // Chart
-                const ctx = document.getElementById('adminChart').getContext('2d');
-                const days = 7;
-                const labels = [];
-                const data = [];
-                for (let i = days - 1; i >= 0; i--) {
-                    const d = new Date();
-                    d.setDate(d.getDate() - i);
-                    const dateStr = d.toISOString().split('T')[0];
-                    labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
-                    const dayRevenue = orders.filter(o => new Date(o.date).toISOString().split('T')[0] === dateStr).reduce((s, o) => s + (o.total || 0), 0);
-                    data.push(dayRevenue);
-                }
-                new Chart(ctx, {
-                    type: 'line',
-                    data: { labels: labels, datasets: [{ label: 'Revenue (£)', data: data, borderColor: '#d4af37', backgroundColor: 'rgba(212,175,55,0.2)', fill: true, tension: 0.3 }] },
-                    options: { responsive: true, maintainAspectRatio: false }
+        // ===== ADMIN: GLOBAL SEARCH =====
+        async function adminGlobalSearch() {
+            const searchTerm = document.getElementById('adminGlobalSearch').value.trim().toLowerCase();
+            if (!searchTerm) {
+                showToast('Please enter a search term');
+                return;
+            }
+
+            const [orders, users, inquiries, products] = await Promise.all([
+                getOrders(), getUsers(), getInquiries(), getProducts()
+            ]);
+
+            const filteredOrders = orders.filter(o =>
+                (o.id && o.id.toLowerCase().includes(searchTerm)) ||
+                (o.customer_name && o.customer_name.toLowerCase().includes(searchTerm)) ||
+                (o.customer_email && o.customer_email.toLowerCase().includes(searchTerm)) ||
+                (o.address && o.address.toLowerCase().includes(searchTerm))
+            );
+
+            const filteredUsers = users.filter(u =>
+                (u.name && u.name.toLowerCase().includes(searchTerm)) ||
+                (u.email && u.email.toLowerCase().includes(searchTerm))
+            );
+
+            const filteredInquiries = inquiries.filter(i =>
+                (i.customer_name && i.customer_name.toLowerCase().includes(searchTerm)) ||
+                (i.message && i.message.toLowerCase().includes(searchTerm))
+            );
+
+            const filteredProductsData = products.filter(p =>
+                (p.name && p.name.toLowerCase().includes(searchTerm)) ||
+                (p.category && p.category.toLowerCase().includes(searchTerm))
+            );
+
+            let resultHtml = `<div style="max-height:500px;overflow-y:auto;">`;
+
+            if (filteredOrders.length > 0) {
+                resultHtml += `<h4 style="color:var(--gold);margin-top:10px;">📦 Orders (${filteredOrders.length})</h4><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Order ID</th><th>Customer</th><th>Total</th><th>Status</th></tr></thead><tbody>`;
+                filteredOrders.slice(0, 10).forEach(o => {
+                    resultHtml += `<tr><td>${o.id}</td><td>${o.customer_name || 'N/A'}</td><td>£${(o.total || 0).toLocaleString()}</td><td><span class="status status-${o.status || 'pending'}">${o.status || 'pending'}</span></td></tr>`;
                 });
-            } catch(e) { console.warn(e); }
-        }
-
-        // ===== ADMIN PRODUCTS =====
-        async function loadAdminProducts() {
-            const products = await getProducts();
-            const tbody = document.getElementById('adminProductsTable');
-            tbody.innerHTML = '';
-            products.forEach(p => {
-                const catName = p.category_id ? getCategoryNameById(p.category_id) : p.category || 'Uncategorized';
-                tbody.innerHTML += `<tr>
-                    <td>${p.id}</td>
-                    <td>${p.name}</td>
-                    <td>${catName}</td>
-                    <td>£${p.price.toLocaleString()}</td>
-                    <td><div class="actions"><button class="edit-btn" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button><button class="delete-btn" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button></div></td>
-                    <td><button class="btn-danger small" onclick="deleteProduct(${p.id})">Delete</button></td>
-                </tr>`;
-            });
-        }
-
-        function toggleProductForm() {
-            const form = document.getElementById('productForm');
-            form.classList.toggle('show');
-            if (!form.classList.contains('show')) {
-                document.getElementById('productFormTitle').textContent = 'Add New Product';
-                document.getElementById('editProductId').value = '';
-                document.getElementById('prodName').value = '';
-                document.getElementById('prodPrice').value = '';
-                document.getElementById('prodOldPrice').value = '';
-                document.getElementById('prodDesc').value = '';
-                document.getElementById('prodImage').value = '';
-            }
-        }
-
-        async function editProduct(id) {
-            const products = await getProducts();
-            const p = products.find(x => x.id === id);
-            if (!p) return;
-            document.getElementById('productForm').classList.add('show');
-            document.getElementById('productFormTitle').textContent = 'Edit Product';
-            document.getElementById('editProductId').value = p.id;
-            document.getElementById('prodName').value = p.name;
-            document.getElementById('prodPrice').value = p.price;
-            document.getElementById('prodOldPrice').value = p.old_price || '';
-            document.getElementById('prodDesc').value = p.description || '';
-            document.getElementById('prodImage').value = p.image || '';
-            document.getElementById('prodCategory').value = p.category_id || '';
-            document.getElementById('imagePreview').classList.add('show');
-            document.getElementById('previewImg').src = p.image;
-        }
-
-        async function saveProduct() {
-            const name = document.getElementById('prodName').value;
-            const price = parseFloat(document.getElementById('prodPrice').value);
-            const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
-            const desc = document.getElementById('prodDesc').value;
-            const catId = document.getElementById('prodCategory').value;
-            let image = document.getElementById('prodImage').value;
-
-            if (!name || !price || !catId) { alert('Please fill all required fields.'); return; }
-
-            const fileInput = document.getElementById('prodImageFile');
-            if (fileInput.files.length > 0) {
-                image = await uploadImage(fileInput.files[0]);
+                if (filteredOrders.length > 10) resultHtml += `<tr><td colspan="4" style="text-align:center;color:var(--gray);">+${filteredOrders.length - 10} more orders</td></tr>`;
+                resultHtml += `</tbody></table></div>`;
             }
 
-            const editId = document.getElementById('editProductId').value;
-            const products = await getProducts();
-
-            if (editId) {
-                const index = products.findIndex(p => p.id === parseInt(editId));
-                if (index > -1) {
-                    products[index] = { ...products[index], name, price, old_price: oldPrice, description: desc, category_id: catId, image: image || products[index].image };
-                }
-            } else {
-                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-                products.push({ id: newId, name, price, old_price: oldPrice, description: desc, category_id: catId, image: image });
-            }
-
-            await saveProducts(products);
-            toggleProductForm();
-            loadAdminProducts();
-            showToast('Product Saved!');
-        }
-
-        async function deleteProduct(id) {
-            if (!confirm('Are you sure you want to delete this product?')) return;
-            let products = await getProducts();
-            products = products.filter(p => p.id !== id);
-            await saveProducts(products);
-            loadAdminProducts();
-            showToast('Product Deleted');
-        }
-
-        async function clearAllProducts() {
-            if (!confirm('Are you sure you want to clear ALL products? This cannot be undone!')) return;
-            await saveProducts([]);
-            loadAdminProducts();
-            showToast('All Products Cleared');
-        }
-
-        function exportProductsCSV() {
-            getProducts().then(products => {
-                let csv = 'ID,Name,Category,Price,Old Price,Image\n';
-                products.forEach(p => {
-                    const catName = p.category_id ? getCategoryNameById(p.category_id) : p.category || '';
-                    csv += `${p.id},"${p.name.replace(/"/g, '""')}","${catName}",${p.price},${p.old_price || ''},"${p.image}"\n`;
+            if (filteredUsers.length > 0) {
+                resultHtml += `<h4 style="color:var(--gold);margin-top:10px;">👤 Customers (${filteredUsers.length})</h4><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Name</th><th>Email</th></tr></thead><tbody>`;
+                filteredUsers.slice(0, 10).forEach(u => {
+                    resultHtml += `<tr><td>${u.name}</td><td>${u.email}</td></tr>`;
                 });
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url; a.download = 'products.csv'; a.click();
-            });
-        }
-
-        // ===== ADMIN ORDERS =====
-        async function loadAdminOrders() {
-            const orders = await getOrders();
-            const tbody = document.getElementById('ordersTableBody');
-            const noOrders = document.getElementById('noOrders');
-            tbody.innerHTML = '';
-            if (orders.length === 0) { noOrders.style.display = 'block'; return; }
-            noOrders.style.display = 'none';
-            orders.forEach(order => {
-                const itemsList = order.items ? order.items.map(item => `${item.name} x${item.qty}`).join(', ') : '';
-                const statusClass = order.status || 'pending';
-                tbody.innerHTML += `<tr>
-                    <td>${order.id}</td>
-                    <td>${order.customer_name}</td>
-                    <td>${itemsList}</td>
-                    <td>£${(order.total || 0).toLocaleString()}</td>
-                    <td>${new Date(order.date).toLocaleDateString()}</td>
-                    <td><span class="status ${statusClass}">${order.status || 'pending'}</span></td>
-                    <td><div class="actions"><button class="edit-btn" onclick="updateOrderStatus('${order.id}')">Status</button></div></td>
-                    <td><button class="btn-danger small" onclick="deleteOrder('${order.id}')">Delete</button></td>
-                </tr>`;
-            });
-        }
-
-        async function updateOrderStatus(orderId) {
-            const newStatus = prompt('Enter new status (pending, completed, cancelled):');
-            if (!newStatus) return;
-            const orders = await getOrders();
-            const order = orders.find(o => o.id === orderId);
-            if (order) {
-                order.status = newStatus;
-                await saveOrders(orders);
-                loadAdminOrders();
-                showToast('Order Status Updated');
+                if (filteredUsers.length > 10) resultHtml += `<tr><td colspan="2" style="text-align:center;color:var(--gray);">+${filteredUsers.length - 10} more customers</td></tr>`;
+                resultHtml += `</tbody></table></div>`;
             }
-        }
 
-        async function deleteOrder(orderId) {
-            if (!confirm('Delete this order?')) return;
-            let orders = await getOrders();
-            orders = orders.filter(o => o.id !== orderId);
-            await saveOrders(orders);
-            loadAdminOrders();
-            showToast('Order Deleted');
-        }
-
-        async function clearAllOrders() {
-            if (!confirm('Clear ALL order history?')) return;
-            await saveOrders([]);
-            loadAdminOrders();
-            showToast('Order History Cleared');
-        }
-
-        function exportOrdersCSV() {
-            getOrders().then(orders => {
-                let csv = 'Order ID,Customer,Items,Total,Date,Status\n';
-                orders.forEach(order => {
-                    const itemsList = order.items ? order.items.map(item => `${item.name} x${item.qty}`).join(', ') : '';
-                    csv += `${order.id},"${order.customer_name}","${itemsList}",${order.total},${order.date},${order.status}\n`;
+            if (filteredInquiries.length > 0) {
+                resultHtml += `<h4 style="color:var(--gold);margin-top:10px;">🔍 Product Inquiries (${filteredInquiries.length})</h4><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Customer</th><th>Inquiry</th></tr></thead><tbody>`;
+                filteredInquiries.slice(0, 10).forEach(i => {
+                    resultHtml += `<tr><td>${i.customer_name || 'Guest'}</td><td>${(i.message || '').substring(0, 50)}${(i.message || '').length > 50 ? '...' : ''}</td></tr>`;
                 });
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url; a.download = 'orders.csv'; a.click();
-            });
-        }
+                if (filteredInquiries.length > 10) resultHtml += `<tr><td colspan="2" style="text-align:center;color:var(--gray);">+${filteredInquiries.length - 10} more inquiries</td></tr>`;
+                resultHtml += `</tbody></table></div>`;
+            }
 
-        // ===== ADMIN CUSTOMERS =====
-        async function loadAdminCustomers() {
-            const customers = await getCustomers();
-            const tbody = document.getElementById('adminCustomersTable');
-            tbody.innerHTML = '';
-            customers.forEach(cust => {
-                tbody.innerHTML += `<tr>
-                    <td>${cust.id}</td>
-                    <td>${cust.name}</td>
-                    <td>${cust.email}</td>
-                    <td>${new Date(cust.created_at || Date.now()).toLocaleDateString()}</td>
-                    <td>${cust.orders_count || 0}</td>
-                    <td><button class="btn-danger small" onclick="deleteCustomer('${cust.id}')">Delete</button></td>
-                </tr>`;
-            });
-        }
+            if (filteredProductsData.length > 0) {
+                resultHtml += `<h4 style="color:var(--gold);margin-top:10px;">📦 Products (${filteredProductsData.length})</h4><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Name</th><th>Category</th><th>Price</th></tr></thead><tbody>`;
+                filteredProductsData.slice(0, 10).forEach(p => {
+                    resultHtml += `<tr><td>${p.name}</td><td>${p.category}</td><td>£${p.price.toLocaleString()}</td></tr>`;
+                });
+                if (filteredProductsData.length > 10) resultHtml += `<tr><td colspan="3" style="text-align:center;color:var(--gray);">+${filteredProductsData.length - 10} more products</td></tr>`;
+                resultHtml += `</tbody></table></div>`;
+            }
 
-        async function deleteCustomer(customerId) {
-            if (!confirm('Delete this customer?')) return;
-            await supabaseClient.from('users').delete().eq('id', customerId);
-            loadAdminCustomers();
-            showToast('Customer Deleted');
-        }
+            if (filteredOrders.length === 0 && filteredUsers.length === 0 && filteredInquiries.length === 0 && filteredProductsData.length === 0) {
+                resultHtml += `<p style="text-align:center;color:var(--gray);padding:30px;">No results found for "${searchTerm}"</p>`;
+            }
 
-        async function clearAllCustomers() {
-            if (!confirm('Clear ALL customers?')) return;
-            await supabaseClient.from('users').delete().neq('id', '0');
-            loadAdminCustomers();
-            showToast('All Customers Cleared');
-        }
+            resultHtml += `</div>`;
 
-        function exportCustomersCSV() {
-            getCustomers().then(customers => {
-                let csv = 'ID,Name,Email\n';
-                customers.forEach(cust => csv += `${cust.id},"${cust.name}","${cust.email}"\n`);
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url; a.download = 'customers.csv'; a.click();
-            });
-        }
-
-        // ===== ADMIN INQUIRIES =====
-        async function loadAdminInquiries() {
-            const inquiries = await getInquiries();
-            const tbody = document.getElementById('inquiriesTableBody');
-            const noInquiries = document.getElementById('noInquiries');
-            tbody.innerHTML = '';
-            if (inquiries.length === 0) { noInquiries.style.display = 'block'; return; }
-            noInquiries.style.display = 'none';
-            inquiries.forEach((inq, index) => {
-                tbody.innerHTML += `<tr>
-                    <td>${index + 1}</td>
-                    <td>${new Date(inq.date).toLocaleDateString()}</td>
-                    <td>${inq.customer_name}</td>
-                    <td>${inq.message}</td>
-                    <td><button class="btn-danger small" onclick="deleteInquiry('${inq.id}')">Delete</button></td>
-                </tr>`;
-            });
-        }
-
-        async function deleteInquiry(inqId) {
-            if (!confirm('Delete this inquiry?')) return;
-            let inquiries = await getInquiries();
-            inquiries = inquiries.filter(i => i.id !== inqId);
-            await saveInquiries(inquiries);
-            loadAdminInquiries();
-            showToast('Inquiry Deleted');
-        }
-
-        async function clearAllInquiries() {
-            if (!confirm('Clear ALL inquiries?')) return;
-            await saveInquiries([]);
-            loadAdminInquiries();
-            showToast('Inquiries Cleared');
-        }
-
-        function exportInquiriesCSV() {
-            getInquiries().then(inquiries => {
-                let csv = 'Date,Customer,Inquiry\n';
-                inquiries.forEach(inq => csv += `${inq.date},"${inq.customer_name}","${inq.message}"\n`);
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url; a.download = 'inquiries.csv'; a.click();
-            });
-        }
-
-        // ===== ADMIN MESSAGES =====
-        async function loadAdminMessages() {
-            const messages = await getMessages();
-            const tbody = document.getElementById('messagesTableBody');
-            const noMessages = document.getElementById('noMessages');
-            tbody.innerHTML = '';
-            if (messages.length === 0) { noMessages.style.display = 'block'; return; }
-            noMessages.style.display = 'none';
-            messages.forEach((msg, index) => {
-                tbody.innerHTML += `<tr>
-                    <td>${index + 1}</td>
-                    <td>${new Date(msg.date).toLocaleDateString()}</td>
-                    <td>${msg.customer_name}</td>
-                    <td>${msg.customer_email}</td>
-                    <td>${msg.customer_phone || ''}</td>
-                    <td>${msg.message}</td>
-                    <td><button class="btn-danger small" onclick="deleteMessage('${msg.id}')">Delete</button></td>
-                </tr>`;
-            });
-        }
-
-        async function deleteMessage(msgId) {
-            if (!confirm('Delete this message?')) return;
-            let messages = await getMessages();
-            messages = messages.filter(m => m.id !== msgId);
-            await saveMessages(messages);
-            loadAdminMessages();
-            showToast('Message Deleted');
-        }
-
-        async function clearAllMessages() {
-            if (!confirm('Clear ALL messages?')) return;
-            await saveMessages([]);
-            loadAdminMessages();
-            showToast('Messages Cleared');
-        }
-
-        function exportMessagesCSV() {
-            getMessages().then(messages => {
-                let csv = 'Date,Name,Email,Phone,Message\n';
-                messages.forEach(msg => csv += `${msg.date},"${msg.customer_name}","${msg.customer_email}","${msg.customer_phone}","${msg.message}"\n`);
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url; a.download = 'messages.csv'; a.click();
-            });
-        }
-
-        // ===== ADMIN GLOBAL SEARCH =====
-        function adminGlobalSearch() {
-            const query = document.getElementById('adminGlobalSearch').value.toLowerCase();
-            if (!query) { alert('Please enter a search term.'); return; }
-
-            // Search across products
-            getProducts().then(products => {
-                const filtered = products.filter(p => p.name.toLowerCase().includes(query) || (p.category || '').toLowerCase().includes(query));
-                if (filtered.length > 0) {
-                    const tbody = document.getElementById('adminProductsTable');
-                    tbody.innerHTML = '';
-                    filtered.forEach(p => tbody.innerHTML += `<tr><td>${p.id}</td><td>${p.name}</td><td>${p.category}</td><td>£${p.price}</td><td></td><td></td></tr>`);
-                    switchAdminTab('tab-products');
-                } else {
-                    alert('No products found matching "' + query + '"');
-                }
-            });
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content xlarge" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-search"></i> Search Results: "${searchTerm}"</h3>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    ${resultHtml}
+                </div>
+            `;
+            document.body.appendChild(modal);
         }
 
         function clearAdminSearch() {
@@ -2587,123 +2176,884 @@
             showToast('Search cleared');
         }
 
-        // ===== DATA HELPER FUNCTIONS (for Admin) =====
-        async function getOrders() {
-            try {
-                const { data, error } = await supabaseClient.from('orders').select('*').order('date', { ascending: false });
-                if (error) throw error;
-                return data || [];
-            } catch (e) {
-                console.warn('Error fetching orders:', e);
-                return getLocalData('sk_orders', []);
+        // ===== ADMIN: DASHBOARD =====
+        async function loadAdminDashboard() {
+            const orders = await getOrders();
+            allOrdersData = orders;
+            renderDashboardData(orders);
+
+            const tbody = document.getElementById('ordersTableBody');
+            const noOrders = document.getElementById('noOrders');
+            if (orders.length === 0) { tbody.innerHTML = ''; noOrders.style.display = 'block'; }
+            else {
+                noOrders.style.display = 'none';
+                let html = '';
+                orders.forEach(order => {
+                    const itemsList = order.items ? order.items.map(item => `${item.name} x${item.qty}`).join(', ') : '';
+                    html += `<tr>
+                        <td><strong>${order.id}</strong></td>
+                        <td>${order.customer_name || 'N/A'}<br/><small style="color:var(--gray);">${order.customer_email || ''}</small></td>
+                        <td>${itemsList}</td>
+                        <td><strong>£${(order.total || 0).toLocaleString()}</strong></td>
+                        <td>${new Date(order.date).toLocaleDateString()}</td>
+                        <td><span class="status status-${order.status || 'pending'}">${order.status || 'pending'}</span></td>
+                        <td><select onchange="updateOrderStatus('${order.id}', this.value)" style="padding:6px;border-radius:6px;border:1px solid #ddd;font-size:13px;">
+                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
+                            <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select></td>
+                        <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteOrder('${order.id}')"><i class="fas fa-trash"></i></button></td>
+                    </tr>`;
+                });
+                tbody.innerHTML = html;
             }
+            updateAdminChart(orders);
         }
 
-        async function saveOrders(orders) {
-            try {
-                const { error } = await supabaseClient.from('orders').upsert(orders);
-                if (error) throw error;
-                setLocalData('sk_orders', orders);
-            } catch (e) {
-                setLocalData('sk_orders', orders);
-            }
+        function updateAdminChart(orders) {
+            const ctx = document.getElementById('adminChart').getContext('2d');
+            if (adminChartInstance) adminChartInstance.destroy();
+            const dateMap = {};
+            orders.forEach(o => {
+                const date = new Date(o.date).toLocaleDateString();
+                if (!dateMap[date]) dateMap[date] = { total: 0, count: 0 };
+                dateMap[date].total += o.total || 0;
+                dateMap[date].count++;
+            });
+            const labels = Object.keys(dateMap).slice(-7);
+            const data = labels.map(d => dateMap[d].total);
+            adminChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: { labels: labels.length ? labels : ['No Data'], datasets: [{ label: 'Daily Revenue (£)', data: labels.length ? data : [0], backgroundColor: 'rgba(212,175,55,0.6)', borderColor: 'var(--gold)', borderWidth: 2, borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: true, labels: { color: 'var(--primary)' } } }, scales: { y: { beginAtZero: true, ticks: { callback: v => '£' + v } } } }
+            });
         }
 
-        async function getCustomers() {
-            try {
-                const { data, error } = await supabaseClient.from('users').select('*');
-                if (error) throw error;
-                return data || [];
-            } catch (e) {
-                console.warn('Error fetching customers:', e);
-                return getLocalData('sk_users', []);
-            }
+        function filterDashboardByDate() {
+            const from = document.getElementById('dashFromDate').value;
+            const to = document.getElementById('dashToDate').value;
+            if (!from || !to) { alert('Please select both dates.'); return; }
+            const filtered = allOrdersData.filter(o => {
+                const d = new Date(o.date);
+                return d >= new Date(from) && d <= new Date(to);
+            });
+            renderDashboardData(filtered);
         }
 
-        async function getInquiries() {
-            try {
-                const { data, error } = await supabaseClient.from('inquiries').select('*').order('date', { ascending: false });
-                if (error) throw error;
-                return data || [];
-            } catch (e) {
-                console.warn('Error fetching inquiries:', e);
-                return getLocalData('sk_inquiries', []);
-            }
+        function resetDashboardDate() {
+            document.getElementById('dashFromDate').value = '';
+            document.getElementById('dashToDate').value = '';
+            renderDashboardData(allOrdersData);
         }
 
-        async function saveInquiries(inquiries) {
-            try {
-                const { error } = await supabaseClient.from('inquiries').insert(inquiries);
-                if (error) throw error;
-                setLocalData('sk_inquiries', inquiries);
-            } catch (e) {
-                setLocalData('sk_inquiries', inquiries);
-            }
+        function renderDashboardData(orders) {
+            const totalOrders = orders.length;
+            const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+            const pending = orders.filter(o => o.status === 'pending').length;
+            const completed = orders.filter(o => o.status === 'completed').length;
+
+            document.getElementById('totalOrders').textContent = totalOrders;
+            document.getElementById('totalRevenue').textContent = '£' + totalRevenue.toLocaleString();
+            document.getElementById('pendingOrders').textContent = pending;
+            document.getElementById('completedOrders').textContent = completed;
+
+            updateAdminChart(orders);
         }
 
-        async function getMessages() {
-            try {
-                const { data, error } = await supabaseClient.from('inquiries').select('*').eq('type', 'contact').order('date', { ascending: false });
-                if (error) throw error;
-                return data || [];
-            } catch (e) {
-                console.warn('Error fetching messages:', e);
-                return getLocalData('sk_messages', []);
-            }
+        // ===== ORDERS FILTER =====
+        function filterOrdersByDate() {
+            const from = document.getElementById('ordersFromDate').value;
+            const to = document.getElementById('ordersToDate').value;
+            if (!from || !to) { alert('Please select both dates.'); return; }
+            const filtered = allOrdersData.filter(o => {
+                const d = new Date(o.date);
+                return d >= new Date(from) && d <= new Date(to);
+            });
+            renderOrdersData(filtered);
         }
 
-        async function saveMessages(messages) {
-            try {
-                const { error } = await supabaseClient.from('messages').upsert(messages);
-                if (error) throw error;
-                setLocalData('sk_messages', messages);
-            } catch (e) {
-                setLocalData('sk_messages', messages);
-            }
+        function resetOrdersDate() {
+            document.getElementById('ordersFromDate').value = '';
+            document.getElementById('ordersToDate').value = '';
+            renderOrdersData(allOrdersData);
         }
 
-        async function getReviews() {
-            try {
-                const { data, error } = await supabaseClient.from('reviews').select('*');
-                if (error) throw error;
-                if (data && data.length > 0) {
-                    const grouped = {};
-                    data.forEach(r => {
-                        if (!grouped[r.product_id]) grouped[r.product_id] = [];
-                        grouped[r.product_id].push(r);
-                    });
-                    setLocalData('sk_reviews_encrypted', grouped);
-                    return grouped;
+        function renderOrdersData(orders) {
+            const tbody = document.getElementById('ordersTableBody');
+            const noOrders = document.getElementById('noOrders');
+            if (orders.length === 0) { tbody.innerHTML = ''; noOrders.style.display = 'block'; return; }
+            noOrders.style.display = 'none';
+            let html = '';
+            orders.forEach(order => {
+                const itemsList = order.items ? order.items.map(item => `${item.name} x${item.qty}`).join(', ') : '';
+                html += `<tr>
+                    <td><strong>${order.id}</strong></td>
+                    <td>${order.customer_name || 'N/A'}<br/><small style="color:var(--gray);">${order.customer_email || ''}</small></td>
+                    <td>${itemsList}</td>
+                    <td><strong>£${(order.total || 0).toLocaleString()}</strong></td>
+                    <td>${new Date(order.date).toLocaleDateString()}</td>
+                    <td><span class="status status-${order.status || 'pending'}">${order.status || 'pending'}</span></td>
+                    <td><select onchange="updateOrderStatus('${order.id}', this.value)" style="padding:6px;border-radius:6px;border:1px solid #ddd;font-size:13px;">
+                        <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
+                        <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                    </select></td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteOrder('${order.id}')"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        async function updateOrderStatus(orderId, newStatus) {
+            const { error } = await supabaseClient.from('orders').update({ status: newStatus }).eq('id', orderId);
+            if (error) { alert('Status update nahi hua: ' + error.message); return; }
+            loadAdminDashboard();
+            showToast('Order status updated to ' + newStatus);
+        }
+
+        // ================================================================
+        // 14. ADMIN: PRODUCTS (WITH CATEGORY DROPDOWN)
+        // ================================================================
+        async function loadAdminProducts() {
+            const products = await getProducts();
+            allProductsData = products;
+            const tbody = document.getElementById('adminProductsTable');
+            if (products.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray);">No products yet.</td></tr>'; return; }
+            let html = '';
+            products.forEach(p => {
+                const catName = p.category_id ? getCategoryNameById(p.category_id) : p.category || 'Uncategorized';
+                html += `<tr>
+                    <td>${p.id}</td>
+                    <td>${p.name}</td>
+                    <td>${catName}</td>
+                    <td>£${p.price.toLocaleString()}</td>
+                    <td><div class="actions"><button class="edit-btn" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button></div></td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteProduct(${p.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function toggleProductForm(data) {
+            const form = document.getElementById('productForm');
+            form.classList.toggle('show');
+            if (!form.classList.contains('show')) {
+                document.getElementById('editProductId').value = '';
+                document.getElementById('prodName').value = '';
+                document.getElementById('prodCategory').value = '';
+                document.getElementById('prodPrice').value = '';
+                document.getElementById('prodOldPrice').value = '';
+                document.getElementById('prodImage').value = '';
+                document.getElementById('prodDesc').value = '';
+                document.getElementById('prodImageFile').value = '';
+                document.getElementById('imagePreview').classList.remove('show');
+                document.getElementById('productFormTitle').textContent = 'Add New Product';
+                loadCategoryDropdown();
+            }
+            if (data) {
+                document.getElementById('editProductId').value = data.id;
+                document.getElementById('prodName').value = data.name;
+                document.getElementById('prodCategory').value = data.category_id || data.category || '';
+                document.getElementById('prodPrice').value = data.price;
+                document.getElementById('prodOldPrice').value = data.old_price || '';
+                document.getElementById('prodImage').value = data.image;
+                document.getElementById('prodDesc').value = data.description || '';
+                document.getElementById('productFormTitle').textContent = 'Edit Product';
+                loadCategoryDropdown();
+                if (data.image) {
+                    const preview = document.getElementById('imagePreview');
+                    const img = document.getElementById('previewImg');
+                    img.src = data.image;
+                    preview.classList.add('show');
                 }
-            } catch (e) {}
-            return getLocalData('sk_reviews_encrypted', {});
-        }
-
-        async function saveReviews(reviews) {
-            setLocalData('sk_reviews_encrypted', reviews);
-        }
-
-        async function getWishlist(userId) {
-            try {
-                const { data, error } = await supabaseClient.from('wishlists').select('product_id').eq('user_id', userId);
-                if (error) throw error;
-                return (data || []).map(w => w.product_id);
-            } catch (e) {
-                return getLocalData('sk_wishlist', []);
             }
         }
 
-        async function saveWishlist(userId, productIds) {
-            try {
-                const { error } = await supabaseClient.from('wishlists').upsert(productIds.map(pid => ({ user_id: userId, product_id: pid })));
-                if (error) throw error;
-                setLocalData('sk_wishlist', productIds);
-            } catch (e) {
-                setLocalData('sk_wishlist', productIds);
+        function editProduct(id) {
+            getProducts().then(products => {
+                const product = products.find(p => p.id === id);
+                if (product) {
+                    const form = document.getElementById('productForm');
+                    form.classList.add('show');
+                    document.getElementById('editProductId').value = product.id;
+                    document.getElementById('prodName').value = product.name;
+                    document.getElementById('prodCategory').value = product.category_id || product.category || '';
+                    document.getElementById('prodPrice').value = product.price;
+                    document.getElementById('prodOldPrice').value = product.old_price || '';
+                    document.getElementById('prodImage').value = product.image;
+                    document.getElementById('prodDesc').value = product.description || '';
+                    document.getElementById('productFormTitle').textContent = 'Edit Product';
+                    loadCategoryDropdown();
+                    if (product.image) {
+                        const preview = document.getElementById('imagePreview');
+                        const img = document.getElementById('previewImg');
+                        img.src = product.image;
+                        preview.classList.add('show');
+                    }
+                    form.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+
+        // ===== SAVE PRODUCT (FIXED) =====
+     async function saveProduct() {
+    const id = document.getElementById('editProductId').value;
+    const name = document.getElementById('prodName').value.trim();
+    const categoryId = document.getElementById('prodCategory').value;
+    const categoryName = document.getElementById('prodCategory').selectedOptions[0]?.text || '';
+    const price = parseFloat(document.getElementById('prodPrice').value);
+    const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
+    const description = document.getElementById('prodDesc').value.trim();
+
+    const fileInput = document.getElementById('prodImageFile');
+    const existingImage = document.getElementById('prodImage').value;
+    let imageUrl = existingImage;
+
+    if (fileInput.files && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const uploadedUrl = await uploadImage(file);
+        if (uploadedUrl) {
+            imageUrl = uploadedUrl;
+        } else {
+            alert('Image upload failed. Please try again.');
+            return;
+        }
+    }
+
+    if (!name) { alert('Please enter Product Name.'); return; }
+    if (!price || isNaN(price)) { alert('Please enter a valid Price.'); return; }
+    if (!imageUrl) { alert('Please select an Image.'); return; }
+    if (!categoryId || categoryId === '' || categoryId === '-- Select Category --') {
+        alert('Please select a Category.');
+        return;
+    }
+
+    console.log('Saving product:', { name, categoryName, categoryId, price, oldPrice, imageUrl, description });
+
+    try {
+        let products = await getProducts();
+
+        if (id) {
+            const index = products.findIndex(p => p.id === parseInt(id));
+            if (index > -1) {
+                products[index] = {
+                    ...products[index],
+                    name,
+                    category: categoryName,
+                    category_id: parseInt(categoryId),
+                    price,
+                    old_price: oldPrice,
+                    image: imageUrl,
+                    description
+                };
+            }
+            showToast('Product updated!');
+        } else {
+            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+            const newProduct = {
+                id: newId,
+                name,
+                category: categoryName,
+                category_id: parseInt(categoryId),
+                price,
+                old_price: oldPrice,
+                image: imageUrl,
+                description
+            };
+            products.push(newProduct);
+            console.log('New product:', newProduct);
+            showToast('Product added!');
+        }
+
+        const result = await saveProducts(products);
+        console.log('Save result:', result);
+
+        if (result) {
+            toggleProductForm();
+            loadAdminProducts();
+            renderProducts();
+            filterProducts();
+            showToast('✅ Product saved successfully!');
+        } else {
+            alert('❌ Product save failed. Please check console for errors.');
+        }
+    } catch (error) {
+        console.error('Error saving product:', error);
+        alert('❌ Error: ' + error.message);
+    }
+}
+
+        // ================================================================
+        // 15. ADMIN: CUSTOMERS
+        // ================================================================
+        async function loadAdminCustomers() {
+            const users = await getUsers();
+            allUsersData = users;
+            const orders = await getOrders();
+            const tbody = document.getElementById('adminCustomersTable');
+            if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray);">No registered customers.</td></tr>'; return; }
+            let html = '';
+            users.forEach(u => {
+                const orderCount = orders.filter(o => o.customer_email === u.email).length;
+                html += `<tr>
+                    <td>${u.id}</td>
+                    <td>${u.name}</td>
+                    <td>${u.email}</td>
+                    <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                    <td>${orderCount}</td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteCustomer('${u.id}')"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function filterCustomersByDate() {
+            const from = document.getElementById('custFromDate').value;
+            const to = document.getElementById('custToDate').value;
+            if (!from || !to) { alert('Please select both dates.'); return; }
+            const filtered = allUsersData.filter(u => {
+                const d = new Date(u.created_at);
+                return d >= new Date(from) && d <= new Date(to);
+            });
+            renderCustomersData(filtered);
+        }
+
+        function resetCustomersDate() {
+            document.getElementById('custFromDate').value = '';
+            document.getElementById('custToDate').value = '';
+            renderCustomersData(allUsersData);
+        }
+
+        function renderCustomersData(users) {
+            const orders = getOrders();
+            const tbody = document.getElementById('adminCustomersTable');
+            if (users.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--gray);">No registered customers.</td></tr>'; return; }
+            let html = '';
+            users.forEach(u => {
+                const orderCount = orders.filter(o => o.customer_email === u.email).length;
+                html += `<tr>
+                    <td>${u.id}</td>
+                    <td>${u.name}</td>
+                    <td>${u.email}</td>
+                    <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                    <td>${orderCount}</td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteCustomer('${u.id}')"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // ================================================================
+        // 16. ADMIN: INQUIRIES
+        // ================================================================
+        async function loadAdminInquiries() {
+            const inquiries = await getInquiries();
+            const searchQueries = inquiries.filter(i =>
+                i.customer_email === 'guest@email.com' ||
+                (i.message && i.message.includes('Search Query:'))
+            );
+            allInquiriesData = searchQueries;
+            const tbody = document.getElementById('inquiriesTableBody');
+            const noInquiries = document.getElementById('noInquiries');
+            if (searchQueries.length === 0) { tbody.innerHTML = ''; noInquiries.style.display = 'block'; return; }
+            noInquiries.style.display = 'none';
+            let html = '';
+            searchQueries.forEach((inq, idx) => {
+                html += `<tr>
+                    <td>${idx + 1}</td>
+                    <td>${new Date(inq.date).toLocaleString()}</td>
+                    <td>${inq.customer_name || 'Guest'}</td>
+                    <td>${inq.message || ''}</td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteInquiry(${inq.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function filterInquiriesByDate() {
+            const from = document.getElementById('inqFromDate').value;
+            const to = document.getElementById('inqToDate').value;
+            if (!from || !to) { alert('Please select both dates.'); return; }
+            const filtered = allInquiriesData.filter(inq => {
+                const d = new Date(inq.date);
+                return d >= new Date(from) && d <= new Date(to);
+            });
+            renderInquiriesData(filtered);
+        }
+
+        function resetInquiriesDate() {
+            document.getElementById('inqFromDate').value = '';
+            document.getElementById('inqToDate').value = '';
+            renderInquiriesData(allInquiriesData);
+        }
+
+        function renderInquiriesData(inquiries) {
+            const tbody = document.getElementById('inquiriesTableBody');
+            const noInquiries = document.getElementById('noInquiries');
+            if (inquiries.length === 0) { tbody.innerHTML = ''; noInquiries.style.display = 'block'; return; }
+            noInquiries.style.display = 'none';
+            let html = '';
+            inquiries.forEach((inq, idx) => {
+                html += `<tr>
+                    <td>${idx + 1}</td>
+                    <td>${new Date(inq.date).toLocaleString()}</td>
+                    <td>${inq.customer_name || 'Guest'}</td>
+                    <td>${inq.message || ''}</td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteInquiry(${inq.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // ================================================================
+        // 17. ADMIN: MESSAGES
+        // ================================================================
+        async function loadAdminMessages() {
+            const inquiries = await getInquiries();
+            const messages = inquiries.filter(i =>
+                i.customer_email &&
+                i.customer_email !== 'guest@email.com' &&
+                i.customer_email !== ''
+            );
+            allMessagesData = messages;
+            const tbody = document.getElementById('messagesTableBody');
+            const noMessages = document.getElementById('noMessages');
+            if (messages.length === 0) { tbody.innerHTML = ''; noMessages.style.display = 'block'; return; }
+            noMessages.style.display = 'none';
+            let html = '';
+            messages.forEach((msg, idx) => {
+                html += `<tr>
+                    <td>${idx + 1}</td>
+                    <td>${new Date(msg.date).toLocaleString()}</td>
+                    <td>${msg.customer_name || 'N/A'}</td>
+                    <td>${msg.customer_email || 'N/A'}</td>
+                    <td>${msg.customer_phone || 'N/A'}</td>
+                    <td>${msg.message || ''}</td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteMessage(${msg.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function filterMessagesByDate() {
+            const from = document.getElementById('msgFromDate').value;
+            const to = document.getElementById('msgToDate').value;
+            if (!from || !to) { alert('Please select both dates.'); return; }
+            const filtered = allMessagesData.filter(msg => {
+                const d = new Date(msg.date);
+                return d >= new Date(from) && d <= new Date(to);
+            });
+            renderMessagesData(filtered);
+        }
+
+        function resetMessagesDate() {
+            document.getElementById('msgFromDate').value = '';
+            document.getElementById('msgToDate').value = '';
+            renderMessagesData(allMessagesData);
+        }
+
+        function renderMessagesData(messages) {
+            const tbody = document.getElementById('messagesTableBody');
+            const noMessages = document.getElementById('noMessages');
+            if (messages.length === 0) { tbody.innerHTML = ''; noMessages.style.display = 'block'; return; }
+            noMessages.style.display = 'none';
+            let html = '';
+            messages.forEach((msg, idx) => {
+                html += `<tr>
+                    <td>${idx + 1}</td>
+                    <td>${new Date(msg.date).toLocaleString()}</td>
+                    <td>${msg.customer_name || 'N/A'}</td>
+                    <td>${msg.customer_email || 'N/A'}</td>
+                    <td>${msg.customer_phone || 'N/A'}</td>
+                    <td>${msg.message || ''}</td>
+                    <td><button class="btn-danger" style="padding:4px 10px;font-size:12px;" onclick="confirmDeleteMessage(${msg.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // ================================================================
+        // 18. DELETE FUNCTIONS (FIXED - Direct Supabase Delete)
+        // ================================================================
+
+        // ===== DELETE: PRODUCTS =====
+        async function confirmDeleteProduct(productId) {
+            const pass1 = prompt('Enter admin password to delete this product:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to delete:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ Warning: This product will be permanently deleted. Are you sure?')) {
+                const { error } = await supabaseClient.from('products').delete().eq('id', parseInt(productId));
+                if (error) {
+                    alert('Delete failed: ' + error.message);
+                    return;
+                }
+                let products = await getProducts();
+                products = products.filter(p => String(p.id) !== String(productId));
+                setLocalData('sk_products', products);
+                cachedProducts = products;
+                loadAdminProducts();
+                renderProducts();
+                filterProducts();
+                showToast('Product deleted successfully.');
             }
         }
 
-        // ===== LIGHTBOX =====
+        async function clearAllProducts() {
+            const pass1 = prompt('Enter admin password to clear all products:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to clear ALL products:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ FINAL WARNING: ALL products will be permanently deleted. Press OK to continue.')) {
+                const { error } = await supabaseClient.from('products').delete().neq('id', 0);
+                if (error) console.error('Clear products error:', error);
+                await saveProducts([]);
+                loadAdminProducts();
+                renderProducts();
+                filterProducts();
+                showToast('All products cleared.');
+            }
+        }
+
+        // ===== DELETE: CUSTOMERS =====
+        async function confirmDeleteCustomer(userId) {
+            const pass1 = prompt('Enter admin password to delete this customer:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to delete:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ Warning: This customer will be permanently deleted. Are you sure?')) {
+                const { error } = await supabaseClient.from('users').delete().eq('id', userId);
+                if (error) {
+                    alert('Delete failed: ' + error.message);
+                    return;
+                }
+                let users = await getUsers();
+                users = users.filter(u => String(u.id) !== String(userId));
+                setLocalData('sk_users_encrypted', users);
+                loadAdminCustomers();
+                showToast('Customer deleted successfully.');
+            }
+        }
+
+        async function clearAllCustomers() {
+            const pass1 = prompt('Enter admin password to clear all customers:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to clear ALL customers:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ FINAL WARNING: ALL customers will be permanently deleted. Press OK to continue.')) {
+                const { error } = await supabaseClient.from('users').delete().neq('id', 0);
+                if (error) console.error('Clear customers error:', error);
+                await saveUsers([]);
+                loadAdminCustomers();
+                showToast('All customers cleared.');
+            }
+        }
+
+        // ===== DELETE: ORDERS =====
+        async function confirmDeleteOrder(orderId) {
+            const pass1 = prompt('Enter admin password to delete this order:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to delete:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ Warning: This order will be permanently deleted. Data recovery is very difficult. Are you sure?')) {
+                const { error } = await supabaseClient.from('orders').delete().eq('id', orderId);
+                if (error) {
+                    alert('Delete failed: ' + error.message);
+                    return;
+                }
+                const orders = await getOrders();
+                const filtered = orders.filter(o => String(o.id) !== String(orderId));
+                setLocalData('sk_orders_encrypted', filtered);
+                loadAdminDashboard();
+                showToast('Order deleted successfully.');
+            }
+        }
+
+        async function clearAllOrders() {
+            const pass1 = prompt('Enter admin password to clear all history:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to clear ALL history:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ FINAL WARNING: ALL order history will be permanently deleted. Data recovery is extremely difficult. Press OK to continue.')) {
+                const { error } = await supabaseClient.from('orders').delete().neq('id', 0);
+                if (error) console.error('Clear orders error:', error);
+                await saveOrders([]);
+                loadAdminDashboard();
+                showToast('All order history cleared.');
+            }
+        }
+
+        // ===== DELETE: INQUIRIES =====
+        async function confirmDeleteInquiry(inquiryId) {
+            const pass1 = prompt('Enter admin password to delete this inquiry:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to delete:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ Warning: This inquiry will be permanently deleted. Are you sure?')) {
+                const { error } = await supabaseClient.from('inquiries').delete().eq('id', inquiryId);
+                if (error) {
+                    alert('Delete failed: ' + error.message);
+                    return;
+                }
+                let inquiries = await getInquiries();
+                inquiries = inquiries.filter(i => String(i.id) !== String(inquiryId));
+                setLocalData('sk_inquiries_encrypted', inquiries);
+                loadAdminInquiries();
+                showToast('Inquiry deleted successfully.');
+            }
+        }
+
+        async function clearAllInquiries() {
+            const pass1 = prompt('Enter admin password to clear all inquiries:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to clear ALL inquiries:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ FINAL WARNING: ALL inquiries will be permanently deleted. Press OK to continue.')) {
+                const { error } = await supabaseClient.from('inquiries').delete().neq('id', 0);
+                if (error) console.error('Clear inquiries error:', error);
+                await saveInquiries([]);
+                loadAdminInquiries();
+                showToast('All inquiries cleared.');
+            }
+        }
+
+        // ===== DELETE: MESSAGES =====
+        async function confirmDeleteMessage(messageId) {
+            const pass1 = prompt('Enter admin password to delete this message:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to delete:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ Warning: This message will be permanently deleted. Are you sure?')) {
+                const { error } = await supabaseClient.from('inquiries').delete().eq('id', messageId);
+                if (error) {
+                    alert('Delete failed: ' + error.message);
+                    return;
+                }
+                let inquiries = await getInquiries();
+                inquiries = inquiries.filter(i => String(i.id) !== String(messageId));
+                setLocalData('sk_inquiries_encrypted', inquiries);
+                loadAdminMessages();
+                showToast('Message deleted successfully.');
+            }
+        }
+
+        async function clearAllMessages() {
+            const pass1 = prompt('Enter admin password to clear all messages:');
+            if (!pass1) return;
+            const hash1 = await sha256(pass1);
+            if (hash1 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            const pass2 = prompt('Confirm password again to clear ALL messages:');
+            if (!pass2) return;
+            const hash2 = await sha256(pass2);
+            if (hash2 !== getAdminPasswordHash()) { alert('Incorrect password.'); return; }
+
+            if (confirm('⚠️ FINAL WARNING: ALL messages will be permanently deleted. Press OK to continue.')) {
+                let inquiries = await getInquiries();
+                inquiries = inquiries.filter(i =>
+                    i.customer_email === 'guest@email.com' ||
+                    (i.message && i.message.includes('Search Query:'))
+                );
+                await saveInquiries(inquiries);
+                loadAdminMessages();
+                showToast('All messages cleared.');
+            }
+        }
+
+        // ================================================================
+        // 19. EXPORT FUNCTIONS
+        // ================================================================
+        function exportProductsCSV() {
+            getProducts().then(products => {
+                if (products.length === 0) { alert('No products to export.'); return; }
+                let csv = 'ID,Name,Category,Price,Old Price,Image\n';
+                products.forEach(p => {
+                    const catName = p.category_id ? getCategoryNameById(p.category_id) : p.category || 'Uncategorized';
+                    csv += `${p.id},"${p.name}","${catName}",${p.price},${p.old_price || ''},"${p.image}"\n`;
+                });
+                downloadCSV(csv, 'products_export.csv');
+            });
+        }
+
+        function exportCustomersCSV() {
+            getUsers().then(users => {
+                if (users.length === 0) { alert('No customers to export.'); return; }
+                getOrders().then(orders => {
+                    let csv = 'ID,Name,Email,Registered,Orders\n';
+                    users.forEach(u => {
+                        const orderCount = orders.filter(o => o.customer_email === u.email).length;
+                        csv += `${u.id},"${u.name}","${u.email}",${new Date(u.created_at).toLocaleDateString()},${orderCount}\n`;
+                    });
+                    downloadCSV(csv, 'customers_export.csv');
+                });
+            });
+        }
+
+        function exportInquiriesCSV() {
+            getInquiries().then(inquiries => {
+                const searchQueries = inquiries.filter(i =>
+                    i.customer_email === 'guest@email.com' ||
+                    (i.message && i.message.includes('Search Query:'))
+                );
+                if (searchQueries.length === 0) { alert('No inquiries to export.'); return; }
+                let csv = 'Date,Customer,Inquiry\n';
+                searchQueries.forEach(inq => {
+                    csv += `${new Date(inq.date).toLocaleString()},"${inq.customer_name || 'Guest'}","${inq.message || ''}"\n`;
+                });
+                downloadCSV(csv, 'inquiries_export.csv');
+            });
+        }
+
+        function exportMessagesCSV() {
+            getInquiries().then(inquiries => {
+                const messages = inquiries.filter(i =>
+                    i.customer_email &&
+                    i.customer_email !== 'guest@email.com' &&
+                    i.customer_email !== ''
+                );
+                if (messages.length === 0) { alert('No messages to export.'); return; }
+                let csv = 'Date,Customer Name,Email,Phone,Message\n';
+                messages.forEach(msg => {
+                    csv += `${new Date(msg.date).toLocaleString()},"${msg.customer_name || ''}","${msg.customer_email || ''}","${msg.customer_phone || ''}","${msg.message || ''}"\n`;
+                });
+                downloadCSV(csv, 'customer_messages_export.csv');
+            });
+        }
+
+        function exportOrdersCSV() {
+            getOrders().then(orders => {
+                if (orders.length === 0) { alert('No orders to export.'); return; }
+                let csv = 'Order ID,Customer,Email,Items,Total,Date,Status\n';
+                orders.forEach(o => {
+                    const itemsList = o.items ? o.items.map(item => `${item.name} x${item.qty}`).join('; ') : '';
+                    csv += `${o.id},"${o.customer_name || 'N/A'}","${o.customer_email || ''}","${itemsList}",${o.total},${new Date(o.date).toLocaleDateString()},${o.status}\n`;
+                });
+                downloadCSV(csv, 'orders_export.csv');
+            });
+        }
+
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+
+        // ================================================================
+        // 20. ADMIN: CHANGE PASSWORD
+        // ================================================================
+        function openAdminChangePassword() {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-key"></i> Change Admin Password</h3>
+                        <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                    </div>
+                    <form onsubmit="event.preventDefault(); submitAdminPasswordChange()">
+                        <div class="form-group">
+                            <label>Current Password *</label>
+                            <input type="password" id="adminCurrentPass" placeholder="Enter current password" required />
+                        </div>
+                        <div class="form-group">
+                            <label>New Password * (min 6 characters)</label>
+                            <input type="password" id="adminNewPass" placeholder="Enter new password" required minlength="6" />
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm New Password *</label>
+                            <input type="password" id="adminConfirmPass" placeholder="Confirm new password" required minlength="6" />
+                        </div>
+                        <div id="adminPassError" style="color:var(--danger);font-size:13px;display:none;margin-bottom:10px;"></div>
+                        <div class="form-actions" style="display:flex;gap:10px;">
+                            <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Update Password</button>
+                            <button type="button" class="btn-outline" onclick="this.closest('.modal').remove()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        async function submitAdminPasswordChange() {
+            const currentPass = document.getElementById('adminCurrentPass').value;
+            const newPass = document.getElementById('adminNewPass').value;
+            const confirmPass = document.getElementById('adminConfirmPass').value;
+            const errorEl = document.getElementById('adminPassError');
+            errorEl.style.display = 'none';
+            if (newPass !== confirmPass) { errorEl.textContent = '❌ New passwords do not match.'; errorEl.style.display = 'block'; return; }
+            try {
+                const result = await changeAdminPassword(currentPass, newPass);
+                showToast('✅ ' + result);
+                document.querySelector('.modal.active')?.remove();
+            } catch (err) {
+                errorEl.textContent = '❌ ' + err;
+                errorEl.style.display = 'block';
+                document.getElementById('adminCurrentPass').value = '';
+                document.getElementById('adminCurrentPass').focus();
+            }
+        }
+
+        // ================================================================
+        // 21. LIGHTBOX
+        // ================================================================
         function openLightbox(src) { document.getElementById('lightboxImage').src = src; document.getElementById('lightbox').classList.add('active'); document.body.style.overflow = 'hidden'; }
         function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow = 'auto'; }
 
@@ -2711,7 +3061,9 @@
             if (e.key === 'Escape') { closeLightbox(); closeCart(); closeCheckout(); closeAuthModal(); closeReviewModal(); closeTrackModal(); }
         });
 
-        // ===== NAVIGATION =====
+        // ================================================================
+        // 22. NAVIGATION
+        // ================================================================
         function navigate(page) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             const target = document.getElementById('page-' + page);
@@ -2728,7 +3080,7 @@
                 if (localStorage.getItem('sk_admin_logged') === 'true') {
                     document.getElementById('adminLogin').style.display = 'none';
                     document.getElementById('adminDashboard').style.display = 'block';
-                    getCategories().then(() => loadCategoryDropdown());
+                    loadCategories();
                     loadAdminDashboard();
                 }
             }
@@ -2737,17 +3089,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function navigateToCategory(category) {
-            navigate('products');
-            const cat = cachedCategories.find(c => c.name === category);
-            if (cat) {
-                filterByCategory(cat.id);
-            } else {
-                document.getElementById('categoryFilter').value = category;
-                filterProducts();
-            }
-        }
-
+        function navigateToCategory(category) { navigate('products'); document.getElementById('categoryFilter').value = category; filterProducts(); }
         function toggleMobileMenu() { document.getElementById('navMenu').classList.toggle('open'); }
 
         document.addEventListener('click', function(e) {
@@ -2756,7 +3098,9 @@
             if (menu.classList.contains('open') && !menu.contains(e.target) && !toggle.contains(e.target)) menu.classList.remove('open');
         });
 
-        // ===== GALLERY =====
+        // ================================================================
+        // 23. GALLERY
+        // ================================================================
         const galleryImages = [
             'https://i.ibb.co/0RnBKXRf/Wren-Kitchens-Ad-Website-Images-111.jpg',
             'https://i.ibb.co/84RXc0rt/Wren-Kitchens-Ad-Website-Images-117.jpg',
@@ -2778,7 +3122,9 @@
             galleryImages.forEach(img => { gallery.innerHTML += `<div class="gallery-item" onclick="openLightbox('${img}')"><img src="${img}" alt="Gallery" /><div class="overlay"><i class="fas fa-expand"></i></div></div>`; });
         }
 
-        // ===== TOAST =====
+        // ================================================================
+        // 24. TOAST
+        // ================================================================
         function showToast(message) {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
@@ -2789,10 +3135,12 @@
             setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 2500);
         }
 
-        // ===== INIT =====
+        // ================================================================
+        // 25. INIT
+        // ================================================================
         async function init() {
             await getProducts();
-            await getCategories();
+            await loadCategories();
             renderGallery();
             await renderProducts();
             updateCartCount();
@@ -2809,79 +3157,6 @@
             if (document.getElementById('page-profile').classList.contains('active')) renderProfile();
 
             document.getElementById('paymentMethod').addEventListener('change', toggleCardDetails);
-
-            // ===== FIX: Functions ko Global banao (Window attach karo) =====
-            window.navigate = navigate;
-            window.navigateToCategory = navigateToCategory;
-            window.toggleMobileMenu = toggleMobileMenu;
-            window.openLightbox = openLightbox;
-            window.closeLightbox = closeLightbox;
-            window.openCart = openCart;
-            window.closeCart = closeCart;
-            window.addToCart = addToCart;
-            window.increaseQty = increaseQty;
-            window.decreaseQty = decreaseQty;
-            window.removeFromCart = removeFromCart;
-            window.openCheckout = openCheckout;
-            window.closeCheckout = closeCheckout;
-            window.toggleCardDetails = toggleCardDetails;
-            window.placeOrder = placeOrder;
-            window.formatCardNumber = formatCardNumber;
-            window.formatExpiry = formatExpiry;
-            window.openAuthModal = openAuthModal;
-            window.closeAuthModal = closeAuthModal;
-            window.switchAuthTab = switchAuthTab;
-            window.registerUser = registerUser;
-            window.loginUser = loginUser;
-            window.logoutUser = logoutUser;
-            window.openTrackModal = openTrackModal;
-            window.closeTrackModal = closeTrackModal;
-            window.trackOrder = trackOrder;
-            window.openReviewModal = openReviewModal;
-            window.closeReviewModal = closeReviewModal;
-            window.setRating = setRating;
-            window.submitReview = submitReview;
-            window.toggleWishlist = toggleWishlist;
-            window.doSearch = doSearch;
-            window.filterProducts = filterProducts;
-            window.clearFilters = clearFilters;
-            window.filterByCategory = filterByCategory;
-            window.submitContact = submitContact;
-
-            // ADMIN Functions
-            window.adminLogin = adminLogin;
-            window.adminLogout = adminLogout;
-            window.openAdminChangePassword = openAdminChangePassword;
-            window.switchAdminTab = switchAdminTab;
-            window.loadAdminDashboard = loadAdminDashboard;
-            window.loadAdminProducts = loadAdminProducts;
-            window.toggleProductForm = toggleProductForm;
-            window.editProduct = editProduct;
-            window.saveProduct = saveProduct;
-            window.deleteProduct = deleteProduct;
-            window.clearAllProducts = clearAllProducts;
-            window.exportProductsCSV = exportProductsCSV;
-            window.loadAdminOrders = loadAdminOrders;
-            window.updateOrderStatus = updateOrderStatus;
-            window.deleteOrder = deleteOrder;
-            window.clearAllOrders = clearAllOrders;
-            window.exportOrdersCSV = exportOrdersCSV;
-            window.loadAdminCustomers = loadAdminCustomers;
-            window.deleteCustomer = deleteCustomer;
-            window.clearAllCustomers = clearAllCustomers;
-            window.exportCustomersCSV = exportCustomersCSV;
-            window.loadAdminInquiries = loadAdminInquiries;
-            window.deleteInquiry = deleteInquiry;
-            window.clearAllInquiries = clearAllInquiries;
-            window.exportInquiriesCSV = exportInquiriesCSV;
-            window.loadAdminMessages = loadAdminMessages;
-            window.deleteMessage = deleteMessage;
-            window.clearAllMessages = clearAllMessages;
-            window.exportMessagesCSV = exportMessagesCSV;
-            window.adminGlobalSearch = adminGlobalSearch;
-            window.clearAdminSearch = clearAdminSearch;
-            window.syncProductsToSupabase = syncProductsToSupabase;
-            window.toggleMegaSubmenu = toggleMegaSubmenu;
         }
 
         document.addEventListener('DOMContentLoaded', function() { init(); navigate('home'); });
