@@ -53,186 +53,89 @@
         .nav-menu > li > a:hover { color: var(--gold); }
 
         /* ============================================
-           MEGA MENU 3-LEVEL DROPDOWN (FAST SLIDE)
+           NEW VERTICAL + RIGHT SLIDE MENU (FAST SLIDE)
            ============================================ */
-        .mega-dropdown {
+        .vertical-menu-wrap {
             display: none;
             position: absolute;
             top: 100%;
             left: 0;
-            background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
-            min-width: 950px;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(212,175,55,0.1);
+            background: #ffffff;
+            min-width: 250px;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
             border-top: 4px solid var(--gold);
-            padding: 25px;
             z-index: 1000;
         }
 
-        .nav-menu > li:hover .mega-dropdown {
-            display: flex;
-            animation: slideDownFast 0.25s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        .nav-menu > li:hover .vertical-menu-wrap {
+            display: block;
+            animation: slideDownFast 0.25s ease;
         }
 
-        .mega-category {
-            flex: 1;
+        .vertical-main-list { list-style: none; margin: 0; padding: 10px; }
+        .vertical-main-list > li {
             position: relative;
-            padding: 0 15px;
-            border-right: 1px solid #f0f0f0;
-            transition: all 0.3s ease;
-            min-width: 180px;
-        }
-
-        .mega-category:last-child {
-            border-right: none;
-        }
-
-        .mega-category:hover {
-            background: rgba(212,175,55,0.03);
-            border-radius: 12px;
-        }
-
-        .mega-category > h4 {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 12px;
-            padding: 8px 0;
-            border-bottom: 2px solid var(--gold);
+            padding: 10px 15px;
+            border-radius: 8px;
             cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--primary);
+            transition: var(--transition);
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
             white-space: nowrap;
         }
 
-        .mega-category > h4 i {
+        .vertical-main-list > li:hover {
+            background: rgba(212,175,55,0.08);
             color: var(--gold);
-            font-size: 16px;
+            padding-left: 20px;
         }
 
-        .mega-category > h4:hover {
-            color: var(--gold);
-            padding-left: 5px;
+        /* Right Slide Sub-menu */
+        .vertical-sub-wrap {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            min-width: 220px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border-left: 4px solid var(--gold);
+            padding: 10px;
+            opacity: 0;
+            transform: translateX(-15px);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        .mega-category ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .vertical-main-list > li:hover .vertical-sub-wrap {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
         }
 
-        .mega-category ul li {
-            margin-bottom: 4px;
-            position: relative;
-        }
-
-        .mega-category ul li a {
+        .vertical-sub-wrap ul { list-style: none; margin: 0; padding: 0; }
+        .vertical-sub-wrap ul li a {
             display: block;
-            padding: 7px 10px;
+            padding: 8px 12px;
             color: #666;
             text-decoration: none;
             font-size: 13px;
-            transition: all 0.25s ease;
-            border-radius: 8px;
-            position: relative;
-            white-space: nowrap;
-        }
-
-        .mega-category ul li a:hover {
-            background: linear-gradient(90deg, rgba(212,175,55,0.1) 0%, transparent 100%);
-            color: var(--primary);
-            padding-left: 15px;
-            font-weight: 600;
-        }
-
-        .mega-category ul li a:hover::before {
-            content: '→';
-            position: absolute;
-            left: 2px;
-            color: var(--gold);
-            font-weight: bold;
-        }
-
-        /* LEVEL 3 PANEL - FAST RIGHT SLIDE */
-        .level-3-panel {
-            display: none;
-            position: absolute;
-            left: 100%;
-            top: -10px;
-            background: linear-gradient(135deg, #fff 0%, #f8f8f8 100%);
-            min-width: 240px;
-            border-radius: 12px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(212,175,55,0.15);
-            padding: 15px;
-            z-index: 999;
-            border-left: 4px solid var(--gold);
-        }
-
-        .mega-category ul li:hover .level-3-panel {
-            display: block;
-            animation: slideRight 0.25s ease;
-        }
-
-        .level-3-panel h5 {
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--gold);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .level-3-panel ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .level-3-panel ul li {
-            margin-bottom: 4px;
-        }
-
-        .level-3-panel ul li a {
-            display: block;
-            padding: 6px 10px;
-            color: #666;
-            text-decoration: none;
-            font-size: 12px;
-            transition: all 0.2s ease;
             border-radius: 6px;
-            white-space: nowrap;
+            transition: 0.2s;
         }
 
-        .level-3-panel ul li a:hover {
+        .vertical-sub-wrap ul li a:hover {
             background: var(--gold-light);
             color: var(--primary);
             padding-left: 15px;
             font-weight: 600;
         }
-
-        /* Arrow indicator for items with sub-items */
-        .mega-category ul li.has-sub > a::after {
-            content: '›';
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gold);
-            font-size: 18px;
-            font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .mega-category ul li.has-sub:hover > a::after {
-            opacity: 1;
-        }
-
-        /* ===== END MEGA MENU ===== */
+        /* ===== END VERTICAL SLIDE MENU ===== */
 
         .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .header-right .search-wrap { position: relative; display: flex; align-items: center; }
@@ -487,9 +390,65 @@
         .footer-bottom { padding-top: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 13px; color: rgba(255,255,255,.4); }
         .footer-bottom a { color: var(--gold); text-decoration: none; }
         .toast { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; padding: 14px 24px; border-radius: 50px; font-size: 14px; font-weight: 600; box-shadow: 0 8px 30px rgba(0,0,0,.3); z-index: 10000; display: flex; align-items: center; gap: 8px; animation: slideUp .3s ease; transition: opacity .3s; }
-        @media (max-width:992px) { .about-content, .contact-wrapper { grid-template-columns: 1fr; } .footer-grid { grid-template-columns: 1fr 1fr; } .hero-content h1 { font-size: 40px; } .header-right .search-wrap input { width: 120px; } .header-right .search-wrap input:focus { width: 150px; } .admin-product-form .form-row { grid-template-columns: 1fr; } .checkout-form .card-details .row { grid-template-columns: 1fr; } .mega-dropdown { min-width: 100%; position: static; flex-direction: column; } .level-3-panel { position: static; min-width: 100%; } }
-        @media (max-width:768px) { .menu-toggle { display: block; } .nav-menu { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--white); padding: 20px; box-shadow: var(--shadow-hover); gap: 14px; border-top: 3px solid var(--gold); z-index: 100; } .nav-menu.open { display: flex; } .nav-menu>li { width: 100%; padding-bottom: 0; } .nav-menu>li::after { display: none; } .footer-grid { grid-template-columns: 1fr; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); } .filter-bar { flex-direction: column; align-items: stretch; } .filter-bar .filters-left { flex-direction: column; align-items: stretch; } .filter-bar .price-range { flex-wrap: wrap; } .header-right .search-wrap input { width: 100px; } .header-right .search-wrap input:focus { width: 130px; } .hero-content h1 { font-size: 32px; } .top-bar .left span { font-size: 11px; } .profile-section .order-history .order-item { flex-direction: column; align-items: flex-start; } .admin-tabs { flex-wrap: wrap; } .admin-tabs button { padding: 6px 12px; font-size: 12px; } .modal-content.xlarge { padding: 16px; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); } .product-card .info .action-row { flex-direction: column; } .product-card .info .action-row .btn-add-cart { min-width: unset; } }
-        @media (max-width:480px) { .header-right .search-wrap input { width: 80px; font-size: 11px; padding: 6px 10px 6px 28px; } .header-right .search-wrap input:focus { width: 100px; } .btn-appointment { padding: 6px 14px; font-size: 11px; } .cart-icon-wrap { padding: 6px 8px; font-size: 18px; } .user-icon-wrap { padding: 6px 8px; font-size: 16px; } .hero-content { padding: 40px 5%; } .hero-content h1 { font-size: 28px; } .modal-content { padding: 16px; } .products-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); } }
+
+        /* ===== RESPONSIVE FOR TABLET AND MOBILE ===== */
+        @media (max-width:992px) {
+            .about-content, .contact-wrapper { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .hero-content h1 { font-size: 40px; }
+            .header-right .search-wrap input { width: 120px; }
+            .header-right .search-wrap input:focus { width: 150px; }
+            .admin-product-form .form-row { grid-template-columns: 1fr; }
+            .checkout-form .card-details .row { grid-template-columns: 1fr; }
+
+            /* Tablet par Vertical Menu aur Sub-menu ko static karna taake wo screen se bahar na jayein */
+            .vertical-menu-wrap { min-width: 200px; }
+            .vertical-sub-wrap { min-width: 200px; }
+        }
+
+        @media (max-width:768px) {
+            .menu-toggle { display: block; }
+            .nav-menu { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--white); padding: 20px; box-shadow: var(--shadow-hover); gap: 14px; border-top: 3px solid var(--gold); z-index: 100; }
+            .nav-menu.open { display: flex; }
+            .nav-menu>li { width: 100%; padding-bottom: 0; }
+            .nav-menu>li::after { display: none; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+            .filter-bar { flex-direction: column; align-items: stretch; }
+            .filter-bar .filters-left { flex-direction: column; align-items: stretch; }
+            .filter-bar .price-range { flex-wrap: wrap; }
+            .header-right .search-wrap input { width: 100px; }
+            .header-right .search-wrap input:focus { width: 130px; }
+            .hero-content h1 { font-size: 32px; }
+            .top-bar .left span { font-size: 11px; }
+            .profile-section .order-history .order-item { flex-direction: column; align-items: flex-start; }
+            .admin-tabs { flex-wrap: wrap; }
+            .admin-tabs button { padding: 6px 12px; font-size: 12px; }
+            .modal-content.xlarge { padding: 16px; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+            .product-card .info .action-row { flex-direction: column; }
+            .product-card .info .action-row .btn-add-cart { min-width: unset; }
+
+            /* Mobile par Vertical Menu aur Sub-menu ko neeche slide karna */
+            .vertical-menu-wrap { position: static; width: 100%; min-width: 100%; margin-top: 10px; }
+            .vertical-main-list { padding: 0; }
+            .vertical-sub-wrap { position: static; width: 100%; margin-left: 15px; margin-top: 5px; transform: none; opacity: 1; display: none; box-shadow: none; border-left: none; padding: 0; }
+            .vertical-main-list > li:hover .vertical-sub-wrap { display: block; transform: none; }
+            .vertical-main-list > li { display: block; }
+        }
+
+        @media (max-width:480px) {
+            .header-right .search-wrap input { width: 80px; font-size: 11px; padding: 6px 10px 6px 28px; }
+            .header-right .search-wrap input:focus { width: 100px; }
+            .btn-appointment { padding: 6px 14px; font-size: 11px; }
+            .cart-icon-wrap { padding: 6px 8px; font-size: 18px; }
+            .user-icon-wrap { padding: 6px 8px; font-size: 16px; }
+            .hero-content { padding: 40px 5%; }
+            .hero-content h1 { font-size: 28px; }
+            .modal-content { padding: 16px; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+        }
+
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
         .admin-header h2 { font-size: 28px; font-family: 'Playfair Display', serif; }
         .admin-header .admin-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
@@ -567,132 +526,149 @@
             <li><a class="active" onclick="navigate('home')">Home</a></li>
             <li><a onclick="navigate('about')">About</a></li>
 
-            <!-- PRODUCTS WITH 10 CATEGORIES IN MEGA MENU -->
+            <!-- PRODUCTS WITH NEW VERTICAL + SLIDE MENU -->
             <li>
                 <a onclick="navigate('products')">Products <i class="fas fa-chevron-down"></i></a>
-                <div class="mega-dropdown">
+                <div class="vertical-menu-wrap">
+                    <ul class="vertical-main-list">
+                        <!-- Kitchens -->
+                        <li>
+                            Kitchens <span style="font-weight:bold;">›</span>
+                            <div class="vertical-sub-wrap">
+                                <ul>
+                                    <li><a onclick="navigateToSubCategory('Kitchens', 'Plates')">🍽️ Plates</a></li>
+                                    <li><a onclick="navigateToSubCategory('Kitchens', 'Spoons')">🥄 Spoons</a></li>
+                                    <li><a onclick="navigateToSubCategory('Kitchens', 'Mugs')">☕ Mugs</a></li>
+                                    <li><a onclick="navigateToSubCategory('Kitchens', 'Knives')">🔪 Knives</a></li>
+                                    <li><a onclick="navigateToSubCategory('Kitchens', 'Cutting Boards')">🪵 Cutting Boards</a></li>
+                                    <li><a onclick="navigateToSubCategory('Kitchens', 'Pots & Pans')">🍳 Pots & Pans</a></li>
+                                    <li><a onclick="navigateToSubCategory('Kitchens', 'Appliances')">⚡ Appliances</a></li>
+                                    <li><a onclick="navigateToSubCategory('Kitchens', 'Storage')">📦 Storage</a></li>
+                                </ul>
+                            </div>
+                        </li>
 
-                    <!-- KITCHENS -->
-                    <div class="mega-category">
-                        <h4 onclick="navigateToCategory('Kitchens')"><i class="fas fa-utensils"></i> Kitchens</h4>
-                        <ul>
-                            <li><a onclick="navigateToSubCategory('Kitchens', 'Plates')">🍽️ Plates</a></li>
-                            <li><a onclick="navigateToSubCategory('Kitchens', 'Spoons')">🥄 Spoons</a></li>
-                            <li><a onclick="navigateToSubCategory('Kitchens', 'Mugs')">☕ Mugs</a></li>
-                            <li><a onclick="navigateToSubCategory('Kitchens', 'Knives')">🔪 Knives</a></li>
-                            <li><a onclick="navigateToSubCategory('Kitchens', 'Cutting Boards')">🪵 Cutting Boards</a></li>
-                            <li><a onclick="navigateToSubCategory('Kitchens', 'Pots & Pans')">🍳 Pots & Pans</a></li>
-                            <li><a onclick="navigateToSubCategory('Kitchens', 'Appliances')">⚡ Appliances</a></li>
-                            <li><a onclick="navigateToSubCategory('Kitchens', 'Storage')">📦 Storage</a></li>
-                        </ul>
-                    </div>
+                        <!-- Bedrooms -->
+                        <li>
+                            Bedrooms <span style="font-weight:bold;">›</span>
+                            <div class="vertical-sub-wrap">
+                                <ul>
+                                    <li><a onclick="navigateToSubCategory('Bedrooms', 'Beds')">🛏️ Beds</a></li>
+                                    <li><a onclick="navigateToSubCategory('Bedrooms', 'Wardrobes')">🚪 Wardrobes</a></li>
+                                    <li><a onclick="navigateToSubCategory('Bedrooms', 'Nightstands')">🕯️ Nightstands</a></li>
+                                    <li><a onclick="navigateToSubCategory('Bedrooms', 'Dressers')">🪞 Dressers</a></li>
+                                    <li><a onclick="navigateToSubCategory('Bedrooms', 'Mattresses')">🛌 Mattresses</a></li>
+                                    <li><a onclick="navigateToSubCategory('Bedrooms', 'Headboards')">🪑 Headboards</a></li>
+                                    <li><a onclick="navigateToSubCategory('Bedrooms', 'Bedding')">🧺 Bedding</a></li>
+                                    <li><a onclick="navigateToSubCategory('Bedrooms', 'Pillows')">💤 Pillows</a></li>
+                                </ul>
+                            </div>
+                        </li>
 
-                    <!-- BEDROOMS -->
-                    <div class="mega-category">
-                        <h4 onclick="navigateToCategory('Bedrooms')"><i class="fas fa-bed"></i> Bedrooms</h4>
-                        <ul>
-                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Beds')">🛏️ Beds</a></li>
-                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Wardrobes')">🚪 Wardrobes</a></li>
-                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Nightstands')">🕯️ Nightstands</a></li>
-                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Dressers')">🪞 Dressers</a></li>
-                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Mattresses')">🛌 Mattresses</a></li>
-                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Headboards')">🪑 Headboards</a></li>
-                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Bedding')">🧺 Bedding</a></li>
-                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Pillows')">💤 Pillows</a></li>
-                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Mirrors')">🪞 Mirrors</a></li>
-                            <li><a onclick="navigateToSubCategory('Bedrooms', 'Lamps')">💡 Lamps</a></li>
-                        </ul>
-                    </div>
+                        <!-- Home Offices -->
+                        <li>
+                            Home Offices <span style="font-weight:bold;">›</span>
+                            <div class="vertical-sub-wrap">
+                                <ul>
+                                    <li><a onclick="navigateToSubCategory('Home Offices', 'Desks')">🖥️ Desks</a></li>
+                                    <li><a onclick="navigateToSubCategory('Home Offices', 'Chairs')">💺 Chairs</a></li>
+                                    <li><a onclick="navigateToSubCategory('Home Offices', 'Bookshelves')">📚 Bookshelves</a></li>
+                                    <li><a onclick="navigateToSubCategory('Home Offices', 'Filing Cabinets')">🗄️ Filing Cabinets</a></li>
+                                    <li><a onclick="navigateToSubCategory('Home Offices', 'Accessories')">🖱️ Accessories</a></li>
+                                </ul>
+                            </div>
+                        </li>
 
-                    <!-- HOME OFFICES -->
-                    <div class="mega-category">
-                        <h4 onclick="navigateToCategory('Home Offices')"><i class="fas fa-laptop"></i> Home Offices</h4>
-                        <ul>
-                            <li><a onclick="navigateToSubCategory('Home Offices', 'Desks')">🖥️ Desks</a></li>
-                            <li><a onclick="navigateToSubCategory('Home Offices', 'Chairs')">💺 Chairs</a></li>
-                            <li><a onclick="navigateToSubCategory('Home Offices', 'Bookshelves')">📚 Bookshelves</a></li>
-                            <li><a onclick="navigateToSubCategory('Home Offices', 'Filing Cabinets')">🗄️ Filing Cabinets</a></li>
-                            <li><a onclick="navigateToSubCategory('Home Offices', 'Accessories')">🖱️ Accessories</a></li>
-                            <li><a onclick="navigateToSubCategory('Home Offices', 'Storage')">📦 Storage</a></li>
-                        </ul>
-                    </div>
+                        <!-- Cabinets -->
+                        <li>
+                            Cabinets <span style="font-weight:bold;">›</span>
+                            <div class="vertical-sub-wrap">
+                                <ul>
+                                    <li><a onclick="navigateToSubCategory('Cabinets & Units', 'Base Units')">Base Units</a></li>
+                                    <li><a onclick="navigateToSubCategory('Cabinets & Units', 'Wall Units')">Wall Units</a></li>
+                                    <li><a onclick="navigateToSubCategory('Cabinets & Units', 'Tall Units')">Tall Units</a></li>
+                                    <li><a onclick="navigateToSubCategory('Cabinets & Units', 'Island Units')">Island Units</a></li>
+                                </ul>
+                            </div>
+                        </li>
 
-                    <!-- CABINETS & UNITS -->
-                    <div class="mega-category">
-                        <h4 onclick="navigateToCategory('Cabinets & Units')"><i class="fas fa-cabinet"></i> Cabinets</h4>
-                        <ul>
-                            <li><a onclick="navigateToSubCategory('Cabinets & Units', 'Base Units')">Base Units</a></li>
-                            <li><a onclick="navigateToSubCategory('Cabinets & Units', 'Wall Units')">Wall Units</a></li>
-                            <li><a onclick="navigateToSubCategory('Cabinets & Units', 'Tall Units')">Tall Units</a></li>
-                            <li><a onclick="navigateToSubCategory('Cabinets & Units', 'Island Units')">Island Units</a></li>
-                        </ul>
-                    </div>
+                        <!-- Worktops -->
+                        <li>
+                            Worktops <span style="font-weight:bold;">›</span>
+                            <div class="vertical-sub-wrap">
+                                <ul>
+                                    <li><a onclick="navigateToSubCategory('Worktops', 'Laminate')">Laminate</a></li>
+                                    <li><a onclick="navigateToSubCategory('Worktops', 'Quartz')">Quartz</a></li>
+                                    <li><a onclick="navigateToSubCategory('Worktops', 'Granite')">Granite</a></li>
+                                    <li><a onclick="navigateToSubCategory('Worktops', 'Marble')">Marble</a></li>
+                                    <li><a onclick="navigateToSubCategory('Worktops', 'Wood')">Wood</a></li>
+                                </ul>
+                            </div>
+                        </li>
 
-                    <!-- WORKTOPS -->
-                    <div class="mega-category">
-                        <h4 onclick="navigateToCategory('Worktops')"><i class="fas fa-th-large"></i> Worktops</h4>
-                        <ul>
-                            <li><a onclick="navigateToSubCategory('Worktops', 'Laminate')">Laminate</a></li>
-                            <li><a onclick="navigateToSubCategory('Worktops', 'Quartz')">Quartz</a></li>
-                            <li><a onclick="navigateToSubCategory('Worktops', 'Granite')">Granite</a></li>
-                            <li><a onclick="navigateToSubCategory('Worktops', 'Marble')">Marble</a></li>
-                            <li><a onclick="navigateToSubCategory('Worktops', 'Wood')">Wood</a></li>
-                        </ul>
-                    </div>
+                        <!-- Appliances -->
+                        <li>
+                            Appliances <span style="font-weight:bold;">›</span>
+                            <div class="vertical-sub-wrap">
+                                <ul>
+                                    <li><a onclick="navigateToSubCategory('Appliances', 'Hobs')">Hobs</a></li>
+                                    <li><a onclick="navigateToSubCategory('Appliances', 'Ovens')">Ovens</a></li>
+                                    <li><a onclick="navigateToSubCategory('Appliances', 'Dishwashers')">Dishwashers</a></li>
+                                    <li><a onclick="navigateToSubCategory('Appliances', 'Microwaves')">Microwaves</a></li>
+                                    <li><a onclick="navigateToSubCategory('Appliances', 'Fridges')">Fridges</a></li>
+                                </ul>
+                            </div>
+                        </li>
 
-                    <!-- APPLIANCES -->
-                    <div class="mega-category">
-                        <h4 onclick="navigateToCategory('Appliances')"><i class="fas fa-plug"></i> Appliances</h4>
-                        <ul>
-                            <li><a onclick="navigateToSubCategory('Appliances', 'Hobs')">Hobs</a></li>
-                            <li><a onclick="navigateToSubCategory('Appliances', 'Ovens')">Ovens</a></li>
-                            <li><a onclick="navigateToSubCategory('Appliances', 'Dishwashers')">Dishwashers</a></li>
-                            <li><a onclick="navigateToSubCategory('Appliances', 'Microwaves')">Microwaves</a></li>
-                            <li><a onclick="navigateToSubCategory('Appliances', 'Fridges')">Fridges</a></li>
-                        </ul>
-                    </div>
+                        <!-- Beds -->
+                        <li>
+                            Beds <span style="font-weight:bold;">›</span>
+                            <div class="vertical-sub-wrap">
+                                <ul>
+                                    <li><a onclick="navigateToSubCategory('Beds & Headboards', 'King Beds')">King Beds</a></li>
+                                    <li><a onclick="navigateToSubCategory('Beds & Headboards', 'Double Beds')">Double Beds</a></li>
+                                    <li><a onclick="navigateToSubCategory('Beds & Headboards', 'Single Beds')">Single Beds</a></li>
+                                    <li><a onclick="navigateToSubCategory('Beds & Headboards', 'Headboards')">Headboards</a></li>
+                                </ul>
+                            </div>
+                        </li>
 
-                    <!-- BEDS & HEADBOARDS -->
-                    <div class="mega-category">
-                        <h4 onclick="navigateToCategory('Beds & Headboards')"><i class="fas fa-bed"></i> Beds</h4>
-                        <ul>
-                            <li><a onclick="navigateToSubCategory('Beds & Headboards', 'King Beds')">King Beds</a></li>
-                            <li><a onclick="navigateToSubCategory('Beds & Headboards', 'Double Beds')">Double Beds</a></li>
-                            <li><a onclick="navigateToSubCategory('Beds & Headboards', 'Single Beds')">Single Beds</a></li>
-                            <li><a onclick="navigateToSubCategory('Beds & Headboards', 'Headboards')">Headboards</a></li>
-                        </ul>
-                    </div>
+                        <!-- Wardrobes -->
+                        <li>
+                            Wardrobes <span style="font-weight:bold;">›</span>
+                            <div class="vertical-sub-wrap">
+                                <ul>
+                                    <li><a onclick="navigateToSubCategory('Wardrobes', 'Sliding')">Sliding</a></li>
+                                    <li><a onclick="navigateToSubCategory('Wardrobes', 'Hinged')">Hinged</a></li>
+                                    <li><a onclick="navigateToSubCategory('Wardrobes', 'Fitted')">Fitted</a></li>
+                                </ul>
+                            </div>
+                        </li>
 
-                    <!-- WARDROBES -->
-                    <div class="mega-category">
-                        <h4 onclick="navigateToCategory('Wardrobes')"><i class="fas fa-door-open"></i> Wardrobes</h4>
-                        <ul>
-                            <li><a onclick="navigateToSubCategory('Wardrobes', 'Sliding')">Sliding</a></li>
-                            <li><a onclick="navigateToSubCategory('Wardrobes', 'Hinged')">Hinged</a></li>
-                            <li><a onclick="navigateToSubCategory('Wardrobes', 'Fitted')">Fitted</a></li>
-                        </ul>
-                    </div>
+                        <!-- Desks -->
+                        <li>
+                            Desks <span style="font-weight:bold;">›</span>
+                            <div class="vertical-sub-wrap">
+                                <ul>
+                                    <li><a onclick="navigateToSubCategory('Desks', 'Executive')">Executive</a></li>
+                                    <li><a onclick="navigateToSubCategory('Desks', 'Standing')">Standing</a></li>
+                                    <li><a onclick="navigateToSubCategory('Desks', 'Corner')">Corner</a></li>
+                                </ul>
+                            </div>
+                        </li>
 
-                    <!-- DESKS -->
-                    <div class="mega-category">
-                        <h4 onclick="navigateToCategory('Desks')"><i class="fas fa-desktop"></i> Desks</h4>
-                        <ul>
-                            <li><a onclick="navigateToSubCategory('Desks', 'Executive')">Executive</a></li>
-                            <li><a onclick="navigateToSubCategory('Desks', 'Standing')">Standing</a></li>
-                            <li><a onclick="navigateToSubCategory('Desks', 'Corner')">Corner</a></li>
-                        </ul>
-                    </div>
-
-                    <!-- OFFICE CHAIRS -->
-                    <div class="mega-category">
-                        <h4 onclick="navigateToCategory('Office Chairs')"><i class="fas fa-chair"></i> Office Chairs</h4>
-                        <ul>
-                            <li><a onclick="navigateToSubCategory('Office Chairs', 'Ergonomic')">Ergonomic</a></li>
-                            <li><a onclick="navigateToSubCategory('Office Chairs', 'Executive')">Executive</a></li>
-                            <li><a onclick="navigateToSubCategory('Office Chairs', 'Gaming')">Gaming</a></li>
-                        </ul>
-                    </div>
-
+                        <!-- Office Chairs -->
+                        <li>
+                            Office Chairs <span style="font-weight:bold;">›</span>
+                            <div class="vertical-sub-wrap">
+                                <ul>
+                                    <li><a onclick="navigateToSubCategory('Office Chairs', 'Ergonomic')">Ergonomic</a></li>
+                                    <li><a onclick="navigateToSubCategory('Office Chairs', 'Executive')">Executive</a></li>
+                                    <li><a onclick="navigateToSubCategory('Office Chairs', 'Gaming')">Gaming</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </li>
 
@@ -1682,60 +1658,44 @@
             return defaultCats;
         }
 
-       // FIXED: Sub-categories ke saath complete dropdown
-function loadCategoryDropdown() {
-    const select = document.getElementById('prodCategory');
-    if (!select) return;
-    
-    // Sirf tabhi overwrite karein agar HTML mein optgroup NAHI hai
-    // Agar HTML mein already sub-categories hain, to JS unhe nahi hataega
-    const hasOptgroups = select.querySelector('optgroup');
-    if (hasOptgroups) return; // ✅ HTML wala dropdown already sahi hai, JS kuch mat karo
-    
-    select.innerHTML = '';
-    
-    // Sub-categories ke saath complete data
-    const allCategories = [
-        { id: 1, name: 'Kitchens', subs: ['Plates', 'Spoons', 'Mugs', 'Knives', 'Cutting Boards', 'Pots & Pans', 'Appliances', 'Storage'] },
-        { id: 2, name: 'Bedrooms', subs: ['Beds', 'Wardrobes', 'Nightstands', 'Dressers', 'Mattresses', 'Headboards', 'Bedding', 'Pillows', 'Mirrors', 'Lamps'] },
-        { id: 3, name: 'Home Offices', subs: ['Desks', 'Chairs', 'Bookshelves', 'Filing Cabinets', 'Accessories', 'Storage'] },
-        { id: 4, name: 'Cabinets & Units', subs: ['Base Units', 'Wall Units', 'Tall Units', 'Island Units'] },
-        { id: 5, name: 'Worktops', subs: ['Laminate', 'Quartz', 'Granite', 'Marble', 'Wood'] },
-        { id: 6, name: 'Appliances', subs: ['Hobs', 'Ovens', 'Dishwashers', 'Microwaves', 'Fridges'] },
-        { id: 7, name: 'Beds & Headboards', subs: ['King Beds', 'Double Beds', 'Single Beds', 'Headboards'] },
-        { id: 8, name: 'Wardrobes', subs: ['Sliding', 'Hinged', 'Fitted'] },
-        { id: 9, name: 'Desks', subs: ['Executive', 'Standing', 'Corner'] },
-        { id: 10, name: 'Office Chairs', subs: ['Ergonomic', 'Executive', 'Gaming'] }
-    ];
-
-    // Default option
-    const defaultOpt = document.createElement('option');
-    defaultOpt.value = '';
-    defaultOpt.textContent = '-- Select Category --';
-    select.appendChild(defaultOpt);
-
-    // Categories with optgroup
-    allCategories.forEach(cat => {
-        const optgroup = document.createElement('optgroup');
-        optgroup.label = cat.name;
-        
-        // Pehle main category option
-        const mainOpt = document.createElement('option');
-        mainOpt.value = cat.name;
-        mainOpt.textContent = cat.name;
-        optgroup.appendChild(mainOpt);
-        
-        // Phir sub-categories
-        cat.subs.forEach(sub => {
-            const opt = document.createElement('option');
-            opt.value = `${cat.name} - ${sub}`;
-            opt.textContent = sub;
-            optgroup.appendChild(opt);
-        });
-        
-        select.appendChild(optgroup);
-    });
-}
+        function loadCategoryDropdown() {
+            const select = document.getElementById('prodCategory');
+            if (!select) return;
+            const hasOptgroups = select.querySelector('optgroup');
+            if (hasOptgroups) return;
+            select.innerHTML = '';
+            const allCategories = [
+                { id: 1, name: 'Kitchens', subs: ['Plates', 'Spoons', 'Mugs', 'Knives', 'Cutting Boards', 'Pots & Pans', 'Appliances', 'Storage'] },
+                { id: 2, name: 'Bedrooms', subs: ['Beds', 'Wardrobes', 'Nightstands', 'Dressers', 'Mattresses', 'Headboards', 'Bedding', 'Pillows', 'Mirrors', 'Lamps'] },
+                { id: 3, name: 'Home Offices', subs: ['Desks', 'Chairs', 'Bookshelves', 'Filing Cabinets', 'Accessories', 'Storage'] },
+                { id: 4, name: 'Cabinets & Units', subs: ['Base Units', 'Wall Units', 'Tall Units', 'Island Units'] },
+                { id: 5, name: 'Worktops', subs: ['Laminate', 'Quartz', 'Granite', 'Marble', 'Wood'] },
+                { id: 6, name: 'Appliances', subs: ['Hobs', 'Ovens', 'Dishwashers', 'Microwaves', 'Fridges'] },
+                { id: 7, name: 'Beds & Headboards', subs: ['King Beds', 'Double Beds', 'Single Beds', 'Headboards'] },
+                { id: 8, name: 'Wardrobes', subs: ['Sliding', 'Hinged', 'Fitted'] },
+                { id: 9, name: 'Desks', subs: ['Executive', 'Standing', 'Corner'] },
+                { id: 10, name: 'Office Chairs', subs: ['Ergonomic', 'Executive', 'Gaming'] }
+            ];
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = '';
+            defaultOpt.textContent = '-- Select Category --';
+            select.appendChild(defaultOpt);
+            allCategories.forEach(cat => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = cat.name;
+                const mainOpt = document.createElement('option');
+                mainOpt.value = cat.name;
+                mainOpt.textContent = cat.name;
+                optgroup.appendChild(mainOpt);
+                cat.subs.forEach(sub => {
+                    const opt = document.createElement('option');
+                    opt.value = `${cat.name} - ${sub}`;
+                    opt.textContent = sub;
+                    optgroup.appendChild(opt);
+                });
+                select.appendChild(optgroup);
+            });
+        }
 
         // ===== USERS =====
         async function getUsers() {
@@ -2907,16 +2867,14 @@ function loadCategoryDropdown() {
             });
         }
 
-        // FIXED: saveProduct with String comparison
         async function saveProduct() {
             const id = document.getElementById('editProductId').value;
             const name = document.getElementById('prodName').value.trim();
             const categoryValue = document.getElementById('prodCategory').value;
 
-            // Split "Kitchens - Plates" into category and subcategory
             const parts = categoryValue.split(' - ');
-            const categoryName = parts[0]; // Kitchens
-            const subCategoryName = parts[1] || ''; // Plates
+            const categoryName = parts[0];
+            const subCategoryName = parts[1] || '';
 
             const price = parseFloat(document.getElementById('prodPrice').value);
             const oldPrice = parseFloat(document.getElementById('prodOldPrice').value) || null;
@@ -3606,14 +3564,14 @@ function loadCategoryDropdown() {
 
         // Mobile dropdown handling
         document.querySelectorAll('.nav-menu > li').forEach(li => {
-            const megaDropdown = li.querySelector('.mega-dropdown');
+            const megaDropdown = li.querySelector('.vertical-menu-wrap');
             const link = li.querySelector('a');
             if (megaDropdown && link && link.textContent.includes('Products')) {
                 link.addEventListener('click', (e) => {
                     if (window.innerWidth <= 768) {
                         e.preventDefault();
                         e.stopPropagation();
-                        megaDropdown.style.display = megaDropdown.style.display === 'flex' ? 'none' : 'flex';
+                        megaDropdown.style.display = megaDropdown.style.display === 'block' ? 'none' : 'block';
                     }
                 });
             }
